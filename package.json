@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "serve": "vue-cli-service serve",
     "dev": "npm run lint && vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "eslint --ext .js,vue . --ignore-pattern .gitignore",
-    "lint:fix": "eslint --fix --ext .js,vue . --ignore-pattern .gitignore"
+    "lint:es": "eslint --ext .js,vue .",
+    "lint:style": "stylelint **/*.{css,scss,sass,vue}",
+    "lint": "npm run lint:es && npm run lint:style"
   },
   "dependencies": {
     "core-js": "^3.6.5",
@@ -23,14 +25,24 @@
     "eslint": "^8.17.0",
     "yorkie": "2.0.0",
     "lint-staged": "^9.5.0",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "node-sass": "^5.0.0",
+    "sass-loader": "^10.0.5",
+    "stylelint": "^13.7.2",
+    "stylelint-config-recommended": "^3.0.0",
+    "stylelint-config-recommended-scss": "^4.2.0",
+    "stylelint-scss": "^3.18.0"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
     "*.{js,jsx,vue}": [
-      "npm run lint",
+      "npm run lint:es",
+      "git add"
+    ],
+    "*.{css,sass,scss,vue}": [
+      "npm run lint:style",
       "git add"
     ]
   }
