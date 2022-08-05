@@ -2,71 +2,15 @@
   box-sizing: border-box;
 }
 
-html, body, p {
+html,
+body,
+p {
   margin: 0;
   padding: 0;
 }
 
 body {
   font-size: 14px;
-}
-
-.plv-config {
-  position: fixed;
-  width: 300px;
-  height: 430px;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: 20px;
-  margin: auto;
-  text-align: center;
-  background: #fff;
-  border-radius: 2px;
-}
-
-.plv-config__title {
-  font-size: 18px;
-  font-weight: 400;
-  margin-top: 20px
-}
-
-.plv-config__content {
-  margin-top: 40px;
-}
-
-.plv-config__input {
-  position: relative;
-  margin: 0 auto;
-  margin-bottom: 20px;
-  padding: 0 5px;
-  width: 220px;
-  height: 38px;
-  line-height: 38px;
-  border: 1px solid #bfbfbf;
-  border-radius: 3px;
-}
-
-.plv-config__checkbox {
-  text-align: left;
-  font-size: 13px;
-}
-
-.plv-config__checkbox__input {
-  margin-left: 20px;
-  vertical-align: top;
-}
-
-.plv-config__button {
-  margin-top: 7px;
-  width: 220px;
-  line-height: 38px;
-  background: #222791;
-  color: #fff;
-  border-radius: 3px;
-  outline: none;
-  border: none;
 }
 
 /* 点赞 */
@@ -90,7 +34,7 @@ body {
   display: inline-block;
   width: 40px;
   height: 40px;
-  background: url('../img/btn-like.png');
+  background: url("../img/btn-like.png");
   background-size: cover;
   cursor: pointer;
 }
@@ -128,19 +72,19 @@ body {
 }
 
 .plv-watch__status--end::after {
-  border-color: hsla(0,0%,100%,.6);
-  color: hsla(0,0%,100%,.6);
-  content: '暂无直播'
+  border-color: hsla(0, 0%, 100%, 0.6);
+  color: hsla(0, 0%, 100%, 0.6);
+  content: "暂无直播";
 }
 
 .plv-watch__status--playback::after {
   color: #78a7ed;
   border-color: #78a7ed;
-  content: '回放中'
+  content: "回放中";
 }
 
 .plv-watch__status--live::after {
   color: #f06e6e;
   border-color: #f06e6e;
-  content: '进行中'
+  content: "进行中";
 }

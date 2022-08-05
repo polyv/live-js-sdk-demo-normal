@@ -1,28 +1,25 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/login">Login</router-link> |
-      <router-link to="/watch">Watch</router-link>
-    </div>
     <router-view />
   </div>
 </template>
 
-<style>
-#app {
-  color: #fff;
-}
+<script>
+import { mapGetters } from 'vuex';
 
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #fff;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+export default {
+  name: 'app',
+  computed: {
+    ...mapGetters({
+      isNeedLogin: 'config/isNeedLogin',
+    }),
+  },
+  created() {
+    if (this.isNeedLogin) {
+      this.$router.push({ path: '/login' });
+    } else {
+      this.$router.push({ path: '/watch' });
+    }
+  },
+};
+</script>
