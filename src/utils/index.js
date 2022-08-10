@@ -22,11 +22,11 @@ export function sortParams(params) {
 }
 
 /**
-   * 生成直播API的sign
-   * 重要！！不建议在前端生成sign。该demo仅供参考。  @resolved 注释的最后一句不太通顺。
-   * @param {String} appSecret 直播账号的appSecret
-   * @param {Object} params 参与sign生成的参数，详细请看sign生成规则
-   */
+ * 生成直播API的sign
+ * 重要！！不建议在前端生成sign。该demo仅供参考。
+ * @param {String} appSecret 直播账号的appSecret
+ * @param {Object} params 参与sign生成的参数，详细请看sign生成规则
+ */
 export function getSign(appSecret, params) {
   const paramString = sortParams(params);
   const signString = appSecret + paramString + appSecret;
@@ -114,4 +114,14 @@ export function deepCopy(obj) {
     console.warn('JSON parse error');
   }
   return rs;
+}
+
+export function debounce(fn, delay) {
+  let timer = null;
+  return function(...args) {
+    timer && clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  };
 }

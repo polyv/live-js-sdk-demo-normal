@@ -6,8 +6,8 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/watch',
-    name: 'Home',
-    component: () => import('../views/Watch.vue')
+    name: 'Watch',
+    component: () => import('../views/WatchLayout.vue')
   },
   {
     path: '/login',

@@ -1,3 +1,24 @@
+<template>
+  <section class="plv-watch-mobile-main">
+    <div class="plv-watch-mobile">
+      <div class="plv-watch-mobile__top">
+        <div class="plv-watch-mobile-player"
+             id="plv-mobile-player"></div>
+      </div>
+      <div class="plv-watch-mobile-chatroom plv-skin--dark"
+           id="plv-mobile-chat"></div>
+    </div>
+  </section>
+</template>
+
+<script>
+// plv.scene === 'ppt' && platform === 'mobile' && handlePptTabClick(); // 移动端三分屏场景，切换到文档tab时需要调用一下resize
+export default {
+  name: 'Mobile-Watch',
+};
+</script>
+
+<style lang="scss">
 .plv-watch-mobile {
   position: absolute;
   display: flex;
@@ -37,7 +58,7 @@
 }
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-cr-navbar>li.polyv-crn-active {
   color: #fff;
-  border: 0
+  border: 0;
 }
 .plv-watch-mobile .plv-skin--dark li.polyv-crn-active>span {
   display: inline-block;
@@ -53,7 +74,7 @@
 .plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-chat-input input {
   color: #e4e4e4;
   background: #2b2c35;
-  border: 0
+  border: 0;
 }
 .plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-mobile-send {
   color: #fff;
@@ -71,23 +92,23 @@
   background: #2b2c35;
 }
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-chat-input .polyv-icon-emotion {
-  background: url('../img/emotion.png');
+  background: url('~@/assets/emotion.png');
   background-size: 20px 20px;
 }
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-chat-input .polyv-icon-flower {
-  background: url('../img/flower.png');
+  background: url('~@/assets/flower.png');
   background-size: 20px 20px;
 }
 .plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-chat-input .polyv-icon-more {
-  background: url('../img/more.png');
+  background: url('~@/assets/more.png');
   background-size: 20px 20px;
 }
 .plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-show-more .polyv-icon-more {
-  background: url('../img/show-more.png');
+  background: url('~@/assets/show-more.png');
   background-size: 20px 20px;
 }
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room>.polyv-cr-body .polyv-set-nickname.show {
-  background: #3e3e4e
+  background: #3e3e4e;
 }
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room>.polyv-cr-body .polyv-set-nickname input {
   background: #212121;
@@ -140,21 +161,21 @@
 }
 
 .tab-intro .tab-intro-info__status--nolive::after {
-  border-color: hsla(0,0%,100%,.6);
-  color: hsla(0,0%,100%,.6);
-  content: '暂无直播'
+  border-color: hsla(0, 0%, 100%, .6);
+  color: hsla(0, 0%, 100%, .6);
+  content: '暂无直播';
 }
 
 .tab-intro .tab-intro-info__status--playback::after {
   color: #78a7ed;
   border-color: #78a7ed;
-  content: '回放中'
+  content: '回放中';
 }
 
 .tab-intro .tab-intro-info__status--live::after {
   color: #f06e6e;
   border-color: #f06e6e;
-  content: '进行中'
+  content: '进行中';
 }
 
 .tab-intro .tab-intro-info__time {
@@ -182,7 +203,7 @@
   width: 16px;
   height: 16px;
   vertical-align: bottom;
-  background: url(../img/person.png) no-repeat;
+  background: url(~@/assets/person.png) no-repeat;
   background-size: 16px 16px;
   margin-right: 2px;
 }
@@ -192,14 +213,15 @@
   width: 14px;
   height: 14px;
   vertical-align: text-top;
-  background: url(../img/like.png) no-repeat;
+  background: url(~@/assets/like.png) no-repeat;
   background-size: 14px 14px;
   margin-right: 2px;
 }
 
 .tab-intro .tab-intro-desc {
-  padding:  20px 16px;
+  padding: 20px 16px;
   color: #adadc0;
   white-space: pre-wrap;
   font-size: 16px;
 }
+</style>
