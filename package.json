@@ -14,7 +14,8 @@
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "jraiser": "^3.1.5"
   },
   "devDependencies": {
     "@polyv/eslint-config": "^0.2.5",
