@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import * as PlvUtil from '@/utils';
 import { plvLiveMessageHub, PlvLiveMessageHubEvents } from '@/sdk/live';
 
@@ -20,8 +21,12 @@ export default {
     return {
       debounceLikeCick: null,
       likeNum: '',
-      isMobile: PlvUtil.isMobile(),
     };
+  },
+  computed: {
+    ...mapState({
+      isMobile: (state) => state.isMobile,
+    }),
   },
   created() {
     this.debounceLikeCick = PlvUtil.debounce(this.handleLikeClick, 1000);

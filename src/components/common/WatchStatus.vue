@@ -4,16 +4,20 @@
 </template>
 
 <script>
-import * as PlvUtil from '@/utils';
+import { mapState } from 'vuex';
 import { plvLiveMessageHub, PlvLiveMessageHubEvents } from '@/sdk/live';
 
 export default {
   name: 'watch-status',
   data() {
     return {
-      isMobile: PlvUtil.isMobile(),
       statusClass: '',
     };
+  },
+  computed: {
+    ...mapState({
+      isMobile: (state) => state.isMobile,
+    }),
   },
   created() {
     plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {

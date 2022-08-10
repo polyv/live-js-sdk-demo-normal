@@ -25,7 +25,6 @@ export default {
   data() {
     return {
       visible: false,
-      isMobile: PlvUtil.isMobile(),
       channelInfo: {},
       chatInfo: {},
       apiToken: '',
@@ -33,6 +32,7 @@ export default {
   },
   computed: {
     ...mapState({
+      isMobile: (state) => state.isMobile,
       config: (state) => state.config,
     }),
   },
