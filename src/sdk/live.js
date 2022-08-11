@@ -54,7 +54,38 @@ const PlayerControlHandler = {
 };
 
 export default class PolyvLive {
+  static _instance = null;
+
+  /**
+   * 采用单例模式来实例化
+   * @returns {PolyvLive}
+   * */
+  static setInstance(...args) {
+    if (!PolyvLive._instance) {
+      PolyvLive._instance = new PolyvLive(...args);
+    } else {
+      console.warn('只允许实例化一次，当前返回上一个实例');
+    }
+    return PolyvLive._instance;
+  }
+
+  /**
+   * 获取实例
+   * @returns {PolyvLive}
+   * */
+  static getInstance() {
+    if (!PolyvLive._instance) {
+      throw new Error('PolyvLive 未实例化');
+    }
+    return PolyvLive._instance;
+  }
+
   constructor({ config, apiToken }, { socket }, { controllerEl, playerEl, pptEl }) {
+    if (PolyvLive._instance) {
+      console.warn('只允许实例化一次，当前返回上一个实例');
+      return PolyvLive._instance;
+    }
+
     this.config = config;
     this.socket = socket;
     this.els = {
