@@ -2,6 +2,7 @@
  * @file 工具函数
  */
 
+import qs from 'querystring';
 import request from './request';
 
 const md5 = window.md5;
@@ -42,63 +43,43 @@ export function isMobile() {
 }
 
 /**
- * 获得当前的协议
+ * 获得频道基础信息
+ * https://help.polyv.net/index.html#/live/api/channel/operate/get_channel_detail_setting
+ * @param {Object} params 参与sign生成的参数，详细请看sign生成规则
  */
-export function getProtocol() {
-  return window.location.protocol === 'http:' ? 'http:' : 'https:';
-}
-
-/**
-   * 获得频道基础信息
-   * https://help.polyv.net/index.html#/live/api/channel/operate/get_channel_detail_setting
-   * @param {Object} params 参与sign生成的参数，详细请看sign生成规则
-   * @param {Function} callback 接口请求成功后的回调
-   */
-export function getChannelInfo(params, callback) {
-  const api = getProtocol() + '//api.polyv.net/live/v3/channel/basic/get';
-  request({
-    url: api,
-    method: 'GET',
-    data: params,
-    success: function(res) {
-      callback(res.data);
-    }
+export async function getChannelInfo(params, callback) {
+  const res = await request.get('/channel/basic/get', {
+    params
   });
+  return res.data;
+
 }
 
 /**
  * 获取观众观看调用接口token, 部分SDK的接口会用到这个token
  * @param {Object} params 参与sign生成的参数，详细请看sign生成规则
- * @param {Function} callback 接口请求成功后的回调
  */
-export function getApiToken(params, callback) {
-  const api = getProtocol() + '//api.polyv.net/live/v3/channel/watch/get-api-token';
-  request({
-    url: api,
-    method: 'POST',
-    data: params,
-    success: function(res) {
-      callback(res.data);
+export async function getApiToken(params) {
+  const payload = qs.stringify(params);
+  const res = await request.post('channel/watch/get-api-token', payload, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
     }
-  });
+  }
+  );
+  return res.data.token;
 }
 
 /**
  * 获得聊天室的校验token
  * https://help.polyv.net/index.html#/live/api/channel/operate/get_chat_token
  * @param {Object} params 参与sign生成的参数，详细请看sign生成规则
- * @param {Function} callback 接口请求成功后的回调
  */
-export function getChatToken(params, callback) {
-  const api = getProtocol() + '//api.polyv.net/live/v3/channel/common/get-chat-token';
-  request({
-    url: api,
-    method: 'GET',
-    data: params,
-    success: function(res) {
-      callback(res.data);
-    }
+export async function getChatToken(params, callback) {
+  const res = await request.get('/channel/common/get-chat-token', {
+    params
   });
+  return res.data;
 }
 
 /**

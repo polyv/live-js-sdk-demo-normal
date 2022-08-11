@@ -57,68 +57,55 @@ export default {
 
         this.visible = true;
       } catch (error) {
+        console.error('接口请求失败！', error.message);
         alert('接口请求失败！');
       }
     },
-    getChannelInfo() {
-      return new Promise((resolve) => {
-        const channelInfoParams = {
-          appId: this.config.appId,
-          timestamp: TIME_STAMP,
-          channelId: this.config.channelId,
-        };
+    async getChannelInfo() {
+      const channelInfoParams = {
+        appId: this.config.appId,
+        timestamp: TIME_STAMP,
+        channelId: this.config.channelId,
+      };
 
-        // ！！！不要在前端生成sign，此处仅供参考
-        channelInfoParams.sign = PlvUtil.getSign(
-          this.config.appSecret,
-          channelInfoParams
-        );
-        PlvUtil.getChannelInfo(channelInfoParams, (channelInfo) => {
-          resolve(channelInfo);
-        });
-      });
+      // ！！！不要在前端生成sign，此处仅供参考
+      channelInfoParams.sign = PlvUtil.getSign(
+        this.config.appSecret,
+        channelInfoParams
+      );
+
+      return PlvUtil.getChannelInfo(channelInfoParams);
     },
-    getChatInfo() {
-      return new Promise((resolve) => {
-        // 聊天室JS-SDK加载需要先请求校验码
-        const chatApiParam = {
-          appId: this.config.appId,
-          timestamp: TIME_STAMP,
-          channelId: this.config.channelId,
-          userId: this.config.userId,
-          role: this.config.role,
-        };
+    async getChatInfo() {
+      // 聊天室JS-SDK加载需要先请求校验码
+      const chatApiParam = {
+        appId: this.config.appId,
+        timestamp: TIME_STAMP,
+        channelId: this.config.channelId,
+        userId: this.config.userId,
+        role: this.config.role,
+      };
 
-        // ！！！不要在前端生成sign，此处仅供参考
-        chatApiParam.sign = PlvUtil.getSign(
-          this.config.appSecret,
-          chatApiParam
-        );
+      // ！！！不要在前端生成sign，此处仅供参考
+      chatApiParam.sign = PlvUtil.getSign(this.config.appSecret, chatApiParam);
 
-        PlvUtil.getChatToken(chatApiParam, (chatInfo) => {
-          resolve(chatInfo);
-        });
-      });
+      return await PlvUtil.getChatToken(chatApiParam);
     },
-    getApiToken() {
-      return new Promise((resolve) => {
-        const apiTokenParams = {
-          appId: this.config.appId,
-          timestamp: TIME_STAMP,
-          channelId: this.config.channelId,
-          viewerId: this.config.userId,
-        };
+    async getApiToken() {
+      const apiTokenParams = {
+        appId: this.config.appId,
+        timestamp: TIME_STAMP,
+        channelId: this.config.channelId,
+        viewerId: this.config.userId,
+      };
 
-        // ！！！不要在前端生成sign，此处仅供参考
-        apiTokenParams.sign = PlvUtil.getSign(
-          this.config.appSecret,
-          apiTokenParams
-        );
+      // ！！！不要在前端生成sign，此处仅供参考
+      apiTokenParams.sign = PlvUtil.getSign(
+        this.config.appSecret,
+        apiTokenParams
+      );
 
-        PlvUtil.getApiToken(apiTokenParams, (data) => {
-          resolve(data.token);
-        });
-      });
+      return await PlvUtil.getApiToken(apiTokenParams);
     },
   },
 };

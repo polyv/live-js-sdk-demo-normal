@@ -103,13 +103,14 @@ export default {
      * 移动端三分屏场景，切换到文档tab时需要调用一下resize
      */
     handlePolyfillByScene(scene, plvLive) {
-      const $ = window.$;
       if (scene === PlvChannelScene.PPT) {
-        $('[data-type=ppt]').click(() => {
-          setTimeout(() => {
-            plvLive.liveSdk.player.resize();
-          }, 0);
-        });
+        document
+          .querySelector('li[data-type=ppt]')
+          .addEventListener('click', () => {
+            setTimeout(() => {
+              plvLive.liveSdk.player.resize();
+            }, 0);
+          });
       }
     },
     initSdk({ scene, chatContainer, playerEl, pptEl }) {
