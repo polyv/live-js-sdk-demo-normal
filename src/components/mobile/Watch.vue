@@ -120,7 +120,7 @@ export default {
         },
         { chatContainer }
       );
-      const plvLive = new PolyvLive(
+      const plvLive = PolyvLive.setInstance(
         { config: this.config, apiToken: this.apiToken },
         { socket: plvChat.socket },
         { playerEl, pptEl }

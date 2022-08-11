@@ -30,6 +30,7 @@
           <div class="plv-watch-pc__chat plv-skin--dark"
                ref="plv-pc-chat"
                id="plv-pc-chat">
+            <pc-mini-tool v-if="miniToolVisible" />
           </div>
         </div>
       </div>
@@ -64,6 +65,7 @@ import { mapState, mapMutations } from 'vuex';
 import getLikeComponent from '@/components/common/Like';
 import WatchStatus from '@/components/common/WatchStatus.vue';
 import PcMenu from '@/components/pc/Menu.vue';
+import PcMiniTool from '@/components/pc/MiniTool.vue';
 
 import { PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {
@@ -86,6 +88,12 @@ export default {
   components: {
     PcMenu,
     WatchStatus,
+    PcMiniTool,
+  },
+  data() {
+    return {
+      miniToolVisible: false,
+    };
   },
   computed: {
     ...mapState({
@@ -150,7 +158,7 @@ export default {
         },
         { chatContainer }
       );
-      const plvLive = new PolyvLive(
+      const plvLive = PolyvLive.setInstance(
         { config: this.config, apiToken: this.apiToken },
         { socket: plvChat.socket },
         {
@@ -178,6 +186,7 @@ export default {
 
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
         _renderLike(data);
+        this.miniToolVisible = true;
       });
 
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.INTERACTIVE_LIKE, () => {
