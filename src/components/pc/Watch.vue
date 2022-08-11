@@ -7,8 +7,15 @@
       <!-- 主区域-三分屏文档播放器/主要视频播放器 -->
       <div class="plv-watch-pc__top"
            ref="plv-pc-top"
-           id="plv-pc-top">
-        <div class="plv-watch-pc__screen plv-watch-pc__screen-main">
+           id="plv-pc-top"
+           :class="{
+             'plv-watch-pc__top--fullscreen':playerCtrl.isFullScreen
+           }">
+        <div :class="{
+          'plv-watch-pc__screen':true,
+          'plv-watch-pc__screen-main':isPPTMainPosition,
+          'plv-watch-pc__screen-sub':isPlayerMainPosition
+        }">
           <div class="plv-watch-pc__screen__height">
             <div class="plv-watch-pc__screen__inner"
                  ref="plv-pc-main"
@@ -17,7 +24,11 @@
         </div>
 
         <!-- 侧边栏-三分屏视频播放器 -->
-        <div class="plv-watch-pc__screen plv-watch-pc__screen-sub">
+        <div :class="{
+          'plv-watch-pc__screen':true,
+          'plv-watch-pc__screen-main':isPlayerMainPosition,
+          'plv-watch-pc__screen-sub':isPPTMainPosition
+        }">
           <div class="plv-watch-pc__screen__height">
             <div class="plv-watch-pc__screen__inner"
                  ref="plv-pc-side"
@@ -67,7 +78,7 @@ import WatchStatus from '@/components/common/WatchStatus.vue';
 import PcMenu from '@/components/pc/Menu.vue';
 import PcMiniTool from '@/components/pc/MiniTool.vue';
 
-import { PlvChannelScene, PlvChatUserType } from '@/const';
+import { MainScreenMap, PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {
   plvChatMessageHub,
   PlvChatMessageHubEvents,
@@ -90,12 +101,27 @@ export default {
     WatchStatus,
     PcMiniTool,
   },
+  data() {
+    return {
+      playerCtrl: {
+        isFullScreen: false,
+        /** 主视图位置，用于记录当前主屏幕是文档还是播放器 */
+        mainPosition: MainScreenMap.ppt.value,
+      },
+    };
+  },
   computed: {
     ...mapState({
       config: (state) => state.config,
     }),
     isAloneChannelScene() {
       return this.channelInfo.scene === PlvChannelScene.ALONE;
+    },
+    isPlayerMainPosition() {
+      return this.playerCtrl.mainPosition === MainScreenMap.player.value;
+    },
+    isPPTMainPosition() {
+      return this.playerCtrl.mainPosition === MainScreenMap.ppt.value;
     },
   },
   mounted() {
@@ -181,6 +207,7 @@ export default {
 
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
         _renderLike(data);
+        this.bindPlayerControlEvents();
       });
 
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.INTERACTIVE_LIKE, () => {
@@ -197,6 +224,35 @@ export default {
           }
         }
       );
+    },
+    bindPlayerControlEvents() {
+      const plive = PolyvLive.getInstance();
+
+      // 监听直播JS-SDK的播放器事件，请参考实例 player 对象的事件
+      plive.liveSdk.player.on('fullscreenChange', (isFullScreen) => {
+        this.playerCtrl.isFullScreen = isFullScreen;
+      });
+
+      /** 切换主副屏播放器 */
+      const _handleSwitchPlayer = (nextMainPosition) => {
+        this.playerCtrl.mainPosition = nextMainPosition;
+        this.$nextTick(() => {
+          // ppt容器宽高修改，调用resize刷新ppt尺寸
+          plive.liveSdk.player.resize();
+          // 刷新弹幕显示区域尺寸
+          plive.liveSdk.player.resizeBarrage();
+        });
+      };
+
+      // 点击控制栏切换按钮触发
+      plive.liveSdk.player.on('switchPlayer', () => {
+        const nextMainPosition =
+          MainScreenMap[this.playerCtrl.mainPosition].next;
+        _handleSwitchPlayer(nextMainPosition);
+      });
+      plive.liveSdk.player.on('switchMainScreen', (nextMainPosition) => {
+        _handleSwitchPlayer(nextMainPosition);
+      });
     },
   },
 };

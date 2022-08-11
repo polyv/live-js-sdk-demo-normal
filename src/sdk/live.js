@@ -2,7 +2,6 @@ import { TIME_STAMP } from '@/const';
 import * as PlvUtils from '@/utils';
 import PubSub from 'jraiser/pubsub/1.2/pubsub';
 
-const $ = window.$;
 const PolyvLiveSdk = window.PolyvLiveSdk; // 直播JS-SDK
 
 /** 直播消息总线 */
@@ -13,46 +12,6 @@ export const PlvLiveMessageHubEvents = {
   DESTROY: 'destroy',
   /** 流状态转换 */
   STREAM_UPDATE: 'streamConvertToLive'
-};
-
-const PlayerControlHandler = {
-  // 全屏/退出全屏回调
-  handleFullscreenChange(isFullScreen, fullScreenElement) {
-    if (isFullScreen) {
-      $(fullScreenElement).addClass('plv-watch-pc__top--fullscreen');
-    } else {
-      $(fullScreenElement).removeClass('plv-watch-pc__top--fullscreen');
-    }
-  },
-  // 控制栏切换按钮的点击处理函数，仅适用PC端
-  handleSwitchPlayer() {
-    const switchPosition = this.mainPosition === 'ppt' ? 'player' : 'ppt';
-    PlayerControlHandler.switchPlayer.call(this, switchPosition);
-  },
-  // 切换主副屏，如需兼容ie，建议通过css的方式去切换位置，dom操作可能导致播放器异常
-  switchPlayer(nextMainPosition) {
-    const pcScreens = $('.plv-watch-pc__screen').removeClass(
-      'plv-watch-pc__screen-main plv-watch-pc__screen-sub'
-    );
-
-    switch (nextMainPosition) {
-      case 'player':
-        pcScreens.eq(0).addClass('plv-watch-pc__screen-sub');
-        pcScreens.eq(1).addClass('plv-watch-pc__screen-main');
-        break;
-
-      case 'ppt':
-        pcScreens.eq(0).addClass('plv-watch-pc__screen-main');
-        pcScreens.eq(1).addClass('plv-watch-pc__screen-sub');
-        break;
-    }
-
-    this.mainPosition = nextMainPosition;
-    // ppt容器宽高修改，调用resize刷新ppt尺寸
-    this.liveSdk.player.resize();
-    // 刷新弹幕显示区域尺寸
-    this.liveSdk.player.resizeBarrage();
-  }
 };
 
 export default class PolyvLive {
@@ -99,9 +58,6 @@ export default class PolyvLive {
     this.liveSdk = this.createLiveSdk();
     this.liveSdk.setApiToken(apiToken);
     this.bindSdkEventListener();
-
-    /** 主视图位置，用于记录当前主屏幕是文档还是播放器 */
-    this.mainPosition = 'ppt';
 
     plvLiveMessageHub.on(PlvLiveMessageHubEvents.DESTROY, () => { this.destroy(); });
   }
@@ -192,16 +148,7 @@ export default class PolyvLive {
       autoplay: false
     });
 
-    // 渲染点赞按钮
-    // 渲染直播状态小控件
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_INIT, data);
-
-    // 监听直播JS-SDK的播放器事件，请参考实例 player 对象的事件
-    this.liveSdk.player.on('fullscreenChange', PlayerControlHandler.handleFullscreenChange.bind(this)
-    );
-    // 点击控制栏切换按钮触发
-    this.liveSdk.player.on('switchPlayer', PlayerControlHandler.handleSwitchPlayer.bind(this));
-    this.liveSdk.player.on('switchMainScreen', PlayerControlHandler.switchPlayer.bind(this));
   }
 
   destroy() {

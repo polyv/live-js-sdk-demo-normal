@@ -16,3 +16,14 @@ export const PlvChannelScene = {
   PPT: 'ppt',
   ALONE: 'alone',
 };
+
+export const MainScreenMap = {
+  player: {
+    value: 'player',
+    next: 'ppt',
+  },
+  ppt: {
+    value: 'ppt',
+    next: 'player'
+  }
+};
