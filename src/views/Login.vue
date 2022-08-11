@@ -16,6 +16,7 @@
              placeholder="请输入appSecret"
              name="plv-app-secret" />
       <input v-show="playbackMode"
+             v-model="vid"
              class="plv-config__input"
              placeholder="请输入回放vid"
              name="plv-playback-vid" />
