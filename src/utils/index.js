@@ -3,9 +3,9 @@
  */
 
 import qs from 'querystring';
-import request from './request';
+import SparkMD5 from 'spark-md5';
 
-const md5 = window.md5;
+import request from './request';
 
 /**
  * 参数排序，按字典顺序排序，详细请看sign生成规则
@@ -31,7 +31,7 @@ export function sortParams(params) {
 export function getSign(appSecret, params) {
   const paramString = sortParams(params);
   const signString = appSecret + paramString + appSecret;
-  return md5(signString).toUpperCase();
+  return SparkMD5.hash(signString).toUpperCase();
 }
 
 /**
