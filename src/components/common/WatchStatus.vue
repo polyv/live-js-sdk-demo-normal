@@ -25,6 +25,15 @@ export default {
       const statusClass = 'plv-watch__status--' + status;
       this.statusClass = statusClass;
     });
+
+    // 监听流状态变化
+    plvLiveMessageHub.on(
+      PlvLiveMessageHubEvents.STREAM_UPDATE,
+      ({ status }) => {
+        const statusClass = 'plv-watch__status--' + status;
+        this.statusClass = statusClass;
+      }
+    );
   },
 };
 </script>

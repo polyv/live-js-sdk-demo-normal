@@ -3,11 +3,13 @@
     <mobile-watch v-if="isMobile"
                   :channelInfo="channelInfo"
                   :chatInfo="chatInfo"
-                  :apiToken="apiToken" />
+                  :apiToken="apiToken"
+                  @reload="reloadWatchPage" />
     <pc-watch v-else
               :channelInfo="channelInfo"
               :chatInfo="chatInfo"
-              :apiToken="apiToken" />
+              :apiToken="apiToken"
+              @reload="reloadWatchPage" />
   </section>
 </template>
 
@@ -40,6 +42,10 @@ export default {
     this.init();
   },
   methods: {
+    async reloadWatchPage() {
+      this.visible = false;
+      await this.init();
+    },
     async init() {
       try {
         // 获取频道信息

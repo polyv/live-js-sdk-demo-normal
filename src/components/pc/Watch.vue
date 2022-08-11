@@ -192,6 +192,17 @@ export default {
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.INTERACTIVE_LIKE, () => {
         plvLive.liveSdk.sendLike(1);
       });
+
+      // 监听流状态变化
+      plvLiveMessageHub.on(
+        PlvLiveMessageHubEvents.STREAM_UPDATE,
+        ({ status }) => {
+          if (status === 'live') {
+            alert('直播开始了，马上前往直播');
+            this.$emit('reload');
+          }
+        }
+      );
     },
   },
 };

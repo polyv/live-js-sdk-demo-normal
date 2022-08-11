@@ -10,7 +10,9 @@ export const plvLiveMessageHub = new PubSub();
 export const PlvLiveMessageHubEvents = {
   PLAYER_INIT: 'playerInit',
   INTERACTIVE_LIKE: 'interactiveLike',
-  DESTROY: 'destroy'
+  DESTROY: 'destroy',
+  /** 流状态转换 */
+  STREAM_UPDATE: 'streamConvertToLive'
 };
 
 const PlayerControlHandler = {
@@ -98,7 +100,7 @@ export default class PolyvLive {
     this.liveSdk.setApiToken(apiToken);
     this.bindSdkEventListener();
 
-    /** 主视图位置 */
+    /** 主视图位置，用于记录当前主屏幕是文档还是播放器 */
     this.mainPosition = 'ppt';
 
     plvLiveMessageHub.on(PlvLiveMessageHubEvents.DESTROY, () => { this.destroy(); });
@@ -155,8 +157,8 @@ export default class PolyvLive {
     }
     );
     // 监听流状态变化
-    this.liveSdk.on(PolyvLiveSdk.EVENTS.STREAM_UPDATE, (...args) => {
-      this.handleStreamUpdate(...args);
+    this.liveSdk.on(PolyvLiveSdk.EVENTS.STREAM_UPDATE, (event, status) => {
+      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.STREAM_UPDATE, { status });
     });
   }
 
@@ -202,15 +204,6 @@ export default class PolyvLive {
     this.liveSdk.player.on('switchMainScreen', PlayerControlHandler.switchPlayer.bind(this));
   }
 
-  /**
-   * 流状态更新
-   */
-  handleStreamUpdate(event, status) {
-    if (status === 'live') {
-      alert('直播开始了，马上前往直播');
-    }
-  }
-
   destroy() {
     // 直播JS-SDK销毁, 默认销毁时会断开socket的连接
     this.liveSdk.destroy();
@@ -219,5 +212,6 @@ export default class PolyvLive {
     Object.values(PlvLiveMessageHubEvents).forEach((eventType) => {
       plvLiveMessageHub.off(eventType);
     });
+    PolyvLive._instance = null;
   }
 }
