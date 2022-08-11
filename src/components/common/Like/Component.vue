@@ -32,12 +32,14 @@ export default {
     this.debounceLikeCick = PlvUtil.debounce(this.handleLikeClick, 1000);
   },
   methods: {
-    setLikeNum(likeNum) {
-      this.likeNum = likeNum;
+    setData(data) {
+      this.likeNum = data.likeNum;
     },
     handleLikeClick() {
       this.likeNum++;
-      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.INTERACTIVE_LIKE);
+      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.INTERACTIVE_LIKE, {
+        curLikeNum: this.likeNum,
+      });
     },
   },
 };

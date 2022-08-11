@@ -47,7 +47,9 @@ export default class PolyvChat {
         // data为聊天室socket消息，当有聊天室消息时会触发此方法
         const event = data.EVENT;
         if (event === 'sendMessage' || event === 'SPEAK') {
-          plvChatMessageHub.trigger(plvChatMessageHub.EVENTS.ROOM_MESSAGE, data.content);
+          plvChatMessageHub.trigger(PlvChatMessageHubEvents.ROOM_MESSAGE, {
+            data: data.content
+          });
         }
       },
       customChatColor: {

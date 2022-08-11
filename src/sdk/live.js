@@ -134,12 +134,16 @@ export default class PolyvLive {
    * 文档: https://help.polyv.net/index.html#/live/js/live_js_sdk/live_js_api?id=实例方法
    */
   createLiveSdkPlayer(event, data) {
+    function _getEnableEl(el) {
+      return typeof el === 'string' ? el : `#${el.id}`;
+    }
+
     const { els, config, liveSdk } = this;
 
     liveSdk.setupPlayer({
-      el: `#${els.playerEl.id}`,
-      pptEl: els.pptEl ? `#${els.pptEl.id}` : undefined,
-      // TODO 文档上说可以传 DOM，但实际上只能传 id 让内部库去 querySelector
+      el: _getEnableEl(els.playerEl),
+      pptEl: typeof els.pptEl === 'undefined' ? els.pptEl : _getEnableEl(els.pptEl),
+      // TODO 文档上说可以传 DOM，但实际上只能传 id 或者 class 让内部库去 querySelector
       // el: els.playerEl,
       // pptEl: els.pptEl,
       pptPlaceholder: true,

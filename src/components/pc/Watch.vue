@@ -102,7 +102,7 @@ export default {
     const { playerEl, pptEl } = this.getPlayElByScene(scene);
 
     this.updateConfigChatByScene(scene);
-    this.init({
+    this.initSdk({
       controllerEl,
       chatContainer,
       playerEl,
@@ -142,7 +142,7 @@ export default {
         };
       }
     },
-    init({ controllerEl, chatContainer, playerEl, pptEl }) {
+    initSdk({ controllerEl, chatContainer, playerEl, pptEl }) {
       const plvChat = new PolyvChat(
         {
           config: this.config,
@@ -164,16 +164,20 @@ export default {
       this.bindLiveEvents(plvChat, plvLive);
     },
     bindChatEvents(plvChat, plvLive) {
-      plvChatMessageHub.on(PlvChatMessageHubEvents.ROOM_MESSAGE, (data) => {
+      plvChatMessageHub.on(PlvChatMessageHubEvents.ROOM_MESSAGE, ({ data }) => {
         plvLive.sendBarrage(data);
       });
     },
     bindLiveEvents(plvChat, plvLive) {
+      function _renderLike(data) {
+        const { $el, instance } = getLikeComponent();
+        instance.setData({ likeNum: data.likes });
+        const $tabChat = document.getElementById('tab-chat');
+        $tabChat.appendChild($el);
+      }
+
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
-        const { el, instance } = getLikeComponent();
-        instance.setLikeNum(data.likes);
-        const tabChatEl = document.getElementById('tab-chat');
-        tabChatEl.appendChild(el);
+        _renderLike(data);
       });
 
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.INTERACTIVE_LIKE, () => {
