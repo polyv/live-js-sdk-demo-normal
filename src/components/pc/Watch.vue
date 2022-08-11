@@ -30,7 +30,7 @@
           <div class="plv-watch-pc__chat plv-skin--dark"
                ref="plv-pc-chat"
                id="plv-pc-chat">
-            <pc-mini-tool v-if="miniToolVisible" />
+            <pc-mini-tool />
           </div>
         </div>
       </div>
@@ -89,11 +89,6 @@ export default {
     PcMenu,
     WatchStatus,
     PcMiniTool,
-  },
-  data() {
-    return {
-      miniToolVisible: false,
-    };
   },
   computed: {
     ...mapState({
@@ -186,7 +181,6 @@ export default {
 
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
         _renderLike(data);
-        this.miniToolVisible = true;
       });
 
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.INTERACTIVE_LIKE, () => {

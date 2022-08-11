@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section v-if="visible">
     <div class="tool-entrance"
          @click="handleMainPanelVisible">
       小工具<span class="tool-entrance__close">x</span>
@@ -75,11 +75,16 @@
 </template>
 
 <script>
-import PolyvLive from '@/sdk/live';
+import PolyvLive, {
+  plvLiveMessageHub,
+  PlvLiveMessageHubEvents,
+} from '@/sdk/live';
+
 export default {
   name: 'PC-Mini-Tool',
   data() {
     return {
+      visible: false,
       mainPanelVisible: false,
       toolLists: {
         chatMessage: '',
@@ -89,6 +94,12 @@ export default {
         questionMessage: '',
       },
     };
+  },
+  created() {
+    plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, () => {
+      console.info('PLAYER_INIT');
+      this.visible = true;
+    });
   },
   methods: {
     handleMainPanelVisible() {
