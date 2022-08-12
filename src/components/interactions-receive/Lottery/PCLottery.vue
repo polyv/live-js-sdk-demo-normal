@@ -12,9 +12,7 @@
     </div>
 
     <!-- 中奖记录 -->
-    <modal no-bg
-           draggable
-           title="中奖记录"
+    <modal title="中奖记录"
            :visible="isShowRecord"
            :close-on-click-modal="false"
            @close="isShowRecord = false">
@@ -29,9 +27,7 @@
 
     <!-- 中奖结果 -->
     <!-- modal是一个弹窗组件，可根据界面风格自行设计-->
-    <modal no-bg
-           draggable
-           title="中奖结果"
+    <modal title="中奖结果"
            :visible="isShowResult"
            :close-on-click-modal="false"
            :lang="lang"
