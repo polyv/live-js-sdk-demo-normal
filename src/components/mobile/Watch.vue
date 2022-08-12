@@ -10,6 +10,7 @@
            ref="plv-mobile-chat"
            id="plv-mobile-chat"></div>
     </div>
+    <interactions-receive-entrance />
   </section>
 </template>
 
@@ -17,6 +18,7 @@
 import { mapState, mapMutations } from 'vuex';
 import getMobileIntroComponent from '@/components/mobile/Intro';
 import getLikeComponent from '@/components/common/Like';
+import InteractionsReceiveEntrance from '@/components/interactions-receive';
 
 import { PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {
@@ -36,6 +38,9 @@ export default {
     channelInfo: Object,
     chatInfo: Object,
     apiToken: String,
+  },
+  components: {
+    InteractionsReceiveEntrance,
   },
   computed: {
     ...mapState({

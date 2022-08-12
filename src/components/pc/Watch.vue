@@ -66,6 +66,8 @@
       </div>
     </div>
 
+    <!-- 互动功能入口 -->
+    <interactions-receive-entrance />
     <!-- 菜单栏 -->
     <pc-menu />
   </section>
@@ -77,6 +79,7 @@ import getLikeComponent from '@/components/common/Like';
 import WatchStatus from '@/components/common/WatchStatus.vue';
 import PcMenu from '@/components/pc/Menu.vue';
 import PcMiniTool from '@/components/pc/MiniTool.vue';
+import InteractionsReceiveEntrance from '@/components/interactions-receive';
 
 import { MainScreenMap, PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {
@@ -101,6 +104,7 @@ export default {
     PcMenu,
     WatchStatus,
     PcMiniTool,
+    InteractionsReceiveEntrance,
   },
   data() {
     return {
