@@ -27,6 +27,7 @@ import PolyvLive, {
   plvLiveMessageHub,
   PlvLiveMessageHubEvents,
 } from '@/sdk/live';
+import PolyvInteractionsReceive from '@/sdk/interactions-receive';
 
 export default {
   name: 'Mobile-Watch',
@@ -51,11 +52,11 @@ export default {
 
     this.updateConfigChatByScene(scene);
     this.initSdk({
-      scene,
       chatContainer,
       playerEl,
       pptEl,
     });
+    this.handlePolyfillByScene(scene);
   },
   beforeDestroy() {
     plvChatMessageHub.trigger(PlvChatMessageHubEvents.DESTROY);
@@ -102,18 +103,20 @@ export default {
      * handlePptTabClick
      * 移动端三分屏场景，切换到文档tab时需要调用一下resize
      */
-    handlePolyfillByScene(scene, plvLive) {
+    handlePolyfillByScene(scene) {
       if (scene === PlvChannelScene.PPT) {
-        document
-          .querySelector('li[data-type=ppt]')
-          .addEventListener('click', () => {
+        const plvLive = PolyvLive.getInstance();
+        const $tabPPT = document.querySelector('li[data-type=ppt]');
+
+        $tabPPT &&
+          $tabPPT.addEventListener('click', () => {
             setTimeout(() => {
               plvLive.liveSdk.player.resize();
             }, 0);
           });
       }
     },
-    initSdk({ scene, chatContainer, playerEl, pptEl }) {
+    initSdk({ chatContainer, playerEl, pptEl }) {
       const plvChat = PolyvChat.setInstance(
         {
           config: this.config,
@@ -121,44 +124,50 @@ export default {
         },
         { chatContainer }
       );
-      const plvLive = PolyvLive.setInstance(
+      PolyvLive.setInstance(
         { config: this.config, apiToken: this.apiToken },
         { socket: plvChat.socket },
         { playerEl, pptEl }
       );
 
-      this.handlePolyfillByScene(scene, plvLive);
-      this.bindChatEvents(plvChat, plvLive);
-      this.bindLiveEvents(plvChat, plvLive);
+      this.bindChatEvents();
+      this.bindLiveEvents();
     },
-    bindChatEvents(plvChat, plvLive) {
+    bindChatEvents() {
+      const plvLive = PolyvLive.getInstance();
+
       plvChatMessageHub.on(PlvChatMessageHubEvents.ROOM_MESSAGE, ({ data }) => {
         plvLive.sendBarrage(data);
       });
     },
-    bindLiveEvents(plvChat, plvLive) {
-      function _renderIntroMenuContent(data) {
-        const desMenu = data.channelMenus.find((i) => i.menuType === 'desc');
-        const { $el } = getMobileIntroComponent({
-          channelData: data,
-          descContent: desMenu ? desMenu.content : '',
-        });
-        const $tabIntro = document.querySelector('#tab-intro');
-        $tabIntro.appendChild($el);
-      }
+    bindLiveEvents() {
+      const plvLive = PolyvLive.getInstance();
 
-      function _renderLike(data) {
-        const { $el, instance } = getLikeComponent();
-        instance.setData({ likeNum: data.likes });
-        const $tabChat = document.getElementById('tab-chat');
-        $tabChat.appendChild($el);
-      }
+      // 渠道初始化
+      plvLiveMessageHub.on(
+        PlvLiveMessageHubEvents.CHANNEL_DATA_INIT,
+        (channelData) => {
+          // 初始化互动 SDK
+          PolyvInteractionsReceive.setInstance(
+            {
+              config: this.config,
+              channelData,
+              apiToken: this.apiToken,
+            },
+            {
+              socket: plvLive.socket,
+            }
+          );
+        }
+      );
 
+      // 播放器初始化
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
-        _renderLike(data);
-        _renderIntroMenuContent(data);
+        this.renderLike(data);
+        this.renderIntroMenuContent(data);
       });
 
+      // 点赞互动
       plvLiveMessageHub.on(
         PlvLiveMessageHubEvents.INTERACTIVE_LIKE,
         ({ curLikeNum }) => {
@@ -178,6 +187,21 @@ export default {
           }
         }
       );
+    },
+    renderLike(data) {
+      const { $el, instance } = getLikeComponent();
+      instance.setData({ likeNum: data.likes });
+      const $tabChat = document.getElementById('tab-chat');
+      $tabChat.appendChild($el);
+    },
+    renderIntroMenuContent(data) {
+      const desMenu = data.channelMenus.find((i) => i.menuType === 'desc');
+      const { $el } = getMobileIntroComponent({
+        channelData: data,
+        descContent: desMenu ? desMenu.content : '',
+      });
+      const $tabIntro = document.querySelector('#tab-intro');
+      $tabIntro.appendChild($el);
     },
   },
 };

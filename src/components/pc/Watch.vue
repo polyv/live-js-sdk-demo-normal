@@ -87,6 +87,7 @@ import PolyvLive, {
   plvLiveMessageHub,
   PlvLiveMessageHubEvents,
 } from '@/sdk/live';
+import PolyvInteractionsReceive from '@/sdk/interactions-receive';
 
 export default {
   name: 'PC-Watch',
@@ -179,7 +180,7 @@ export default {
         },
         { chatContainer }
       );
-      const plvLive = PolyvLive.setInstance(
+      PolyvLive.setInstance(
         { config: this.config, apiToken: this.apiToken },
         { socket: plvChat.socket },
         {
@@ -189,27 +190,44 @@ export default {
         }
       );
 
-      this.bindChatEvents(plvChat, plvLive);
-      this.bindLiveEvents(plvChat, plvLive);
+      this.bindChatEvents();
+      this.bindLiveEvents();
     },
-    bindChatEvents(plvChat, plvLive) {
+    bindChatEvents() {
+      const plvLive = PolyvLive.getInstance();
+
       plvChatMessageHub.on(PlvChatMessageHubEvents.ROOM_MESSAGE, ({ data }) => {
         plvLive.sendBarrage(data);
       });
     },
-    bindLiveEvents(plvChat, plvLive) {
-      function _renderLike(data) {
-        const { $el, instance } = getLikeComponent();
-        instance.setData({ likeNum: data.likes });
-        const $tabChat = document.getElementById('tab-chat');
-        $tabChat.appendChild($el);
-      }
+    bindLiveEvents() {
+      const plvLive = PolyvLive.getInstance();
 
+      // 渠道初始化
+      plvLiveMessageHub.on(
+        PlvLiveMessageHubEvents.CHANNEL_DATA_INIT,
+        (channelData) => {
+          // 初始化互动 SDK
+          PolyvInteractionsReceive.setInstance(
+            {
+              config: this.config,
+              channelData,
+              apiToken: this.apiToken,
+            },
+            {
+              socket: plvLive.socket,
+            }
+          );
+        }
+      );
+
+      // 播放器初始化
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
-        _renderLike(data);
+        this.renderLike(data);
         this.bindPlayerControlEvents();
       });
 
+      // 点赞互动
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.INTERACTIVE_LIKE, () => {
         plvLive.liveSdk.sendLike(1);
       });
@@ -225,11 +243,17 @@ export default {
         }
       );
     },
+    renderLike(data) {
+      const { $el, instance } = getLikeComponent();
+      instance.setData({ likeNum: data.likes });
+      const $tabChat = document.getElementById('tab-chat');
+      $tabChat.appendChild($el);
+    },
     bindPlayerControlEvents() {
-      const plive = PolyvLive.getInstance();
+      const plvLive = PolyvLive.getInstance();
 
       // 监听直播JS-SDK的播放器事件，请参考实例 player 对象的事件
-      plive.liveSdk.player.on('fullscreenChange', (isFullScreen) => {
+      plvLive.liveSdk.player.on('fullscreenChange', (isFullScreen) => {
         this.playerCtrl.isFullScreen = isFullScreen;
       });
 
@@ -238,19 +262,19 @@ export default {
         this.playerCtrl.mainPosition = nextMainPosition;
         this.$nextTick(() => {
           // ppt容器宽高修改，调用resize刷新ppt尺寸
-          plive.liveSdk.player.resize();
+          plvLive.liveSdk.player.resize();
           // 刷新弹幕显示区域尺寸
-          plive.liveSdk.player.resizeBarrage();
+          plvLive.liveSdk.player.resizeBarrage();
         });
       };
 
       // 点击控制栏切换按钮触发
-      plive.liveSdk.player.on('switchPlayer', () => {
+      plvLive.liveSdk.player.on('switchPlayer', () => {
         const nextMainPosition =
           MainScreenMap[this.playerCtrl.mainPosition].next;
         _handleSwitchPlayer(nextMainPosition);
       });
-      plive.liveSdk.player.on('switchMainScreen', (nextMainPosition) => {
+      plvLive.liveSdk.player.on('switchMainScreen', (nextMainPosition) => {
         _handleSwitchPlayer(nextMainPosition);
       });
     },

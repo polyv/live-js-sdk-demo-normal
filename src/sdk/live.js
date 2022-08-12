@@ -7,6 +7,7 @@ const PolyvLiveSdk = window.PolyvLiveSdk; // 直播JS-SDK
 /** 直播消息总线 */
 export const plvLiveMessageHub = new PubSub();
 export const PlvLiveMessageHubEvents = {
+  CHANNEL_DATA_INIT: 'channelDataInit',
   PLAYER_INIT: 'playerInit',
   INTERACTIVE_LIKE: 'interactiveLike',
   DESTROY: 'destroy',
@@ -108,10 +109,12 @@ export default class PolyvLive {
    */
   bindSdkEventListener() {
     // 监听频道信息并初始化播放器
-    this.liveSdk.on(PolyvLiveSdk.EVENTS.CHANNEL_DATA_INIT, (...args) => {
-      this.createLiveSdkPlayer(...args);
+    this.liveSdk.on(PolyvLiveSdk.EVENTS.CHANNEL_DATA_INIT, (event, data) => {
+      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.CHANNEL_DATA_INIT, data);
+      this.createLiveSdkPlayer(data);
     }
     );
+
     // 监听流状态变化
     this.liveSdk.on(PolyvLiveSdk.EVENTS.STREAM_UPDATE, (event, status) => {
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.STREAM_UPDATE, { status });
@@ -122,7 +125,7 @@ export default class PolyvLive {
    * 创建播放器
    * 文档: https://help.polyv.net/index.html#/live/js/live_js_sdk/live_js_api?id=实例方法
    */
-  createLiveSdkPlayer(event, data) {
+  createLiveSdkPlayer(data) {
     function _getEnableEl(el) {
       return typeof el === 'string' ? el : `#${el.id}`;
     }
