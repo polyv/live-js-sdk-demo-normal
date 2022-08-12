@@ -178,7 +178,8 @@ export default {
   position: relative;
 
   margin: 0 auto 50px;
-  width: 420px;
+  width: 80%;
+  max-width: 420px;
 }
 
 .c-modal__content {
@@ -188,7 +189,8 @@ export default {
 
   box-sizing: border-box;
   padding-top: 48px;
-  width: 560px;
+  width: 80%;
+  max-width: 560px;
 
   font-size: 16px;
 
