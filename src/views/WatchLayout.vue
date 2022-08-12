@@ -15,8 +15,10 @@
 
 <script>
 import { mapState } from 'vuex';
-import * as PlvUtil from '@/utils';
 import { TIME_STAMP } from '@/const';
+
+import PolyvApi from '@/utils/api';
+import * as PolyvUtil from '@/utils';
 
 export default {
   name: 'Watch-Layout',
@@ -69,12 +71,12 @@ export default {
       };
 
       // ！！！不要在前端生成sign，此处仅供参考
-      channelInfoParams.sign = PlvUtil.getSign(
+      channelInfoParams.sign = PolyvUtil.getSign(
         this.config.appSecret,
         channelInfoParams
       );
 
-      return PlvUtil.getChannelInfo(channelInfoParams);
+      return await PolyvApi.getChannelInfo(channelInfoParams);
     },
     async getChatInfo() {
       // 聊天室JS-SDK加载需要先请求校验码
@@ -87,9 +89,12 @@ export default {
       };
 
       // ！！！不要在前端生成sign，此处仅供参考
-      chatApiParam.sign = PlvUtil.getSign(this.config.appSecret, chatApiParam);
+      chatApiParam.sign = PolyvUtil.getSign(
+        this.config.appSecret,
+        chatApiParam
+      );
 
-      return await PlvUtil.getChatToken(chatApiParam);
+      return await PolyvApi.getChatToken(chatApiParam);
     },
     async getApiToken() {
       const apiTokenParams = {
@@ -100,12 +105,12 @@ export default {
       };
 
       // ！！！不要在前端生成sign，此处仅供参考
-      apiTokenParams.sign = PlvUtil.getSign(
+      apiTokenParams.sign = PolyvUtil.getSign(
         this.config.appSecret,
         apiTokenParams
       );
 
-      return await PlvUtil.getApiToken(apiTokenParams);
+      return await PolyvApi.getApiToken(apiTokenParams);
     },
   },
 };

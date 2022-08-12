@@ -1,5 +1,5 @@
 import { TIME_STAMP } from '@/const';
-import * as PlvUtils from '@/utils';
+import * as PolyvUtil from '@/utils';
 import PubSub from 'jraiser/pubsub/1.2/pubsub';
 
 const PolyvLiveSdk = window.PolyvLiveSdk; // 直播JS-SDK
@@ -80,7 +80,7 @@ export default class PolyvLive {
     const { config } = this;
 
     // ！！！不要在前端生成sign，此处仅供参考
-    const sign = PlvUtils.getSign(config.appSecret, {
+    const sign = PolyvUtil.getSign(config.appSecret, {
       appId: config.appId,
       channelId: config.channelId,
       timestamp: TIME_STAMP

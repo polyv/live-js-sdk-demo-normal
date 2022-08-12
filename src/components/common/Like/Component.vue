@@ -11,7 +11,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import * as PlvUtil from '@/utils';
+import { debounce } from '@/utils';
 import { plvLiveMessageHub, PlvLiveMessageHubEvents } from '@/sdk/live';
 
 // TODO   pc-$('#tab-chat')  mobile-$('#intro-likes')
@@ -29,7 +29,7 @@ export default {
     }),
   },
   created() {
-    this.debounceLikeCick = PlvUtil.debounce(this.handleLikeClick, 1000);
+    this.debounceLikeCick = debounce(this.handleLikeClick, 1000);
   },
   methods: {
     setData(data) {
