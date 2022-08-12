@@ -10,7 +10,38 @@ export const PlvChatMessageHubEvents = {
 };
 
 export default class PolyvChat {
+  static _instance = null;
+
+  /**
+   * 采用单例模式来实例化
+   * @returns {PolyvChat}
+   * */
+  static setInstance(...args) {
+    if (!PolyvChat._instance) {
+      PolyvChat._instance = new PolyvChat(...args);
+    } else {
+      console.warn('只允许实例化一次，当前返回上一个实例');
+    }
+    return PolyvChat._instance;
+  }
+
+  /**
+   * 获取实例
+   * @returns {PolyvChat}
+   * */
+  static getInstance() {
+    if (!PolyvChat._instance) {
+      throw new Error('PolyvChat 未实例化');
+    }
+    return PolyvChat._instance;
+  }
+
   constructor({ config, chatInfo }, { chatContainer }) {
+    if (PolyvChat._instance) {
+      console.warn('只允许实例化一次，当前返回上一个实例');
+      return PolyvChat._instance;
+    }
+
     const chatroom = this.createChatRoom({ config, chatInfo }, { chatContainer });
     this.chatroom = chatroom;
     this.socket = chatroom.chat.socket;
@@ -71,5 +102,6 @@ export default class PolyvChat {
     Object.values(PlvChatMessageHubEvents).forEach(eventType => {
       plvChatMessageHub.off(eventType);
     });
+    PolyvChat._instance = null;
   }
 }

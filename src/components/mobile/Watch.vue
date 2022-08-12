@@ -114,7 +114,7 @@ export default {
       }
     },
     initSdk({ scene, chatContainer, playerEl, pptEl }) {
-      const plvChat = new PolyvChat(
+      const plvChat = PolyvChat.setInstance(
         {
           config: this.config,
           chatInfo: this.chatInfo,
