@@ -10,7 +10,7 @@
            ref="plv-mobile-chat"
            id="plv-mobile-chat"></div>
     </div>
-    <interactions-receive-entrance />
+    <interactions-receive-entrance v-if="enableInteractionsReceive" />
   </section>
 </template>
 
@@ -41,6 +41,11 @@ export default {
   },
   components: {
     InteractionsReceiveEntrance,
+  },
+  data() {
+    return {
+      enableInteractionsReceive: false,
+    };
   },
   computed: {
     ...mapState({
@@ -163,6 +168,7 @@ export default {
               socket: plvLive.socket,
             }
           );
+          this.enableInteractionsReceive = true;
         }
       );
 

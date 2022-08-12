@@ -148,7 +148,7 @@ export default class PolyvLive {
       pptNavBottom: '80px',
       barrage: true, // 是否开启弹幕
       defaultBarrageStatus: true,
-      autoplay: false
+      autoplay: true
     });
 
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_INIT, data);

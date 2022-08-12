@@ -44,10 +44,10 @@ export default class PolyvInteractionsReceive {
         userId: config.userId,
       },
       socket,
-      // viewerApiToken: apiToken,
+      viewerApiToken: apiToken,
       getViewerApiToken: async (cb) => {
-        const token = await this._getViewerApiToken(config);
-        cb(token);
+        const viewerApiToken = await this._getViewerApiToken(config);
+        cb({ viewerApiToken });
       }
     });
   }

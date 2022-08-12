@@ -67,7 +67,7 @@
     </div>
 
     <!-- 互动功能入口 -->
-    <interactions-receive-entrance />
+    <interactions-receive-entrance v-if="enableInteractionsReceive" />
     <!-- 菜单栏 -->
     <pc-menu />
   </section>
@@ -108,6 +108,7 @@ export default {
   },
   data() {
     return {
+      enableInteractionsReceive: false,
       playerCtrl: {
         isFullScreen: false,
         /** 主视图位置，用于记录当前主屏幕是文档还是播放器 */
@@ -222,6 +223,7 @@ export default {
               socket: plvLive.socket,
             }
           );
+          this.enableInteractionsReceive = true;
         }
       );
 

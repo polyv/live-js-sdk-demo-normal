@@ -97,7 +97,6 @@ export default {
   },
   created() {
     plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, () => {
-      console.info('PLAYER_INIT');
       this.visible = true;
     });
   },
