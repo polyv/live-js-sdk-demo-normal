@@ -2,17 +2,20 @@
   <div class="interactions-receive-entrance">
     <AnnouncementEntrance />
     <LotteryEntrance />
+    <CheckInEntrance />
   </div>
 </template>
 
 <script>
 import AnnouncementEntrance from '@/components/interactions-receive/Announcement';
 import LotteryEntrance from '@/components/interactions-receive/Lottery';
+import CheckInEntrance from '@/components/interactions-receive/CheckIn';
 
 export default {
   components: {
     AnnouncementEntrance,
     LotteryEntrance,
+    CheckInEntrance,
   },
 };
 </script>
