@@ -4,6 +4,7 @@
     <LotteryEntrance />
     <CheckInEntrance />
     <AnswerCardEntrance />
+    <QuestionnaireEntrance />
   </div>
 </template>
 
@@ -12,6 +13,7 @@ import AnnouncementEntrance from '@/components/interactions-receive/Announcement
 import LotteryEntrance from '@/components/interactions-receive/Lottery';
 import CheckInEntrance from '@/components/interactions-receive/CheckIn';
 import AnswerCardEntrance from '@/components/interactions-receive/AnswerCard';
+import QuestionnaireEntrance from '@/components/interactions-receive/Questionnaire';
 
 export default {
   components: {
@@ -19,6 +21,7 @@ export default {
     LotteryEntrance,
     CheckInEntrance,
     AnswerCardEntrance,
+    QuestionnaireEntrance,
   },
 };
 </script>
