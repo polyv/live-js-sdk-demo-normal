@@ -1,11 +1,12 @@
 <template>
-  <div v-show="isShowAnnouncement">
-    <h2>公告</h2>
+  <modal title="公告"
+         :visible="isShowAnnouncement"
+         :close-on-click-modal="false">
     <!-- 公告组件主体 -->
     <announcement :announcement-sdk="announcementSdk"
                   @to-show="setAnnouncementVisible(true)"
                   @to-hide="setAnnouncementVisible(false)" />
-  </div>
+  </modal>
 </template>
 
 <script>
