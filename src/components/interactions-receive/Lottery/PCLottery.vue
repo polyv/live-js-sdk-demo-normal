@@ -1,7 +1,6 @@
 <template>
   <div class="plv-demo-lottery-default">
-    <button @click="setLotteryRecordVisible">查看中奖记录</button>
-
+    <!-- <button @click="setLotteryRecordVisible">查看中奖记录</button> -->
     <div class="plv-demo-lottery-default__lottery">
       <!-- 抽奖中 -->
       <on-lottery v-if="lotterySdk"
