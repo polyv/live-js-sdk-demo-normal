@@ -10,6 +10,8 @@ export const PlvLiveMessageHubEvents = {
   CHANNEL_DATA_INIT: 'channelDataInit',
   PLAYER_INIT: 'playerInit',
   INTERACTIVE_LIKE: 'interactiveLike',
+  /** 修改昵称 */
+  SET_NICK_NAME: 'setNickName',
   DESTROY: 'destroy',
   /** 流状态转换 */
   STREAM_UPDATE: 'streamConvertToLive'
@@ -118,6 +120,17 @@ export default class PolyvLive {
     // 监听流状态变化
     this.liveSdk.on(PolyvLiveSdk.EVENTS.STREAM_UPDATE, (event, status) => {
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.STREAM_UPDATE, { status });
+    });
+
+    // 监听修改状态
+    this.liveSdk.on(PolyvLiveSdk.EVENTS.SET_NICK_STATUS, function(event, resp) {
+      if (resp.status === 'success') {
+        // 修改成功，需要页面记录设置的昵称以便下次进来用同样的昵称
+        console.info(`修改昵称成功，新的昵称为：${resp.nick}`);
+        plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.SET_NICK_NAME, { nick: resp.nick });
+      } else {
+        console.info(`修改昵称失败 ${resp.message}`);
+      }
     });
   }
 

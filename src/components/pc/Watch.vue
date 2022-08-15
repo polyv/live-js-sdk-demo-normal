@@ -234,6 +234,15 @@ export default {
         plvLive.liveSdk.sendLike(1);
       });
 
+      // // 修改昵称
+      plvLiveMessageHub.on(
+        PlvLiveMessageHubEvents.SET_NICK_NAME,
+        ({ nick }) => {
+          const plvIR = PolyvInteractionsReceive.getInstance();
+          plvIR.updateNickName(nick);
+        }
+      );
+
       // 监听流状态变化
       plvLiveMessageHub.on(
         PlvLiveMessageHubEvents.STREAM_UPDATE,
