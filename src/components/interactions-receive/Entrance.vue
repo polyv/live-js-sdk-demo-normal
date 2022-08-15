@@ -44,7 +44,8 @@ export default {
   position: absolute;
   right: 16px;
   bottom: 220px;
-  z-index: 2;
+  /* 需要大于播放器控制条的 z-inedx */
+  z-index: 2001;
 }
 /* 需要大于播放器控制条的 z-inedx */
 .plv-iar-modal, .plv-iar-push-card {

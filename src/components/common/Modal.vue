@@ -39,7 +39,7 @@ export default {
   props: {
     appendToBody: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     visible: {
       type: Boolean,

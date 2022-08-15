@@ -1,7 +1,8 @@
 <template>
   <modal title="公告"
          :visible="isShowAnnouncement"
-         :close-on-click-modal="false">
+         :close-on-click-modal="false"
+         @close="isShowAnnouncement = false">
     <!-- 公告组件主体 -->
     <announcement :announcement-sdk="announcementSdk"
                   @to-show="setAnnouncementVisible(true)"

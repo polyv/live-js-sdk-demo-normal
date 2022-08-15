@@ -1,7 +1,8 @@
 <template>
   <modal :title="answerCardTitle"
          :visible="isShowAnswerCard"
-         :close-on-click-modal="false">
+         :close-on-click-modal="false"
+         :closable="false">
     <answer-card :answer-card-sdk="answerCardSdk"
                  @to-show="onSetAnswerCardVisible(true)"
                  @to-hide="onSetAnswerCardVisible(false)"

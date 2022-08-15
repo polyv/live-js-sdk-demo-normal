@@ -1,7 +1,8 @@
 <template>
   <modal title="签到"
          :visible="isShowCheckIn"
-         :close-on-click-modal="false">
+         :close-on-click-modal="false"
+         :closable="false">
     <!-- 签到组件主体 -->
     <check-in :check-in-sdk="checkInSdk"
               @to-show="onSetCheckInVisible(true)"
