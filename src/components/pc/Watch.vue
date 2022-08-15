@@ -294,14 +294,16 @@ export default {
 
 <style lang="scss">
 .plv-watch-pc {
-  width: 1180px;
+  width: 92%;
+  min-width: 1180px;
   margin: auto;
   padding-top: 50px;
   background-color: #141518;
 }
 
 .plv-pc-menu__container {
-  width: 1180px;
+  width: 92%;
+  min-width: 1180px;
   margin: auto;
   background: #fff;
 }
@@ -517,39 +519,39 @@ export default {
   margin: 0 16px;
 }
 
-/* 适配不同屏幕尺寸 */
-@media (min-width: 1366px) {
-  .plv-watch-pc {
-    width: 1247px;
-  }
-  .plv-pc-menu__container {
-    width: 1247px;
-  }
-}
-@media (min-width: 1440px) {
-  .plv-watch-pc {
-    width: 1350px;
-  }
-  .plv-pc-menu__container {
-    width: 1350px;
-  }
-}
-@media (min-width: 1600px) {
-  .plv-watch-pc {
-    width: 1430px;
-  }
-  .plv-pc-menu__container {
-    width: 1430px;
-  }
-}
-@media (min-width: 1920px) {
-  .plv-watch-pc {
-    width: 1680px;
-  }
-  .plv-pc-menu__container {
-    width: 1680px;
-  }
-}
+// /* 适配不同屏幕尺寸 */
+// @media (min-width: 1366px) {
+//   .plv-watch-pc {
+//     width: 1247px;
+//   }
+//   .plv-pc-menu__container {
+//     width: 1247px;
+//   }
+// }
+// @media (min-width: 1440px) {
+//   .plv-watch-pc {
+//     width: 1350px;
+//   }
+//   .plv-pc-menu__container {
+//     width: 1350px;
+//   }
+// }
+// @media (min-width: 1600px) {
+//   .plv-watch-pc {
+//     width: 1430px;
+//   }
+//   .plv-pc-menu__container {
+//     width: 1430px;
+//   }
+// }
+// @media (min-width: 1920px) {
+//   .plv-watch-pc {
+//     width: 1680px;
+//   }
+//   .plv-pc-menu__container {
+//     width: 1680px;
+//   }
+// }
 
 /* IE 适配 */
 .plv-watch-pc .ply-liveppt-container > object {
