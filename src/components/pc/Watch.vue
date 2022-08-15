@@ -303,17 +303,17 @@ export default {
 
 <style lang="scss">
 .plv-watch-pc {
-  width: 92%;
+  width: 100%;
   min-width: 1180px;
-  margin: auto;
-  padding-top: 50px;
+  padding: 0 4%;
+  margin-top: 50px;
   background-color: #141518;
 }
 
 .plv-pc-menu__container {
-  width: 92%;
+  width: 100%;
   min-width: 1180px;
-  margin: auto;
+  padding: 0 4%;
   background: #fff;
 }
 
