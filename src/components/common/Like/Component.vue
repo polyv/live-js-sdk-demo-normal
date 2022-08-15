@@ -10,11 +10,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import { debounce } from '@/utils';
 import { plvLiveMessageHub, PlvLiveMessageHubEvents } from '@/sdk/live';
 
-// TODO   pc-$('#tab-chat')  mobile-$('#intro-likes')
 export default {
   name: 'Like',
   data() {
@@ -22,11 +20,6 @@ export default {
       debounceLikeCick: null,
       likeNum: '',
     };
-  },
-  computed: {
-    ...mapState({
-      isMobile: (state) => state.isMobile,
-    }),
   },
   created() {
     this.debounceLikeCick = debounce(this.handleLikeClick, 1000);
@@ -52,16 +45,9 @@ export default {
   text-align: center;
 }
 
-.plv-watch-pc .plv-watch__likes {
-  /* pc端位置 */
-  right: 30px;
-  top: 20%;
-  bottom: auto;
-}
 #tab-chat .plv-watch__likes {
-  /* 移动端位置 */
   right: 16px;
-  bottom: 120px;
+  bottom: 132px;
 }
 .plv-watch__likes-icon {
   display: inline-block;

@@ -52,9 +52,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-.plv-iar-modal {
-  z-index: 2000;
-}
-</style>

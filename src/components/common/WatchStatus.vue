@@ -4,7 +4,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import { plvLiveMessageHub, PlvLiveMessageHubEvents } from '@/sdk/live';
 
 export default {
@@ -13,11 +12,6 @@ export default {
     return {
       statusClass: '',
     };
-  },
-  computed: {
-    ...mapState({
-      isMobile: (state) => state.isMobile,
-    }),
   },
   created() {
     plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {

@@ -10,7 +10,6 @@
            ref="plv-mobile-chat"
            id="plv-mobile-chat"></div>
     </div>
-    <interactions-receive-entrance v-if="enableInteractionsReceive" />
   </section>
 </template>
 
@@ -18,7 +17,7 @@
 import { mapState, mapMutations } from 'vuex';
 import getMobileIntroComponent from '@/components/mobile/Intro';
 import getLikeComponent from '@/components/common/Like';
-import InteractionsReceiveEntrance from '@/components/interactions-receive';
+import { getIREntrance } from '@/components/interactions-receive';
 
 import { PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {
@@ -38,14 +37,6 @@ export default {
     channelInfo: Object,
     chatInfo: Object,
     apiToken: String,
-  },
-  components: {
-    InteractionsReceiveEntrance,
-  },
-  data() {
-    return {
-      enableInteractionsReceive: false,
-    };
   },
   computed: {
     ...mapState({
@@ -168,7 +159,7 @@ export default {
               socket: plvLive.socket,
             }
           );
-          this.enableInteractionsReceive = true;
+          this.renderIREntrance();
         }
       );
 
@@ -198,6 +189,14 @@ export default {
           }
         }
       );
+    },
+    /**
+     * 渲染互动功能入口
+     */
+    renderIREntrance() {
+      const { $el } = getIREntrance();
+      const $tabChat = document.getElementById('tab-chat');
+      $tabChat.appendChild($el);
     },
     renderLike(data) {
       const { $el, instance } = getLikeComponent();

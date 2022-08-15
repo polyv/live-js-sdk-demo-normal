@@ -11,9 +11,9 @@
     <!-- 问卷 -->
     <QuestionnaireEntrance />
     <!-- 卡片推送 -->
-    <PushCardEntrance />
+    <PushCardEntrance class="push-card-entrance" />
     <!-- 条件抽奖 -->
-    <WelfareLotteryEntrance />
+    <WelfareLotteryEntrance class="welfare-lottery-entrance" />
   </div>
 </template>
 
@@ -41,8 +41,18 @@ export default {
 
 <style lang="scss">
 .interactions-receive-entrance {
-  position: relative;
-  /* 需要大于播放器控制条的 z-inedx */
+  position: absolute;
+  right: 16px;
+  bottom: 220px;
+  z-index: 2;
+}
+/* 需要大于播放器控制条的 z-inedx */
+.plv-iar-modal, .plv-iar-push-card {
   z-index: 2001;
+}
+</style>
+<style lang="scss" scoped>
+.push-card-entrance, .welfare-lottery-entrance {
+  margin-top: 8px;
 }
 </style>
