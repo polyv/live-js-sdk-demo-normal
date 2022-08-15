@@ -5,6 +5,7 @@
     <CheckInEntrance />
     <AnswerCardEntrance />
     <QuestionnaireEntrance />
+    <PushCardEntrance />
   </div>
 </template>
 
@@ -14,6 +15,7 @@ import LotteryEntrance from '@/components/interactions-receive/Lottery';
 import CheckInEntrance from '@/components/interactions-receive/CheckIn';
 import AnswerCardEntrance from '@/components/interactions-receive/AnswerCard';
 import QuestionnaireEntrance from '@/components/interactions-receive/Questionnaire';
+import PushCardEntrance from '@/components/interactions-receive/PushCard';
 
 export default {
   components: {
@@ -22,6 +24,7 @@ export default {
     CheckInEntrance,
     AnswerCardEntrance,
     QuestionnaireEntrance,
+    PushCardEntrance,
   },
 };
 </script>
