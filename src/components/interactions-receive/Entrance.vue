@@ -1,11 +1,19 @@
 <template>
   <div class="interactions-receive-entrance">
+    <!-- 公告 -->
     <AnnouncementEntrance />
+    <!-- 抽奖 -->
     <LotteryEntrance />
+    <!-- 签到 -->
     <CheckInEntrance />
+    <!-- 答题卡 -->
     <AnswerCardEntrance />
+    <!-- 问卷 -->
     <QuestionnaireEntrance />
+    <!-- 卡片推送 -->
     <PushCardEntrance />
+    <!-- 条件抽奖 -->
+    <WelfareLotteryEntrance />
   </div>
 </template>
 
@@ -16,6 +24,7 @@ import CheckInEntrance from '@/components/interactions-receive/CheckIn';
 import AnswerCardEntrance from '@/components/interactions-receive/AnswerCard';
 import QuestionnaireEntrance from '@/components/interactions-receive/Questionnaire';
 import PushCardEntrance from '@/components/interactions-receive/PushCard';
+import WelfareLotteryEntrance from '@/components/interactions-receive/WelfareLottery';
 
 export default {
   components: {
@@ -25,6 +34,7 @@ export default {
     AnswerCardEntrance,
     QuestionnaireEntrance,
     PushCardEntrance,
+    WelfareLotteryEntrance,
   },
 };
 </script>
