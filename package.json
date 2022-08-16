@@ -5,6 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "dev": "npm run lint && vue-cli-service serve",
+    "dev:ie": "cross-env VUE_APP_BROWSER=IE npm run dev",
     "build": "vue-cli-service build",
     "lint:es": "eslint --ext .js,vue .",
     "lint:style": "stylelint **/*.{css,scss,sass,vue}",
@@ -27,17 +28,18 @@
     "@vue/cli-plugin-router": "~4.5.8",
     "@vue/cli-plugin-vuex": "~4.5.8",
     "@vue/cli-service": "~4.5.8",
+    "cross-env": "^7.0.3",
     "eslint": "^8.17.0",
     "lint-staged": "^9.5.0",
     "node-sass": "^5.0.0",
     "sass-loader": "^10.0.5",
+    "sockjs-client": "1.5.1",
     "stylelint": "^13.7.2",
     "stylelint-config-recommended": "^3.0.0",
     "stylelint-config-recommended-scss": "^4.2.0",
     "stylelint-scss": "^3.18.0",
     "vue-template-compiler": "2.6.11",
-    "yorkie": "2.0.0",
-    "sockjs-client": "1.5.1"
+    "yorkie": "2.0.0"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"

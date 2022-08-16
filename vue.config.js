@@ -19,6 +19,9 @@ module.exports = {
       filename: 'index.html',
       title: 'Live SDK Demo',
     }
-  }
+  },
 
+  configureWebpack: {
+    devtool: process.env.VUE_APP_BROWSER === 'IE' ? 'source-map' : 'eval-cheap-module-source-map'
+  }
 };
