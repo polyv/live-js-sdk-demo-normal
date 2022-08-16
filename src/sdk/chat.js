@@ -1,20 +1,31 @@
 import PubSub from 'jraiser/pubsub/1.2/pubsub';
 
+/** 用于创建聊天室 JS-SDK 的类 */
 const PolyvChatRoom = window.PolyvChatRoom; // 聊天室JS-SDK
 
 /** 聊天室消息总线 */
 export const plvChatMessageHub = new PubSub();
+/** 聊天室消息总线-事件列表 */
 export const PlvChatMessageHubEvents = {
+  /** 聊天室消息变化 */
   ROOM_MESSAGE: 'roomMessage',
+  /** 销毁 */
   DESTROY: 'destroy'
 };
 
+/**
+ * 对 PolyvChatRoom 进行二次封装
+ * @see {@link https://help.polyv.net/index.html#/live/js/chat_js_sdk_api 聊天室 JS-SDK API文档}
+ */
 export default class PolyvChat {
+  /** 用于存放单个 PolyvChat 实例 */
   static _instance = null;
 
   /**
-   * 采用单例模式来实例化
-   * @returns {PolyvChat}
+   * 采用单例模式来实例化 PolyvChat
+   * @param {Object} { config: store 中的 config, chatInfo: 聊天室需要的授权信息}
+   * @param {Object} { chatContainer: 用于嵌入默认聊天室样式的 DOM }
+   * @returns {PolyvChat} PolyvChat 实例
    * */
   static setInstance(...args) {
     if (!PolyvChat._instance) {
@@ -26,8 +37,8 @@ export default class PolyvChat {
   }
 
   /**
-   * 获取实例
-   * @returns {PolyvChat}
+   * 获取 PolyvChat 实例
+   * @returns {PolyvChat} PolyvChat 实例
    * */
   static getInstance() {
     if (!PolyvChat._instance) {
@@ -36,6 +47,12 @@ export default class PolyvChat {
     return PolyvChat._instance;
   }
 
+  /**
+   * 构造函数
+   * @param {Object} { config: store 中的 config, chatInfo: 聊天室需要的授权信息}
+   * @param {Object} { chatContainer: 用于嵌入默认聊天室样式的 DOM }
+   * @returns {PolyvChat} PolyvChat 实例
+   */
   constructor({ config, chatInfo }, { chatContainer }) {
     if (PolyvChat._instance) {
       console.warn('只允许实例化一次，当前返回上一个实例');
@@ -46,12 +63,13 @@ export default class PolyvChat {
     this.chatroom = chatroom;
     this.socket = chatroom.chat.socket;
 
-    plvChatMessageHub.on(PlvChatMessageHubEvents.DESTROY, () => { this.destroy(); });
+    plvChatMessageHub.on(PlvChatMessageHubEvents.DESTROY, () => {
+      this.destroy();
+    });
   }
 
   /**
-   * 初始化聊天室
-   * 聊天室参数的设置可以参考文档 https://help.polyv.net/index.html#/live/js/chat_js_sdk_api
+   * {@link https://help.polyv.net/index.html#/live/js/chat_js_sdk_api 初始化聊天室}
    */
   createChatRoom({ config, chatInfo }, { chatContainer }) {
     return new PolyvChatRoom({
@@ -61,11 +79,11 @@ export default class PolyvChat {
       accountId: '',
       // nick: config.nickname, // 固定昵称
       enableSetNickname: true, // 开启设置昵称功能
-      userType: config.chat.userType, // 用户类型, 默认为student，三分屏场景下学员需设置为slice,
+      userType: config.chat.userType,
       width: '100%',
       height: '100%',
       version: '2.0',
-      role: 'viewer', // 角色, 用于获取授权和连麦token http://api.polyv.net/live/v3/channel/common/get-chat-token
+      role: config.role, // 角色
       token: chatInfo.token, // 授权校验码
       mediaChannelKey: chatInfo.mediaChannelKey, // 连麦token, 注， 目前聊天室JS-SDK还不支持连麦
       container: chatContainer,
@@ -75,7 +93,7 @@ export default class PolyvChat {
       tabData: config.chat.tabData,
       enableLike: false,
       roomMessage: (data) => {
-        // data为聊天室socket消息，当有聊天室消息时会触发此方法
+        // data为聊天室 socket 消息，当有聊天室消息时会触发此方法
         const event = data.EVENT;
         if (event === 'sendMessage' || event === 'SPEAK') {
           plvChatMessageHub.trigger(PlvChatMessageHubEvents.ROOM_MESSAGE, {
@@ -95,13 +113,17 @@ export default class PolyvChat {
 
   }
 
+  /** 销毁钩子 */
   destroy() {
     this.chatroom = null;
     this.socket = null;
 
+    // 需要销毁总线中监听的事件
     Object.values(PlvChatMessageHubEvents).forEach(eventType => {
       plvChatMessageHub.off(eventType);
     });
+
+    // 销毁单例
     PolyvChat._instance = null;
   }
 }

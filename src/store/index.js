@@ -7,6 +7,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    // 方便组件内共享 isMobile
     isMobile: PolyvUtil.isMobile(),
   },
   modules: {

@@ -30,6 +30,7 @@ export default {
     },
     handleLikeClick() {
       this.likeNum++;
+      // 点赞互动
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.INTERACTIVE_LIKE, {
         curLikeNum: this.likeNum,
       });

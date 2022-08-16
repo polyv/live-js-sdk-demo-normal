@@ -2,27 +2,41 @@ import { TIME_STAMP } from '@/const';
 import * as PolyvUtil from '@/utils';
 import PubSub from 'jraiser/pubsub/1.2/pubsub';
 
-const PolyvLiveSdk = window.PolyvLiveSdk; // 直播JS-SDK
+/** 用于创建直播 JS-SDK 的类 */
+const PolyvLiveSdk = window.PolyvLiveSdk;
 
 /** 直播消息总线 */
 export const plvLiveMessageHub = new PubSub();
+/** 直播消息总线-事件列表 */
 export const PlvLiveMessageHubEvents = {
+  /** 渠道数据初始化 */
   CHANNEL_DATA_INIT: 'channelDataInit',
+  /** 播放器初始化 */
   PLAYER_INIT: 'playerInit',
+  /** 点赞互动 */
   INTERACTIVE_LIKE: 'interactiveLike',
   /** 修改昵称 */
   SET_NICK_NAME: 'setNickName',
+  /** 销毁 */
   DESTROY: 'destroy',
-  /** 流状态转换 */
+  /** 视频流状态转换 */
   STREAM_UPDATE: 'streamConvertToLive'
 };
 
+/**
+ * 对 PolyvLiveSdk 进行二次封装
+ * @see {@link https://help.polyv.net/index.html#/live/js/live_js_sdk/live_js_api 直播 JS-SDK API文档}
+ */
 export default class PolyvLive {
+  /** 用于存放单个 PolyvLive 实例 */
   static _instance = null;
 
   /**
-   * 采用单例模式来实例化
-   * @returns {PolyvLive}
+   * 采用单例模式来实例化 PolyvLive
+   * @param {Object} { config: store 中的 config, apiToken: 互动需要用到的 token }
+   * @param {Object} { socket: 聊天室 SDK 实例中的 socket 数据 }
+   * @param {Object} { controllerEl: 控制栏区域，playerEl: 讲师区域，pptEl: 文档播放器区域 }
+   * @returns {PolyvLive} PolyvLive 实例
    * */
   static setInstance(...args) {
     if (!PolyvLive._instance) {
@@ -34,8 +48,8 @@ export default class PolyvLive {
   }
 
   /**
-   * 获取实例
-   * @returns {PolyvLive}
+   * 获取 PolyvLive 实例
+   * @returns {PolyvLive} PolyvLive 实例
    * */
   static getInstance() {
     if (!PolyvLive._instance) {
@@ -44,6 +58,13 @@ export default class PolyvLive {
     return PolyvLive._instance;
   }
 
+  /**
+   * 构造函数
+   * @param {Object} { config: store 中的 config, apiToken: 互动需要用到的 token }
+   * @param {Object} { socket: 聊天室 SDK 实例中的 socket 对象 }
+   * @param {Object} { controllerEl: 控制栏区域，playerEl: 讲师区域，pptEl: 文档播放器区域 }
+   * @returns {PolyvLive}
+   */
   constructor({ config, apiToken }, { socket }, { controllerEl, playerEl, pptEl }) {
     if (PolyvLive._instance) {
       console.warn('只允许实例化一次，当前返回上一个实例');
@@ -76,8 +97,7 @@ export default class PolyvLive {
   }
 
   /**
-   * 初始化直播JS-SDK
-   * 文档： https://help.polyv.net/index.html#/live/js/live_js_sdk/live_js_sdk
+   * {@link https://help.polyv.net/index.html#/live/js/live_js_sdk/live_js_sdk 初始化直播JS-SDK}
    */
   createLiveSdk() {
     const { config } = this;
@@ -107,7 +127,7 @@ export default class PolyvLive {
 
   /**
    * 监听直播JS-SDK的事件
-   * 事件列表: https://help.polyv.net/index.html#/live/js/live_js_sdk/live_js_api?id=事件列表
+   * @see {@link https://help.polyv.net/index.html#/live/js/live_js_sdk/live_js_api?id=事件列表 事件列表}
    */
   bindSdkEventListener() {
     // 监听频道信息并初始化播放器
@@ -135,8 +155,7 @@ export default class PolyvLive {
   }
 
   /**
-   * 创建播放器
-   * 文档: https://help.polyv.net/index.html#/live/js/live_js_sdk/live_js_api?id=实例方法
+   * {@link https://help.polyv.net/index.html#/live/js/live_js_sdk/live_js_api?id=实例方法 创建播放器}
    */
   createLiveSdkPlayer(data) {
     function _getEnableEl(el) {
@@ -161,20 +180,24 @@ export default class PolyvLive {
       pptNavBottom: '80px',
       barrage: true, // 是否开启弹幕
       defaultBarrageStatus: true,
-      autoplay: true
+      autoplay: true // 是否自动播放
     });
 
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_INIT, data);
   }
 
+  /** 销毁钩子 */
   destroy() {
     // 直播JS-SDK销毁, 默认销毁时会断开socket的连接
     this.liveSdk.destroy();
     this.socket = null;
 
+    // 需要销毁总线中监听的事件
     Object.values(PlvLiveMessageHubEvents).forEach((eventType) => {
       plvLiveMessageHub.off(eventType);
     });
+
+    // 销毁单例
     PolyvLive._instance = null;
   }
 }

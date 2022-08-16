@@ -44,17 +44,19 @@ export default {
     this.init();
   },
   methods: {
+    /** 重新渲染观看页 */
     async reloadWatchPage() {
       this.visible = false;
       await this.init();
     },
+    /** 初始化观看页需要的数据 */
     async init() {
       try {
         // 获取频道信息
         this.channelInfo = await this.getChannelInfo();
         // 获取聊天室信息
         this.chatInfo = await this.getChatInfo();
-        // SDK设置接口token, 用于一些互动的功能接口的请求,如点赞.
+        // SDK设置接口token, 用于一些互动的功能接口的请求,如点赞
         this.apiToken = await this.getApiToken();
 
         this.visible = true;

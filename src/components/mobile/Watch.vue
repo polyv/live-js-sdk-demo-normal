@@ -2,10 +2,12 @@
   <section class="plv-watch-mobile-main">
     <div class="plv-watch-mobile">
       <div class="plv-watch-mobile__top">
+        <!-- 播放器区域 -->
         <div class="plv-watch-mobile-player"
              ref="plv-mobile-player"
              id="plv-mobile-player"></div>
       </div>
+      <!-- 聊天室区域，包含 PPT 文档播放器和直播介绍页 -->
       <div class="plv-watch-mobile-chatroom plv-skin--dark"
            ref="plv-mobile-chat"
            id="plv-mobile-chat"></div>
@@ -71,6 +73,7 @@ export default {
     ...mapMutations({
       updateConfigChat: 'config/updateChat',
     }),
+    /** 根据直播场景更新聊天室配置 */
     updateConfigChatByScene(scene) {
       let userType = PlvChatUserType.STUDENT;
       const needInsertedTabData = [
@@ -90,11 +93,12 @@ export default {
         tabData: [...needInsertedTabData, ...this.config.chat.tabData],
       });
     },
+    /** 根据直播场景来获取相关的播放器元素 */
     getPlayElByScene(scene) {
       const playerEl = this.$refs['plv-mobile-player'];
       if (scene === PlvChannelScene.PPT) {
         return {
-          pptEl: '#tab-ppt',
+          pptEl: '#tab-ppt', // ppt 文档播放器需要渲染在聊天室 tab content 中
           playerEl,
         };
       } else {
@@ -105,8 +109,7 @@ export default {
       }
     },
     /**
-     * handlePptTabClick
-     * 移动端三分屏场景，切换到文档tab时需要调用一下resize
+     * 移动端三分屏直播场景兼容处理，切换到文档tab时需要调用一下resize
      */
     handlePolyfillByScene(scene) {
       if (scene === PlvChannelScene.PPT) {
@@ -121,6 +124,7 @@ export default {
           });
       }
     },
+    /** 初始化 SDK */
     initSdk({ chatContainer, playerEl, pptEl }) {
       const plvChat = PolyvChat.setInstance(
         {
@@ -138,13 +142,16 @@ export default {
       this.bindChatEvents();
       this.bindLiveEvents();
     },
+    /** 绑定-聊天室消息总线事件 */
     bindChatEvents() {
       const plvLive = PolyvLive.getInstance();
 
+      // 聊天室消息变化
       plvChatMessageHub.on(PlvChatMessageHubEvents.ROOM_MESSAGE, ({ data }) => {
         plvLive.sendBarrage(data);
       });
     },
+    /** 绑定-直播消息总线事件 */
     bindLiveEvents() {
       const plvLive = PolyvLive.getInstance();
 
@@ -203,20 +210,20 @@ export default {
         }
       );
     },
-    /**
-     * 渲染互动功能入口
-     */
+    /** 渲染互动功能入口组件 */
     renderIREntrance() {
       const { $el } = getIREntrance();
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
     },
+    /** 渲染点赞按钮 */
     renderLike(data) {
       const { $el, instance } = getLikeComponent();
       instance.setData({ likeNum: data.likes });
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
     },
+    /** 渲染"直播介绍" Tab 中的内容 */
     renderIntroMenuContent(data) {
       const desMenu = data.channelMenus.find((i) => i.menuType === 'desc');
       const { $el } = getMobileIntroComponent({

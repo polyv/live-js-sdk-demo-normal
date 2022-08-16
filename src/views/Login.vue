@@ -39,11 +39,11 @@ export default {
   name: 'Login',
   data() {
     return {
-      channelId: '',
-      appId: '',
-      appSecret: '',
-      playbackMode: false,
-      vid: '',
+      channelId: '', // 频道号
+      appId: '', // 直播后台AppID(应用ID)
+      appSecret: '', // ！！！不建议 appSecret 暴露在前端中
+      playbackMode: false, // 是否纯回放模式
+      vid: '', // 回放 vid
     };
   },
   methods: {
@@ -66,7 +66,7 @@ export default {
         });
         this.$router.push({ path: '/watch' });
       } else {
-        alert('请检查参数');
+        alert('请检查参数!');
       }
     },
   },

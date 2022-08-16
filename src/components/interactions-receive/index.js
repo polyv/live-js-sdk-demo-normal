@@ -4,6 +4,7 @@ import InteractionsReceiveEntrance from './Entrance.vue';
 
 export default InteractionsReceiveEntrance;
 
+/** 获取互动 UI 组件入口的 DOM 节点和实例 */
 export const getIREntrance = (properties) => {
   const props = properties || {};
 

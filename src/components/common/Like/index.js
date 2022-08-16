@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Like from './Component.vue';
 
+/** 获取点赞组件的 DOM 和实例 */
 export default function getLikeComponent(properties) {
   const props = properties || {};
 

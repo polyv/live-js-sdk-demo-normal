@@ -1,3 +1,8 @@
+/**
+ * @file 相关常量
+ */
+
+/** 时间戳 */
 export const TIME_STAMP = +new Date();
 
 /** 用户 id。应设为用户系统中的用户 id，本 demo 生成方式仅供演示 */
@@ -13,10 +18,13 @@ export const PlvChatUserType = {
 
 /** 直播场景 */
 export const PlvChannelScene = {
+  /** 三分屏 */
   PPT: 'ppt',
+  /** 活动拍摄 */
   ALONE: 'alone',
 };
 
+/** 主副屏切换映射表 */
 export const MainScreenMap = {
   player: {
     value: 'player',

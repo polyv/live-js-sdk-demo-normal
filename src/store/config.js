@@ -13,10 +13,11 @@ export default {
     avatar: 'https://livestatic.videocc.net/assets/wimages/missing_face.png', // 聊天室头像, 可以设置为用户系统中的用户头像
     userId: 'polyv' + USER_ID, // 设置用户id, 可以设置为用户系统里的用户 id
 
-    role: 'viewer', // 角色, 用于获取授权和连麦token http://api.polyv.net/live/v3/channel/common/get-chat-token
+    role: 'viewer', // 角色, 用于获取授权和连麦token
+
     chat: {
       userType: PlvChatUserType.STUDENT,
-      // 在 preRender 函数中，移动端会添加 ppt 的 tab。自定义菜单栏文档: https://help.polyv.net/index.html#/live/js/chat_js_sdk_api?id=自定义菜单栏
+      /** @see {@link https://help.polyv.net/index.html#/live/js/chat_js_sdk_api?id=自定义菜单栏 自定义菜单栏 } */
       tabData: [
         {
           name: '聊天', // 菜单栏名称
@@ -35,7 +36,7 @@ export default {
 
   getters: {
     /**
-     * 没有配置config内的channelId, appId, appSecret时, 需要通过登录页获得参数从而加载观看页
+     * 没有配置 config 内的 channelId, appId, appSecret时, 需要通过登录页获得参数从而加载观看页
      * */
     isNeedLogin(config) {
       return !config.channelId || !config.appId || !config.appSecret;
@@ -43,6 +44,9 @@ export default {
   },
 
   mutations: {
+    /**
+     * 设置必要的基础信息
+     */
     setBasicInfo(config, data) {
       config.appId = data.appId;
       config.appSecret = data.appSecret;
@@ -54,6 +58,9 @@ export default {
         config.vid = data.vid;
       }
     },
+    /**
+     * 更新 config 中的 chat 数据
+     */
     updateChat(config, data) {
       config.chat = {
         ...config.chat,

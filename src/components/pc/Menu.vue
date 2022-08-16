@@ -34,6 +34,7 @@ export default {
     };
   },
   mounted() {
+    // 播放器初始化
     plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
       const menus = data.channelMenus;
       // pc端只渲染直播介绍与自定义图文菜单

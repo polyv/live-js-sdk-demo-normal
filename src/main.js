@@ -5,8 +5,9 @@ import store from './store';
 
 import Modal from '@/components/common/Modal.vue';
 
-Vue.config.productionTip = false;
+// 全局注册模态框
 Vue.component('modal', Modal);
+Vue.config.productionTip = false;
 
 new Vue({
   router,

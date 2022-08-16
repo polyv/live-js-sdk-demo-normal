@@ -41,6 +41,7 @@
           <div class="plv-watch-pc__chat plv-skin--dark"
                ref="plv-pc-chat"
                id="plv-pc-chat">
+            <!-- renderIREntrance 和 renderLike 会渲染这一块区域 -->
             <pc-mini-tool />
           </div>
         </div>
@@ -208,7 +209,7 @@ export default {
     bindChatEvents() {
       const plvLive = PolyvLive.getInstance();
 
-      // 聊天消息变化
+      // 聊天室消息变化
       plvChatMessageHub.on(PlvChatMessageHubEvents.ROOM_MESSAGE, ({ data }) => {
         plvLive.sendBarrage(data);
       });
