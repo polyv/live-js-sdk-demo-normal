@@ -28,7 +28,10 @@ import PolyvLive, {
   plvLiveMessageHub,
   PlvLiveMessageHubEvents,
 } from '@/sdk/live';
-import PolyvInteractionsReceive from '@/sdk/interactions-receive';
+import PolyvInteractionsReceive, {
+  plvIRMessageHub,
+  PlvIRMessageHubEvents,
+} from '@/sdk/interactions-receive';
 
 export default {
   name: 'Mobile-Watch',
@@ -62,6 +65,7 @@ export default {
   beforeDestroy() {
     plvChatMessageHub.trigger(PlvChatMessageHubEvents.DESTROY);
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.DESTROY);
+    plvIRMessageHub.trigger(PlvIRMessageHubEvents.DESTROY);
   },
   methods: {
     ...mapMutations({

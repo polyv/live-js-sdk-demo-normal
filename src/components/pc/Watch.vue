@@ -88,7 +88,10 @@ import PolyvLive, {
   plvLiveMessageHub,
   PlvLiveMessageHubEvents,
 } from '@/sdk/live';
-import PolyvInteractionsReceive from '@/sdk/interactions-receive';
+import PolyvInteractionsReceive, {
+  plvIRMessageHub,
+  PlvIRMessageHubEvents,
+} from '@/sdk/interactions-receive';
 
 export default {
   name: 'PC-Watch',
@@ -106,6 +109,7 @@ export default {
   data() {
     return {
       playerCtrl: {
+        /** 是否全屏 */
         isFullScreen: false,
         /** 主视图位置，用于记录当前主屏幕是文档还是播放器 */
         mainPosition: MainScreenMap.ppt.value,
@@ -116,17 +120,21 @@ export default {
     ...mapState({
       config: (state) => state.config,
     }),
+    /** 是否为"活动拍摄"场景 */
     isAloneChannelScene() {
       return this.channelInfo.scene === PlvChannelScene.ALONE;
     },
+    /** 是否使用播放器作为主屏 */
     isPlayerMainPosition() {
       return this.playerCtrl.mainPosition === MainScreenMap.player.value;
     },
+    /** 是否使用 PPT 文档播放器作为主屏 */
     isPPTMainPosition() {
       return this.playerCtrl.mainPosition === MainScreenMap.ppt.value;
     },
   },
   mounted() {
+    /** 直播场景 */
     const scene = this.channelInfo.scene || '';
     const controllerEl = this.$refs['plv-pc-top'];
     const chatContainer = this.$refs['plv-pc-chat'];
@@ -143,20 +151,21 @@ export default {
   beforeDestroy() {
     plvChatMessageHub.trigger(PlvChatMessageHubEvents.DESTROY);
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.DESTROY);
+    plvIRMessageHub.trigger(PlvIRMessageHubEvents.DESTROY);
   },
   methods: {
     ...mapMutations({
       updateConfigChat: 'config/updateChat',
     }),
+    /** 根据直播场景更新聊天室配置 */
     updateConfigChatByScene(scene) {
-      const userType =
-        scene === PlvChannelScene.PPT
-          ? PlvChatUserType.SLICE
-          : PlvChatUserType.STUDENT;
-      this.updateConfigChat({
-        userType,
-      });
+      if (scene === PlvChannelScene.PPT) {
+        this.updateConfigChat({
+          userType: PlvChatUserType.SLICE,
+        });
+      }
     },
+    /** 根据直播场景来获取相关的播放器元素 */
     getPlayElByScene(scene) {
       const mainPlayer = this.$refs['plv-pc-main'];
       const sidePlayer = this.$refs['plv-pc-side'];
@@ -173,6 +182,7 @@ export default {
         };
       }
     },
+    /** 初始化 SDK */
     initSdk({ controllerEl, chatContainer, playerEl, pptEl }) {
       const plvChat = PolyvChat.setInstance(
         {
@@ -194,13 +204,16 @@ export default {
       this.bindChatEvents();
       this.bindLiveEvents();
     },
+    /** 绑定-聊天室消息总线事件 */
     bindChatEvents() {
       const plvLive = PolyvLive.getInstance();
 
+      // 聊天消息变化
       plvChatMessageHub.on(PlvChatMessageHubEvents.ROOM_MESSAGE, ({ data }) => {
         plvLive.sendBarrage(data);
       });
     },
+    /** 绑定-直播消息总线事件 */
     bindLiveEvents() {
       const plvLive = PolyvLive.getInstance();
 
@@ -219,6 +232,7 @@ export default {
               socket: plvLive.socket,
             }
           );
+          // 渲染 IR 入口组件
           this.renderIREntrance();
         }
       );
@@ -234,7 +248,7 @@ export default {
         plvLive.liveSdk.sendLike(1);
       });
 
-      // // 修改昵称
+      // 修改昵称
       plvLiveMessageHub.on(
         PlvLiveMessageHubEvents.SET_NICK_NAME,
         ({ nick }) => {
@@ -254,24 +268,27 @@ export default {
         }
       );
     },
-    /**
-     * 渲染互动功能入口
-     */
+    /** 渲染互动功能入口组件 */
     renderIREntrance() {
       const { $el } = getIREntrance();
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
     },
+    /** 渲染点赞按钮 */
     renderLike(data) {
       const { $el, instance } = getLikeComponent();
       instance.setData({ likeNum: data.likes });
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
     },
+    /**
+     * 绑定-直播JS-SDK的 player 实例事件
+     * @see {@link https://help.polyv.net/index.html#/live/js/live_js_sdk/live_js_api?id=%e5%ae%9e%e4%be%8b-player-%e5%af%b9%e8%b1%a1 实例-player-对象}
+     * */
     bindPlayerControlEvents() {
       const plvLive = PolyvLive.getInstance();
 
-      // 监听直播JS-SDK的播放器事件，请参考实例 player 对象的事件
+      // 全屏切换
       plvLive.liveSdk.player.on('fullscreenChange', (isFullScreen) => {
         this.playerCtrl.isFullScreen = isFullScreen;
       });
