@@ -7,6 +7,11 @@ module.exports = {
 
   productionSourceMap: false,
 
+  transpileDependencies: [
+    '@polyv/interactions-receive-sdk',
+    '@polyv/interactions-receive-sdk-ui-default'
+  ],
+
   pages: {
     index: {
       entry: 'src/main.js',

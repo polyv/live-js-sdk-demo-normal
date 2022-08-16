@@ -516,6 +516,7 @@ export default {
 }
 .plv-watch-pc__info__logo {
   width: 50px;
+  height: 100%;
   margin-right: 10px;
 }
 .plv-watch-pc__info__desc {
