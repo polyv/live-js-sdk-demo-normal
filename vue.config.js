@@ -7,11 +7,6 @@ module.exports = {
 
   productionSourceMap: false,
 
-  transpileDependencies: [
-    '@polyv/interactions-receive-sdk',
-    '@polyv/interactions-receive-sdk-ui-default'
-  ],
-
   pages: {
     index: {
       entry: 'src/main.js',
@@ -22,6 +17,7 @@ module.exports = {
   },
 
   configureWebpack: {
+    /** 运行在 IE 上需要更改 devtool 的默认值，不然异步组件无法正常使用 */
     devtool: process.env.VUE_APP_BROWSER === 'IE' ? 'source-map' : 'eval-cheap-module-source-map'
   }
 };
