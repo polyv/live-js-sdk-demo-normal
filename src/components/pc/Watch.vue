@@ -185,6 +185,7 @@ export default {
     },
     /** 初始化 SDK */
     initSdk({ controllerEl, chatContainer, playerEl, pptEl }) {
+      // 初始化-聊天室SDK
       const plvChat = PolyvChat.setInstance(
         {
           config: this.config,
@@ -192,6 +193,7 @@ export default {
         },
         { chatContainer }
       );
+      // 初始化-直播SDK
       PolyvLive.setInstance(
         { config: this.config, apiToken: this.apiToken },
         { socket: plvChat.socket },
@@ -202,6 +204,7 @@ export default {
         }
       );
 
+      // 绑定 SDK 事件
       this.bindChatEvents();
       this.bindLiveEvents();
     },
@@ -222,7 +225,7 @@ export default {
       plvLiveMessageHub.on(
         PlvLiveMessageHubEvents.CHANNEL_DATA_INIT,
         (channelData) => {
-          // 初始化互动 SDK
+          // 初始化-互动SDK
           PolyvInteractionsReceive.setInstance(
             {
               config: this.config,

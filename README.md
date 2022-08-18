@@ -42,12 +42,14 @@
 
 ## Demo 运行
 
-Demo 的源码位于项目的 src 目录下，需要使用 `npm` 来启动
+Demo 的源码位于项目的 src 目录下，需要使用 `npm` 来运行 Demo
 
 ```sh
-npm install
-npm run dev
+npm install  #安装依赖
+npm run dev  #启动项目
 ```
+
+如需在 IE 浏览器调试，**启动项目**时，请执行 `npm run dev:ie`
 
 执行完成后，可以在浏览器打开 `http://localhost:8080/live/` 访问 Demo 页
 
