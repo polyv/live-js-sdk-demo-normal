@@ -9,6 +9,8 @@ module.exports = {
     'no-unused-vars': 0,
     'promise/prefer-await-to-then': 0,
     'operator-linebreak': ['error', 'after', { overrides: { '?': 'before', ':': 'before' } }],
-    'multiline-ternary': 0
+    'multiline-ternary': 0,
+    'vue/v-on-event-hyphenation': 0,
+    'vue/attribute-hyphenation': 0
   }
 };
