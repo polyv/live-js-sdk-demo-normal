@@ -1,4 +1,4 @@
-import { PlvChatUserType, USER_ID } from '@/const';
+import { getDefaultConfigChat, USER_ID } from '@/const';
 
 export default {
   namespaced: true,
@@ -15,20 +15,7 @@ export default {
 
     role: 'viewer', // 角色, 用于获取授权和连麦token
 
-    chat: {
-      userType: PlvChatUserType.STUDENT,
-      /** @see {@link https://help.polyv.net/index.html#/live/js/chat_js_sdk_api?id=自定义菜单栏 自定义菜单栏 } */
-      tabData: [
-        {
-          name: '聊天', // 菜单栏名称
-          type: 'chat' // 菜单栏类型, 有3个已有的内置类型(chat, user-list, ask),详情请参考文档
-        },
-        {
-          name: '提问',
-          type: 'ask'
-        }
-      ]
-    },
+    chat: getDefaultConfigChat(), // 用于聊天室 SDK 的配置
 
     playerType: 'auto', // 播放器播放类型， 默认auto
     vid: '' // 回放id, 用于回放模式时设置对应的回放
@@ -58,15 +45,18 @@ export default {
         config.vid = data.vid;
       }
     },
-    /**
-     * 更新 config 中的 chat 数据
-     */
+    /** 更新 config 中的 chat 数据 */
     updateChat(config, data) {
       config.chat = {
         ...config.chat,
         ...data,
       };
     },
+    /** 重置聊天室配置 */
+    resetChat(config) {
+      config.chat = getDefaultConfigChat();
+    },
+    /** 更新昵称 */
     updateNickname(config, nickname) {
       config.nickname = nickname;
     }

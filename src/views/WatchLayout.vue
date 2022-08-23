@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 import { TIME_STAMP } from '@/const';
 
 import PolyvApi from '@/utils/api';
@@ -44,9 +44,13 @@ export default {
     this.init();
   },
   methods: {
+    ...mapMutations({
+      resetConfigChat: 'config/resetChat',
+    }),
     /** 重新渲染观看页 */
     async reloadWatchPage() {
       this.visible = false;
+      this.resetConfigChat();
       await this.init();
     },
     /** 初始化观看页需要的数据 */

@@ -35,3 +35,23 @@ export const MainScreenMap = {
     next: 'player'
   }
 };
+
+/**
+ * 获取默认聊天配置
+ */
+export const getDefaultConfigChat = () => {
+  return {
+    userType: PlvChatUserType.STUDENT,
+    /** @see {@link https://help.polyv.net/index.html#/live/js/chat_js_sdk_api?id=自定义菜单栏 自定义菜单栏 } */
+    tabData: [
+      {
+        name: '聊天', // 菜单栏名称
+        type: 'chat' // 菜单栏类型, 有3个已有的内置类型(chat, user-list, ask),详情请参考文档
+      },
+      {
+        name: '提问',
+        type: 'ask'
+      }
+    ]
+  };
+};
