@@ -72,6 +72,7 @@ export default {
   methods: {
     ...mapMutations({
       updateConfigChat: 'config/updateChat',
+      updateConfigNickname: 'config/updateNickname',
     }),
     /** 根据直播场景更新聊天室配置 */
     updateConfigChatByScene(scene) {
@@ -199,6 +200,7 @@ export default {
         ({ nick }) => {
           const plvIR = PolyvInteractionsReceive.getInstance();
           plvIR.updateNickName(nick);
+          this.updateConfigNickname(nick);
         }
       );
 

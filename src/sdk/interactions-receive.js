@@ -86,6 +86,7 @@ export default class PolyvInteractionsReceive {
       timestamp: TIME_STAMP,
       channelId: config.channelId,
       viewerId: config.userId,
+      nickName: this.config.nickname,
     };
 
     // ！！！不要在前端生成sign，此处仅供参考

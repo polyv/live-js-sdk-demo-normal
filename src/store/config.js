@@ -66,6 +66,9 @@ export default {
         ...config.chat,
         ...data,
       };
+    },
+    updateNickname(config, nickname) {
+      config.nickname = nickname;
     }
   },
 };
