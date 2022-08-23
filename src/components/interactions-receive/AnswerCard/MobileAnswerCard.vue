@@ -16,7 +16,8 @@
            :visible="isShowQuickAnswerCard"
            :close-on-click-modal="false"
            :closable="false">
-      <quick-answer-card :answer-card-sdk="answerCardSdk"
+      <quick-answer-card :height="100"
+                         :answer-card-sdk="answerCardSdk"
                          @to-show="(question)=>onSetQuickAnswerCardVisible(true,question)"
                          @to-hide="(question)=>onSetQuickAnswerCardVisible(false,question)" />
     </modal>
@@ -86,3 +87,12 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.plv-iar-quick-answer-default__options {
+  top: 30%;
+}
+.plv-iar-quick-answer-default__btn, .plv-iar-quick-answer-default__close-btn {
+  top: 70%;
+}
+</style>
