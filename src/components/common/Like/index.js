@@ -1,21 +1,31 @@
 import Vue from 'vue';
 import Like from './Component.vue';
 
-/** 获取点赞组件的 DOM 和实例 */
-export default function getLikeComponent(properties) {
-  const props = properties || {};
+export default class LikeService {
+  vueInstance = null;
 
-  const VueInstance = new Vue({
-    render(h) {
-      return h(Like, {
-        props: props
-      });
-    }
-  });
+  /** 获取点赞组件的 DOM 和实例 */
+  static getLikeComponent(properties) {
+    const props = properties || {};
 
-  VueInstance.$mount();
-  return {
-    $el: VueInstance.$el,
-    instance: VueInstance.$children[0]
-  };
+    const VueInstance = new Vue({
+      render(h) {
+        return h(Like, {
+          props: props
+        });
+      }
+    });
+
+    this.vueInstance = VueInstance;
+    VueInstance.$mount();
+
+    return {
+      $el: VueInstance.$el,
+      instance: VueInstance.$children[0]
+    };
+  }
+
+  static destroy() {
+    this.vueInstance.$destroy();
+  }
 }

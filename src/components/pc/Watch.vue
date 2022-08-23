@@ -74,11 +74,11 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
-import getLikeComponent from '@/components/common/Like';
+import LikeService from '@/components/common/Like';
 import WatchStatus from '@/components/common/WatchStatus.vue';
 import PcMenu from '@/components/pc/Menu.vue';
 import PcMiniTool from '@/components/pc/MiniTool.vue';
-import { getIREntrance } from '@/components/interactions-receive';
+import IREntranceService from '@/components/interactions-receive';
 
 import { MainScreenMap, PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {
@@ -153,6 +153,9 @@ export default {
     plvChatMessageHub.trigger(PlvChatMessageHubEvents.DESTROY);
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.DESTROY);
     plvIRMessageHub.trigger(PlvIRMessageHubEvents.DESTROY);
+
+    IREntranceService.destroy();
+    LikeService.destroy();
   },
   methods: {
     ...mapMutations({
@@ -276,13 +279,13 @@ export default {
     },
     /** 渲染互动功能入口组件 */
     renderIREntrance() {
-      const { $el } = getIREntrance();
+      const { $el } = IREntranceService.getIREntrance();
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
     },
     /** 渲染点赞按钮 */
     renderLike(data) {
-      const { $el, instance } = getLikeComponent();
+      const { $el, instance } = LikeService.getLikeComponent();
       instance.setData({ likeNum: data.likes });
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);

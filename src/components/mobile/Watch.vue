@@ -17,9 +17,9 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
-import getMobileIntroComponent from '@/components/mobile/Intro';
-import getLikeComponent from '@/components/common/Like';
-import { getIREntrance } from '@/components/interactions-receive';
+import MobileIntroService from '@/components/mobile/Intro';
+import LikeService from '@/components/common/Like';
+import IREntranceService from '@/components/interactions-receive';
 
 import { PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {
@@ -68,6 +68,10 @@ export default {
     plvChatMessageHub.trigger(PlvChatMessageHubEvents.DESTROY);
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.DESTROY);
     plvIRMessageHub.trigger(PlvIRMessageHubEvents.DESTROY);
+
+    IREntranceService.destroy();
+    LikeService.destroy();
+    MobileIntroService.destroy();
   },
   methods: {
     ...mapMutations({
@@ -217,13 +221,13 @@ export default {
     },
     /** 渲染互动功能入口组件 */
     renderIREntrance() {
-      const { $el } = getIREntrance();
+      const { $el } = IREntranceService.getIREntrance();
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
     },
     /** 渲染点赞按钮 */
     renderLike(data) {
-      const { $el, instance } = getLikeComponent();
+      const { $el, instance } = LikeService.getLikeComponent();
       instance.setData({ likeNum: data.likes });
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
@@ -231,7 +235,7 @@ export default {
     /** 渲染"直播介绍" Tab 中的内容 */
     renderIntroMenuContent(data) {
       const desMenu = data.channelMenus.find((i) => i.menuType === 'desc');
-      const { $el } = getMobileIntroComponent({
+      const { $el } = MobileIntroService.getMobileIntroComponent({
         channelData: data,
         descContent: desMenu ? desMenu.content : '',
       });
