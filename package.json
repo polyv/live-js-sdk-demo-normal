@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serve:ie": "cross-env VUE_APP_BROWSER=IE npm run serve",
     "dev": "npm run lint && vue-cli-service serve",
     "dev:ie": "cross-env VUE_APP_BROWSER=IE npm run dev",
     "build": "vue-cli-service build",

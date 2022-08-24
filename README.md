@@ -116,7 +116,7 @@ npm run dev  #启动项目
 - 使用到的第三方库：参考项目中的 package.json 的 dependencies。
 - 使用低版本 `node` 注意事项【建议使用 `16.9.1` 版本】
   - 安装依赖时，会出现 `integrity checksum failed` 的错误，原因主要是 `sha` 加密算法不同，删掉 `packgae-lock.json` 再安装依赖即可
-  - 由于依赖的 `eslint` 版本较高，执行 `npm run dev` 时可能会报错，可以执行 `npm run serve` 绕过校验来启动项目
+  - 由于依赖的 `eslint` 版本较高，执行 `npm run dev` 时可能会报错，可以执行 `npm run serve` 绕过校验来启动项目，如果需要运行在 IE 浏览器上，可以执行 `npm run serve:ie`
 
 ## 浏览器兼容性
 
