@@ -128,16 +128,20 @@ export default {
     sendCustomMessage() {
       const PolyvLiveSdk = window.PolyvLiveSdk;
       const plive = PolyvLive.getInstance();
-      const value = this.toolLists.customMessage;
+      const message = this.toolLists.customMessage;
 
-      plive.liveSdk.once(PolyvLiveSdk.EVENTS.CUSTOM_MESSAGE, (data) => {
-        console.info('CUSTOM_MESSAGE', data);
+      plive.liveSdk.once(PolyvLiveSdk.EVENTS.CUSTOM_MESSAGE, (event, data) => {
+        console.info('监听自定义消息', event, data);
       });
       plive.liveSdk.sendCustomMessage({
-        EVENT: 'custom',
-        data: value,
+        EVENT: 'customMsg',
+        version: '1.0',
+        data: {
+          // 自定义消息内容
+          message,
+        },
       });
-      console.info('发送自定义信息(webscoket可见):' + value);
+      console.info('发送自定义信息(webscoket可见):' + message);
       this.toolLists.customMessage = '';
     },
     /** 获取历史聊天记录 */
