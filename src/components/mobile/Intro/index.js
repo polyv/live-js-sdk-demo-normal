@@ -1,11 +1,13 @@
 import Vue from 'vue';
 import MobileIntro from './Component.vue';
 
+/** @class 组件服务-移动端-介绍页 */
 export default class MobileIntroService {
+  /** @type {Vue | null} */
   vueInstance = null;
 
   /** 获取移动端-直播介绍页组件的 DOM 和实例 */
-  static getMobileIntroComponent(properties) {
+  getMobileIntroComponent(properties) {
     const props = properties || {};
 
     const VueInstance = new Vue({
@@ -25,7 +27,9 @@ export default class MobileIntroService {
     };
   }
 
-  static destroy() {
-    this.vueInstance.$destroy();
+  /** 销毁组件实例 */
+  destroy() {
+    this.vueInstance && this.vueInstance.$destroy();
+    this.vueInstance = null;
   }
 }

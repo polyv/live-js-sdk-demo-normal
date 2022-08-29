@@ -35,6 +35,10 @@ import PolyvInteractionsReceive, {
   PlvIRMessageHubEvents,
 } from '@/sdk/interactions-receive';
 
+const irEntranceService = new IREntranceService();
+const likeService = new LikeService();
+const mobileIntroService = new MobileIntroService();
+
 export default {
   name: 'Mobile-Watch',
   /** 由父组件来保证数据存在 */
@@ -69,9 +73,9 @@ export default {
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.DESTROY);
     plvIRMessageHub.trigger(PlvIRMessageHubEvents.DESTROY);
 
-    IREntranceService.destroy();
-    LikeService.destroy();
-    MobileIntroService.destroy();
+    irEntranceService.destroy();
+    likeService.destroy();
+    mobileIntroService.destroy();
   },
   methods: {
     ...mapMutations({
@@ -221,13 +225,13 @@ export default {
     },
     /** 渲染互动功能入口组件 */
     renderIREntrance() {
-      const { $el } = IREntranceService.getIREntrance();
+      const { $el } = irEntranceService.getIREntrance();
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
     },
     /** 渲染点赞按钮 */
     renderLike(data) {
-      const { $el, instance } = LikeService.getLikeComponent();
+      const { $el, instance } = likeService.getLikeComponent();
       instance.setData({ likeNum: data.likes });
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
@@ -235,7 +239,7 @@ export default {
     /** 渲染"直播介绍" Tab 中的内容 */
     renderIntroMenuContent(data) {
       const desMenu = data.channelMenus.find((i) => i.menuType === 'desc');
-      const { $el } = MobileIntroService.getMobileIntroComponent({
+      const { $el } = mobileIntroService.getMobileIntroComponent({
         channelData: data,
         descContent: desMenu ? desMenu.content : '',
       });
