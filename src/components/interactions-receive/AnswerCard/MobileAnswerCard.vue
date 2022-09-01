@@ -7,6 +7,7 @@
            :closable="true"
            @close="onSetAnswerCardVisible(false)">
       <answer-card :answer-card-sdk="answerCardSdk"
+                   :delayTime="1000"
                    @to-show="onSetAnswerCardVisible(true)"
                    @to-hide="onSetAnswerCardVisible(false)"
                    @status-changed="onStatusChanged" />
@@ -17,6 +18,7 @@
            :close-on-click-modal="false"
            :closable="false">
       <quick-answer-card :height="100"
+                         :delayTime="1000"
                          :answer-card-sdk="answerCardSdk"
                          @to-show="(question)=>onSetQuickAnswerCardVisible(true,question)"
                          @to-hide="(question)=>onSetQuickAnswerCardVisible(false,question)" />

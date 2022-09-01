@@ -7,6 +7,7 @@
                   v-show="isLotteryShowing"
                   :lottery-sdk="lotterySdk"
                   :lang="lang"
+                  :delay-time="1000"
                   @lottery-status-changed="onLotteryStatusChange"
                   @is-show-changed="onLotteryShowChange" />
     </div>

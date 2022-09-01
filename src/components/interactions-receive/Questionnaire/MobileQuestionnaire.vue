@@ -5,6 +5,7 @@
          :closable="false">
     <!-- 问卷组件主体 -->
     <questionnaire :questionnaire-sdk="questionnaireSdk"
+                   :delayTime="1000"
                    @status-changed="onStatusChanged"
                    @to-show="onSetQuestionnaireVisible(true)"
                    @to-hide="onSetQuestionnaireVisible(false)" />

@@ -6,6 +6,7 @@
       <on-lottery v-if="lotterySdk"
                   v-show="isLotteryShowing"
                   :lottery-sdk="lotterySdk"
+                  :delayTime="1000"
                   :lang="lang"
                   @lottery-status-changed="onLotteryStatusChange"
                   @is-show-changed="onLotteryShowChange" />
