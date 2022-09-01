@@ -4,7 +4,6 @@
     <modal :title="answerCardTitle"
            :visible="isShowAnswerCard"
            :close-on-click-modal="false"
-           :closable="true"
            @close="onSetAnswerCardVisible(false)">
       <answer-card :answer-card-sdk="answerCardSdk"
                    :delayTime="1000"
@@ -16,7 +15,7 @@
     <modal :title="quickAnswerCardTitle"
            :visible="isShowQuickAnswerCard"
            :close-on-click-modal="false"
-           :closable="true">
+           @close="onSetQuickAnswerCardVisible(false)">
       <quick-answer-card :answer-card-sdk="answerCardSdk"
                          :delayTime="1000"
                          @to-show="(question)=>onSetQuickAnswerCardVisible(true,question)"

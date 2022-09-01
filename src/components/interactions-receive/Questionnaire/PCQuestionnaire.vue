@@ -2,7 +2,7 @@
   <modal title="问卷"
          :visible="isShowQuestionnaire"
          :close-on-click-modal="false"
-         :closable="false">
+         @close="onSetQuestionnaireVisible(false)">
     <!-- 问卷组件主体 -->
     <questionnaire :questionnaire-sdk="questionnaireSdk"
                    :delayTime="1000"
