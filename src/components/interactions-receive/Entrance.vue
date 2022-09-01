@@ -85,8 +85,21 @@ export default {
   padding: 4px 0 4px 8px;
   background: #202127;
 
+  max-width: 80%;
+  overflow-x: auto;
+
   &__mobile {
-    padding-left: 8px;
+    max-width: 100%;
+    padding: 0 8px;
+  }
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: #46464f;
   }
 }
 
