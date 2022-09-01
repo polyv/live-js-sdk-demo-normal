@@ -190,7 +190,9 @@ export default {
         };
       }
     },
-    /** 初始化 SDK */
+    /**
+     * 初始化 SDK，注意不能更换 SDK 初始化顺序
+     * */
     initSdk({ controllerEl, chatContainer, playerEl, pptEl }) {
       // 初始化-聊天室SDK
       const plvChat = PolyvChat.setInstance(
@@ -200,6 +202,21 @@ export default {
         },
         { chatContainer }
       );
+
+      // 渲染 IR 入口组件
+      this.renderIREntrance();
+      // 初始化-互动SDK
+      PolyvInteractionsReceive.setInstance(
+        {
+          config: this.config,
+          channelData: this.channelInfo,
+          apiToken: this.apiToken,
+        },
+        {
+          socket: plvChat.socket,
+        }
+      );
+
       // 初始化-直播SDK
       PolyvLive.setInstance(
         { config: this.config, apiToken: this.apiToken },
@@ -232,19 +249,9 @@ export default {
       plvLiveMessageHub.on(
         PlvLiveMessageHubEvents.CHANNEL_DATA_INIT,
         (channelData) => {
-          // 初始化-互动SDK
-          PolyvInteractionsReceive.setInstance(
-            {
-              config: this.config,
-              channelData,
-              apiToken: this.apiToken,
-            },
-            {
-              socket: plvLive.socket,
-            }
-          );
-          // 渲染 IR 入口组件
-          this.renderIREntrance();
+          const plvIR = PolyvInteractionsReceive.getInstance();
+          // 更新 sessionId
+          plvIR.updateOriginChannelData(channelData);
         }
       );
 
