@@ -1,5 +1,9 @@
 <template>
-  <div>
+  <div name="pc-answer-card">
+    <entrance-icon v-if="entranceVisible"
+                   :name="entrance.name"
+                   :icon="entrance.icon"
+                   :open="handleClickEntranceIcon" />
     <!-- 普通答题 -->
     <modal :title="answerCardTitle"
            :visible="isShowAnswerCard"
@@ -9,7 +13,8 @@
                    :delayTime="1000"
                    @to-show="onSetAnswerCardVisible(true)"
                    @to-hide="onSetAnswerCardVisible(false)"
-                   @status-changed="onStatusChanged" />
+                   @status-changed="onStatusChanged"
+                   @success-submit="onSuccessSubmit" />
     </modal>
     <!-- 快速问答 -->
     <modal :title="quickAnswerCardTitle"
@@ -19,7 +24,8 @@
       <quick-answer-card :answer-card-sdk="answerCardSdk"
                          :delayTime="1000"
                          @to-show="(question)=>onSetQuickAnswerCardVisible(true,question)"
-                         @to-hide="(question)=>onSetQuickAnswerCardVisible(false,question)" />
+                         @to-hide="(question)=>onSetQuickAnswerCardVisible(false,question)"
+                         @success-submit="onSuccessSubmit" />
     </modal>
   </div>
 </template>
@@ -28,15 +34,24 @@
 import { AnswerCard as AnswerCardSDK } from '@polyv/interactions-receive-sdk';
 import AnswerCard from '@polyv/interactions-receive-sdk-ui-default/lib/PcAnswerCard';
 import QuickAnswerCard from '@polyv/interactions-receive-sdk-ui-default/lib/PcQuickAnswer';
+import EntranceIcon from '../EntranceIcon.vue';
 
 export default {
   components: {
     AnswerCard,
     QuickAnswerCard,
+    EntranceIcon,
   },
 
   data() {
     return {
+      entranceVisible: false,
+      entrance: {
+        name: '答题卡',
+        icon: require('@/assets/ir-imgs/icon-answerCard.png'),
+      },
+      // 是否为快速问答
+      isQuickAnswer: false,
       // 答题卡SDK实例
       answerCardSdk: null,
       // 是否显示普通答题卡
@@ -52,20 +67,40 @@ export default {
 
   created() {
     this.answerCardSdk = new AnswerCardSDK();
+    this.answerCardSdk.on(
+      this.answerCardSdk.events.STOP_TEST_QUESTION,
+      this.onStopTestQuestion
+    );
   },
 
   beforeDestroy() {
-    this.answerCardSdk?.destroy();
+    this.answerCardSdk.off(
+      this.answerCardSdk.events.STOP_TEST_QUESTION,
+      this.onStopTestQuestion
+    );
+    this.answerCardSdk.destroy();
     this.answerCardSdk = null;
   },
 
   methods: {
+    handleClickEntranceIcon() {
+      this.isQuickAnswer
+        ? this.onSetQuickAnswerCardVisible(true)
+        : this.onSetAnswerCardVisible(true);
+    },
+
     onSetAnswerCardVisible(visible) {
+      this.isQuickAnswer = false;
       this.isShowAnswerCard = visible;
     },
 
     onSetQuickAnswerCardVisible(visible, question) {
+      this.isQuickAnswer = true;
       this.isShowQuickAnswerCard = visible;
+      if (visible) {
+        this.entranceVisible = visible;
+      }
+
       if (question) {
         if (question.type === this.answerCardSdk.questionTypes.CheckBox) {
           this.quickAnswerCardTitle = '【多选】';
@@ -77,12 +112,22 @@ export default {
 
     onStatusChanged(status) {
       if (status === 'isShowResult' || status === 'isShowAnswer') {
+        this.entranceVisible = false;
         this.answerCardTitle = this.answerCardSdk.curSubmittedAnswer
           ? '答题结果'
           : '未作答';
       } else {
+        this.entranceVisible = true;
         this.answerCardTitle = '答题卡';
       }
+    },
+
+    onSuccessSubmit() {
+      this.entranceVisible = false;
+    },
+
+    onStopTestQuestion() {
+      this.entranceVisible = false;
     },
   },
 };
