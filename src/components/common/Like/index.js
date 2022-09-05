@@ -1,11 +1,13 @@
 import Vue from 'vue';
 import Like from './Component.vue';
 
+/** @class 组件服务-公共-点赞按钮 */
 export default class LikeService {
+  /** @type {Vue | null} */
   vueInstance = null;
 
   /** 获取点赞组件的 DOM 和实例 */
-  static getLikeComponent(properties) {
+  getLikeComponent(properties) {
     const props = properties || {};
 
     const VueInstance = new Vue({
@@ -25,7 +27,9 @@ export default class LikeService {
     };
   }
 
-  static destroy() {
-    this.vueInstance.$destroy();
+  /** 销毁组件实例 */
+  destroy() {
+    this.vueInstance && this.vueInstance.$destroy();
+    this.vueInstance = null;
   }
 }

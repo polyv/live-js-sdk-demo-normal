@@ -110,6 +110,20 @@ export default class PolyvInteractionsReceive {
     });
   }
 
+  /**
+   * 更新互动 SDK 配置的 channelInfo 数据
+   * @param {*} channelData
+   */
+  updateOriginChannelData(channelData) {
+    updateInteractionsReceiveConfig({
+      channelInfo: {
+        channelId: channelData.channelId,
+        roomId: channelData.roomId,
+        sessionId: channelData.sessionId
+      },
+    });
+  }
+
   /** 销毁钩子 */
   destroy() {
     PolyvInteractionsReceive._instance = null;

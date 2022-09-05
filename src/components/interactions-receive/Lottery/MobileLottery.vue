@@ -1,12 +1,17 @@
 <template>
-  <div class="plv-demo-lottery-default">
-    <!-- <button @click="setLotteryRecordVisible">查看中奖记录</button> -->
+  <div name="mobile-lottery"
+       class="plv-demo-lottery-default">
+    <entrance-icon v-if="entranceVisible"
+                   :name="entrance.name"
+                   :icon="entrance.icon"
+                   :open="handleClickEntranceIcon" />
     <div class="plv-demo-lottery-default__lottery">
       <!-- 抽奖中 -->
       <on-lottery v-if="lotterySdk"
                   v-show="isLotteryShowing"
                   :lottery-sdk="lotterySdk"
                   :lang="lang"
+                  :delay-time="1000"
                   @lottery-status-changed="onLotteryStatusChange"
                   @is-show-changed="onLotteryShowChange" />
     </div>
@@ -48,16 +53,23 @@ import OnLottery from '@polyv/interactions-receive-sdk-ui-default/lib/MobileOnLo
 import LotteryEnd from '@polyv/interactions-receive-sdk-ui-default/lib/MobileLotteryEnd';
 import LotteryRecord from '@polyv/interactions-receive-sdk-ui-default/lib/MobileLotteryRecord';
 import { Lottery } from '@polyv/interactions-receive-sdk';
+import EntranceIcon from '../EntranceIcon.vue';
 
 export default {
   components: {
     OnLottery,
     LotteryEnd,
     LotteryRecord,
+    EntranceIcon,
   },
 
   data() {
     return {
+      entranceVisible: false,
+      entrance: {
+        name: '中奖记录',
+        icon: require('@/assets/ir-imgs/icon-lottery-record.png'),
+      },
       // 语言
       lang: 'zh_CN',
       // 抽奖 SDK 实例
@@ -73,6 +85,17 @@ export default {
     };
   },
 
+  watch: {
+    lotteryList() {
+      const hasNoReceived = this.lotteryList.some((item) => !item.received); // 是否还有未提交的中奖信息
+      if (this.lotteryList.length > 0 && hasNoReceived) {
+        this.entranceVisible = true;
+      } else {
+        this.entranceVisible = false;
+      }
+    },
+  },
+
   created() {
     this.lotterySdk = new Lottery();
   },
@@ -83,6 +106,10 @@ export default {
   },
 
   methods: {
+    handleClickEntranceIcon() {
+      this.setLotteryResultShow();
+    },
+
     onLotteryStatusChange(status) {
       if (status === 'running') {
         this.isLotteryShowing = true;

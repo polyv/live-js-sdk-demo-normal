@@ -35,6 +35,10 @@ import PolyvInteractionsReceive, {
   PlvIRMessageHubEvents,
 } from '@/sdk/interactions-receive';
 
+const irEntranceService = new IREntranceService();
+const likeService = new LikeService();
+const mobileIntroService = new MobileIntroService();
+
 export default {
   name: 'Mobile-Watch',
   /** 由父组件来保证数据存在 */
@@ -69,9 +73,9 @@ export default {
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.DESTROY);
     plvIRMessageHub.trigger(PlvIRMessageHubEvents.DESTROY);
 
-    IREntranceService.destroy();
-    LikeService.destroy();
-    MobileIntroService.destroy();
+    irEntranceService.destroy();
+    likeService.destroy();
+    mobileIntroService.destroy();
   },
   methods: {
     ...mapMutations({
@@ -129,7 +133,9 @@ export default {
           });
       }
     },
-    /** 初始化 SDK */
+    /**
+     * 初始化 SDK，注意不能更换 SDK 初始化顺序
+     * */
     initSdk({ chatContainer, playerEl, pptEl }) {
       // 初始化-聊天室SDK
       const plvChat = PolyvChat.setInstance(
@@ -139,6 +145,21 @@ export default {
         },
         { chatContainer }
       );
+
+      // 渲染 IR 入口组件
+      this.renderIREntrance();
+      // 初始化-互动SDK
+      PolyvInteractionsReceive.setInstance(
+        {
+          config: this.config,
+          channelData: this.channelInfo,
+          apiToken: this.apiToken,
+        },
+        {
+          socket: plvChat.socket,
+        }
+      );
+
       // 初始化-直播SDK
       PolyvLive.setInstance(
         { config: this.config, apiToken: this.apiToken },
@@ -167,18 +188,9 @@ export default {
       plvLiveMessageHub.on(
         PlvLiveMessageHubEvents.CHANNEL_DATA_INIT,
         (channelData) => {
-          // 初始化-互动SDK
-          PolyvInteractionsReceive.setInstance(
-            {
-              config: this.config,
-              channelData,
-              apiToken: this.apiToken,
-            },
-            {
-              socket: plvLive.socket,
-            }
-          );
-          this.renderIREntrance();
+          const plvIR = PolyvInteractionsReceive.getInstance();
+          // 更新 sessionId
+          plvIR.updateOriginChannelData(channelData);
         }
       );
 
@@ -221,13 +233,13 @@ export default {
     },
     /** 渲染互动功能入口组件 */
     renderIREntrance() {
-      const { $el } = IREntranceService.getIREntrance();
+      const { $el } = irEntranceService.getIREntrance();
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
     },
     /** 渲染点赞按钮 */
     renderLike(data) {
-      const { $el, instance } = LikeService.getLikeComponent();
+      const { $el, instance } = likeService.getLikeComponent();
       instance.setData({ likeNum: data.likes });
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
@@ -235,7 +247,7 @@ export default {
     /** 渲染"直播介绍" Tab 中的内容 */
     renderIntroMenuContent(data) {
       const desMenu = data.channelMenus.find((i) => i.menuType === 'desc');
-      const { $el } = MobileIntroService.getMobileIntroComponent({
+      const { $el } = mobileIntroService.getMobileIntroComponent({
         channelData: data,
         descContent: desMenu ? desMenu.content : '',
       });

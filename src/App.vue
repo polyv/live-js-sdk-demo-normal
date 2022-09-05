@@ -40,4 +40,8 @@ body {
   background-color: #141518;
   font-size: 14px;
 }
+
+.polyv-chat-room .tab-chat-content {
+  padding-bottom: 34px;
+}
 </style>
