@@ -337,19 +337,19 @@ export default {
   background: #2b2c35;
 }
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-chat-input .polyv-icon-emotion {
-  background: url('~@/assets/emotion.png');
+  background: url('~@/assets/chat-imgs/emotion.png');
   background-size: 20px 20px;
 }
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-chat-input .polyv-icon-flower {
-  background: url('~@/assets/flower.png');
+  background: url('~@/assets/chat-imgs/flower.png');
   background-size: 20px 20px;
 }
 .plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-chat-input .polyv-icon-more {
-  background: url('~@/assets/more.png');
+  background: url('~@/assets/chat-imgs/more.png');
   background-size: 20px 20px;
 }
 .plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-show-more .polyv-icon-more {
-  background: url('~@/assets/show-more.png');
+  background: url('~@/assets/chat-imgs/show-more.png');
   background-size: 20px 20px;
 }
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room>.polyv-cr-body .polyv-set-nickname.show {

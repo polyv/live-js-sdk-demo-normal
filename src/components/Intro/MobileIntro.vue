@@ -128,7 +128,7 @@ export default {
   width: 16px;
   height: 16px;
   vertical-align: bottom;
-  background: url(~@/assets/person.png) no-repeat;
+  background: url(~@/assets/chat-imgs/person.png) no-repeat;
   background-size: 16px 16px;
   margin-right: 2px;
 }
@@ -138,7 +138,7 @@ export default {
   width: 14px;
   height: 14px;
   vertical-align: text-top;
-  background: url(~@/assets/like.png) no-repeat;
+  background: url(~@/assets/chat-imgs/like.png) no-repeat;
   background-size: 14px 14px;
   margin-right: 2px;
 }

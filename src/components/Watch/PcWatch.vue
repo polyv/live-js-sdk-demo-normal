@@ -470,15 +470,15 @@ export default {
   background: #2b2c35;
 }
 .plv-watch-pc .plv-skin--dark .polyv-chat-room .polyv-chat-input .polyv-icon-emotion {
-  background: url('~@/assets/emotion.png');
+  background: url('~@/assets/chat-imgs/emotion.png');
   background-size: 18px 18px;
 }
 .plv-watch-pc .plv-skin--dark .polyv-chat-room .polyv-chat-input .polyv-icon-flower {
-  background: url('~@/assets/flower.png');
+  background: url('~@/assets/chat-imgs/flower.png');
   background-size: 18px 18px;
 }
 .plv-watch-pc .plv-skin--dark .polyv-chat-room .polyv-chat-input .polyv-icon-like {
-  background: url('~@/assets/like.png');
+  background: url('~@/assets/chat-imgs/like.png');
   background-size: 18px 18px;
 }
 .plv-watch-pc .plv-skin--dark .polyv-chat-room .polyv-chat-input .polyv-pc-only-teacher {
@@ -556,7 +556,7 @@ export default {
   width: 18px;
   height: 18px;
   vertical-align: middle;
-  background: url('~@/assets/person.png') no-repeat;
+  background: url('~@/assets/chat-imgs/person.png') no-repeat;
   background-size: 18px 18px;
   margin-right: 4px;
 }
