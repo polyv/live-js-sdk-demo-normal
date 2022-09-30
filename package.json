@@ -13,8 +13,8 @@
     "lint": "npm run lint:es && npm run lint:style"
   },
   "dependencies": {
-    "@polyv/interactions-receive-sdk": "0.7.2",
-    "@polyv/interactions-receive-sdk-ui-default": "0.7.2",
+    "@polyv/interactions-receive-sdk": "0.11.2",
+    "@polyv/interactions-receive-sdk-ui-default": "0.11.2",
     "axios": "^0.27.2",
     "core-js": "^3.6.5",
     "jraiser": "^3.1.5",
