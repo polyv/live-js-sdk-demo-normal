@@ -368,4 +368,9 @@ export default {
 .plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-more-control-list>li>span {
   color: #fff;
 }
+
+.plv-chatroom__more-content__pop-ups {
+  /* 需要大于播放器控制条的 z-inedx */
+  z-index: 2002;
+}
 </style>

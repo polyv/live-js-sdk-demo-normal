@@ -570,6 +570,12 @@ export default {
   margin: 0 16px;
 }
 
+.polyv-chat-room .other-message,
+.plv-chatroom__more-content__pop-ups {
+  /* 需要大于播放器控制条的 z-inedx */
+  z-index: 2002;
+}
+
 // /* 适配不同屏幕尺寸 */
 // @media (min-width: 1366px) {
 //   .plv-watch-pc {

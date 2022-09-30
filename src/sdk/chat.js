@@ -88,7 +88,7 @@ export default class PolyvChat {
       mediaChannelKey: chatInfo.mediaChannelKey, // 连麦token, 注， 目前聊天室JS-SDK还不支持连麦
       container: chatContainer,
       enableWelcome: true, // 是否开启欢迎语，默认为true
-      enableFlower: true, // 是否开启送花功能，默认为true
+      enableFlower: false, // 是否开启送花功能，默认为true
       enableOnlyTeacher: true, // 是否开启只看讲师功能，默认为true
       tabData: config.chat.tabData,
       enableLike: false,
