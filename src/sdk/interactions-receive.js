@@ -126,6 +126,11 @@ export default class PolyvInteractionsReceive {
 
   /** 销毁钩子 */
   destroy() {
+    // 需要销毁总线中监听的事件
+    Object.values(PlvIRMessageHubEvents).forEach((eventType) => {
+      plvIRMessageHub.off(eventType);
+    });
+
     PolyvInteractionsReceive._instance = null;
   }
 }

@@ -1,5 +1,5 @@
-import request from './request';
-import qs from 'querystring';
+import request from '@/plugin/request';
+import qs from 'qs';
 
 /**
  * {@link https://help.polyv.net/index.html#/live/api/ 直播服务端 API}

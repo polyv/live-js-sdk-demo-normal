@@ -66,7 +66,9 @@ export default {
         this.visible = true;
       } catch (error) {
         console.error('接口请求失败！', error.message);
-        alert('接口请求失败！');
+        this.$dialog.alert({
+          message: '接口请求失败！' + error.message,
+        });
       }
     },
     async getChannelInfo() {

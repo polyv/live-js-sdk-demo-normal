@@ -225,8 +225,13 @@ export default {
         PlvLiveMessageHubEvents.STREAM_UPDATE,
         ({ status }) => {
           if (status === 'live') {
-            alert('直播开始了，马上前往直播');
-            this.$emit('reload');
+            this.$toast({
+              type: 'loading',
+              message: '直播开始了，马上前往直播',
+              onClose: () => {
+                this.$emit('reload');
+              },
+            });
           }
         }
       );

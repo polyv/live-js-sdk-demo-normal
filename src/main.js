@@ -6,6 +6,7 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import '@/plugin/vant';
 
 import Modal from '@/components/common/Modal.vue';
 

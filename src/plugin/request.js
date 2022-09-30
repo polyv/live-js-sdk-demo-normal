@@ -1,5 +1,5 @@
 /**
- * @file Ajax 处理
+ * @file Ajax 封装
  */
 
 import Axios from 'axios';

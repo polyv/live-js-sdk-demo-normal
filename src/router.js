@@ -8,13 +8,13 @@ const routes = [
     /** 观看页 */
     path: '/watch',
     name: 'Watch',
-    component: () => import('../views/WatchLayout.vue')
+    component: () => import('./views/WatchLayout.vue')
   },
   {
     /** 登录页 */
     path: '/login',
     name: 'Login',
-    component: () => import('../views/Login.vue')
+    component: () => import('./views/Login.vue')
   }
 ];
 
