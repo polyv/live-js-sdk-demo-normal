@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Like from './Component.vue';
+import Like from './Like.vue';
 
 /** @class 组件服务-公共-点赞按钮 */
 export default class LikeService {

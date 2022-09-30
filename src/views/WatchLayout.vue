@@ -23,8 +23,8 @@ import * as PolyvUtil from '@/utils';
 export default {
   name: 'Watch-Layout',
   components: {
-    PcWatch: () => import('@/components/pc/Watch.vue'),
-    MobileWatch: () => import('@/components/mobile/Watch.vue'),
+    PcWatch: () => import('@/components/Watch/PcWatch.vue'),
+    MobileWatch: () => import('@/components/Watch/MobileWatch.vue'),
   },
   data() {
     return {

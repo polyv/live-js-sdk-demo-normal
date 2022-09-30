@@ -17,9 +17,9 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
-import MobileIntroService from '@/components/mobile/Intro';
-import LikeService from '@/components/common/Like';
-import IREntranceService from '@/components/interactions-receive';
+import { MobileIntroService } from '@/components/Intro';
+import LikeService from '@/components/Like';
+import IREntranceService from '@/components/InteractionsReceive';
 
 import { PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {

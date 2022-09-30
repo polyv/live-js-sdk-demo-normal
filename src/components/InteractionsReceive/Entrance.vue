@@ -33,13 +33,13 @@
 <script>
 import { mapState } from 'vuex';
 
-import AnnouncementEntrance from '@/components/interactions-receive/Announcement';
-import LotteryEntrance from '@/components/interactions-receive/Lottery';
-import CheckInEntrance from '@/components/interactions-receive/CheckIn';
-import AnswerCardEntrance from '@/components/interactions-receive/AnswerCard';
-import QuestionnaireEntrance from '@/components/interactions-receive/Questionnaire';
-import PushCardEntrance from '@/components/interactions-receive/PushCard';
-import WelfareLotteryEntrance from '@/components/interactions-receive/WelfareLottery';
+import AnnouncementEntrance from './Announcement';
+import LotteryEntrance from './Lottery';
+import CheckInEntrance from './CheckIn';
+import AnswerCardEntrance from './AnswerCard';
+import QuestionnaireEntrance from './Questionnaire';
+import PushCardEntrance from './PushCard';
+import WelfareLotteryEntrance from './WelfareLottery';
 
 export default {
   components: {
@@ -60,6 +60,9 @@ export default {
 </script>
 
 <style lang="scss">
+.plv-iar-pendant {
+  padding-top: 40px !important;
+}
 .interactions-receive-entrance {
   position: relative;
   top: 0;
@@ -106,10 +109,10 @@ export default {
 .aside-right-wrapper {
   position: absolute;
   right: 16px;
-  bottom: 90px;
+  bottom: 75px;
 
   &__mobile {
-    bottom: 172px;
+    bottom: 156px;
   }
 }
 

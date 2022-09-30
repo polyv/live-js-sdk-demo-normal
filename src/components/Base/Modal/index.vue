@@ -235,7 +235,7 @@ export default {
   height: 48px;
 
   cursor: pointer;
-  background: url('~@/assets/icon-close-gray.png') no-repeat center center;
+  background: url('./icon-close-gray.png') no-repeat center center;
 }
 
 .c-modal__body {

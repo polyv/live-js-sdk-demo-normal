@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import WatchStatus from '@/components/common/WatchStatus.vue';
+import WatchStatus from '@/components/WatchStatus/WatchStatus.vue';
 
 export default {
   components: { WatchStatus },

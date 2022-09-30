@@ -106,13 +106,12 @@ npm run dev  #启动项目
 ```
 
 - 主要目录文件说明
-  - `src/sdk`: 对 SDK 进行二次封装，采用事件机制进行通信
+  - `src/sdk`: 对 Polyv SDK 进行二次封装，采用事件机制进行通信
+  - `src/plugins`: 对一些第三方插件的封装和处理，比如 `Axios`, `Vant`
   - `src/utils`: 相关工具函数
   - `src/store`: vuex 存储，组件共享主要配置
-  - `src/components/common`: 桌面端，移动端公共组件
-  - `src/components/pc`: 桌面端组件
-  - `src/components/mobile`: 移动端组件
-  - `src/components/interactions-receive`: 互动 SDK UI 组件
+  - `src/components/Base`: 和业务无关的通用全局组件
+  - `src/components/InteractionsReceive`: 互动 SDK UI 组件
 - 使用到的第三方库：参考项目中的 package.json 的 dependencies。
 - 使用低版本 `node` 注意事项【建议使用 `16.9.1` 版本】
   - 安装依赖时，会出现 `integrity checksum failed` 的错误，原因主要是 `sha` 加密算法不同，删掉 `packgae-lock.json` 再安装依赖即可

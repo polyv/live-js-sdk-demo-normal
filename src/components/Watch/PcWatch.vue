@@ -74,11 +74,11 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
-import LikeService from '@/components/common/Like';
-import WatchStatus from '@/components/common/WatchStatus.vue';
-import PcMenu from '@/components/pc/Menu.vue';
-import PcMiniTool from '@/components/pc/MiniTool.vue';
-import IREntranceService from '@/components/interactions-receive';
+import WatchStatus from '@/components/WatchStatus/WatchStatus.vue';
+import LikeService from '@/components/Like';
+import PcMenu from '@/components/Menu/PcMenu.vue';
+import PcMiniTool from '@/components/MiniTool/PcMiniTool.vue';
+import IREntranceService from '@/components/InteractionsReceive';
 
 import { MainScreenMap, PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {

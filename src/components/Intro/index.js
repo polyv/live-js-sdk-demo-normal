@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import MobileIntro from './Component.vue';
+import MobileIntro from './MobileIntro.vue';
 
 /** @class 组件服务-移动端-介绍页 */
-export default class MobileIntroService {
+export class MobileIntroService {
   /** @type {Vue | null} */
   vueInstance = null;
 

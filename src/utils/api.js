@@ -1,4 +1,4 @@
-import request from '@/plugin/request';
+import request from '@/plugins/request';
 import qs from 'qs';
 
 /**
