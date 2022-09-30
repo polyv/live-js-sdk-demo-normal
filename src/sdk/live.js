@@ -1,6 +1,7 @@
 import { TIME_STAMP } from '@/const';
 import * as PolyvUtil from '@/utils';
 import PubSub from 'jraiser/pubsub/1.2/pubsub';
+import { Notify } from 'vant';
 
 /** 用于创建直播 JS-SDK 的类 */
 const PolyvLiveSdk = window.PolyvLiveSdk;
@@ -134,6 +135,7 @@ export default class PolyvLive {
     this.liveSdk.on(PolyvLiveSdk.EVENTS.CHANNEL_DATA_INIT, (event, data) => {
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.CHANNEL_DATA_INIT, data);
       this.createLiveSdkPlayer(data);
+      this.bindPlayerLowLatencyEvent();
     }
     );
 
@@ -180,10 +182,27 @@ export default class PolyvLive {
       pptNavBottom: '80px',
       barrage: true, // 是否开启弹幕
       defaultBarrageStatus: true,
-      autoplay: true // 是否自动播放
+      autoplay: true, // 是否自动播放
+      lowLatency: true, // 是否使用无延迟，设置为 true 后，SDK 内部会自行判断支不支持
     });
 
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_INIT, data);
+  }
+
+  /**
+   * 播放器-绑定无延迟相关事件
+   */
+  bindPlayerLowLatencyEvent() {
+    const player = this.liveSdk.player;
+    const isEnableLowLatency = player.lowLatency;
+    console.info('isEnableLowLatency', isEnableLowLatency);
+    if (!isEnableLowLatency) return;
+
+    player.on('networkQuality', function(stats) {
+      if (stats.downlink === 3) {
+        Notify('当前网络状态较差，建议切换网络观看');
+      }
+    });
   }
 
   /** 销毁钩子 */
