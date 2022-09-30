@@ -79,6 +79,7 @@ import LikeService from '@/components/Like';
 import PcMenu from '@/components/Menu/PcMenu.vue';
 import PcMiniTool from '@/components/MiniTool/PcMiniTool.vue';
 import IREntranceService from '@/components/InteractionsReceive';
+import ProdcutEntranceService from '@/components/InteractionsReceive/Product';
 
 import { MainScreenMap, PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {
@@ -95,6 +96,7 @@ import PolyvInteractionsReceive, {
 } from '@/sdk/interactions-receive';
 
 const irEntranceService = new IREntranceService();
+const prodcutEntranceService = new ProdcutEntranceService();
 const likeService = new LikeService();
 
 export default {
@@ -158,6 +160,7 @@ export default {
     plvIRMessageHub.trigger(PlvIRMessageHubEvents.DESTROY);
 
     irEntranceService.destroy();
+    prodcutEntranceService.destroy();
     likeService.destroy();
   },
   methods: {
@@ -167,11 +170,22 @@ export default {
     }),
     /** 根据直播场景更新聊天室配置 */
     updateConfigChatByScene(scene) {
+      let userType = PlvChatUserType.STUDENT;
+      const needAfterInsertedTabData = [
+        {
+          name: '商品库',
+          type: 'product',
+        },
+      ];
+
       if (scene === PlvChannelScene.PPT) {
-        this.updateConfigChat({
-          userType: PlvChatUserType.SLICE,
-        });
+        userType = PlvChatUserType.SLICE;
       }
+
+      this.updateConfigChat({
+        userType,
+        tabData: [...this.config.chat.tabData, ...needAfterInsertedTabData],
+      });
     },
     /** 根据直播场景来获取相关的播放器元素 */
     getPlayElByScene(scene) {
@@ -216,6 +230,9 @@ export default {
           socket: plvChat.socket,
         }
       );
+
+      // 渲染商品库组件
+      this.renderProductEntrance();
 
       // 初始化-直播SDK
       PolyvLive.setInstance(
@@ -296,6 +313,12 @@ export default {
     renderIREntrance() {
       const { $el } = irEntranceService.getIREntrance();
       const $tabChat = document.getElementById('tab-chat');
+      $tabChat.appendChild($el);
+    },
+    /** 渲染商品库组件 */
+    renderProductEntrance() {
+      const { $el } = prodcutEntranceService.getProdcutEntranceComponent();
+      const $tabChat = document.getElementById('tab-product');
       $tabChat.appendChild($el);
     },
     /** 渲染点赞按钮 */
