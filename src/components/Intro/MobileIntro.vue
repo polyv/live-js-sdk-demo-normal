@@ -1,5 +1,6 @@
 <template>
-  <section v-if="channelData">
+  <section v-if="channelData"
+           class="tab-intro">
     <div class="tab-intro-info">
       <img class="tab-intro-info__logo"
            :src="channelData.coverImage" />
@@ -33,8 +34,8 @@
 import WatchStatus from '@/components/WatchStatus/WatchStatus.vue';
 
 export default {
-  components: { WatchStatus },
   name: 'Mobile-Intro',
+  components: { WatchStatus },
   props: {
     channelData: {
       type: [Object, null],

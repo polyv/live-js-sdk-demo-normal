@@ -10,19 +10,40 @@
       <!-- 聊天室区域，包含 PPT 文档播放器和直播介绍页 -->
       <div class="plv-watch-mobile-chatroom plv-skin--dark"
            ref="plv-mobile-chat"
-           id="plv-mobile-chat"></div>
+           id="plv-mobile-chat">
+        <tab-nav v-if="playerInited"
+                 v-model="activeTab"
+                 :tabData="tabData"
+                 :originTabTypes="originTabTypes"
+                 class="tab-nav" />
+        <section class="custom-panel-wrapper"
+                 v-show="isCustomAcitveTab()">
+          <mobile-intro v-if="introInfo"
+                        v-bind="introInfo"
+                        v-show="isShowMobileIntro" />
+          <mobile-product v-if="enableRenderIRComponent"
+                          v-show="isShowProductList"
+                          @change-switch="changeProductSwitch" />
+        </section>
+      </div>
     </div>
   </section>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex';
-import { MobileIntroService } from '@/components/Intro';
+import WatchMixin from '@/components/Watch/WatchMixin';
+import TabNav from '@/components/TabNav/TabNav.vue';
+import MobileIntro from '@/components/Intro/MobileIntro.vue';
 import LikeService from '@/components/Like';
 import IREntranceService from '@/components/InteractionsReceive';
-import ProdcutEntranceService from '@/components/InteractionsReceive/Product';
 
-import { PlvChannelScene, PlvChatUserType } from '@/const';
+import {
+  getDefaultConfigChat,
+  PlvChannelScene,
+  PlvChatUserType,
+  TabNavType,
+} from '@/const';
 import PolyvChat, {
   plvChatMessageHub,
   PlvChatMessageHubEvents,
@@ -37,18 +58,28 @@ import PolyvInteractionsReceive, {
 } from '@/sdk/interactions-receive';
 
 const irEntranceService = new IREntranceService();
-const prodcutEntranceService = new ProdcutEntranceService();
 const likeService = new LikeService();
-const mobileIntroService = new MobileIntroService();
 
 export default {
   name: 'Mobile-Watch',
-  /** 由父组件来保证数据存在 */
-  props: {
-    channelInfo: Object,
-    chatInfo: Object,
-    apiToken: String,
-    productEnable: Boolean,
+  mixins: [WatchMixin],
+  components: {
+    TabNav,
+    MobileIntro,
+    MobileProduct: () =>
+      import('@/components/InteractionsReceive/Product/MobileProduct.vue'),
+  },
+  data() {
+    const chatConfig = getDefaultConfigChat();
+
+    return {
+      originTabTypes: chatConfig.tabData
+        .map((i) => i.type)
+        .concat(TabNavType.PPT),
+      playerInited: false,
+      enableRenderIRComponent: false,
+      introInfo: null,
+    };
   },
   computed: {
     ...mapState({
@@ -56,6 +87,9 @@ export default {
     }),
     isAloneChannelScene() {
       return this.channelInfo.scene === PlvChannelScene.ALONE;
+    },
+    isShowMobileIntro() {
+      return this.activeTab === TabNavType.INTRO;
     },
   },
   mounted() {
@@ -77,9 +111,7 @@ export default {
     plvIRMessageHub.trigger(PlvIRMessageHubEvents.DESTROY);
 
     irEntranceService.destroy();
-    prodcutEntranceService.destroy();
     likeService.destroy();
-    mobileIntroService.destroy();
   },
   methods: {
     ...mapMutations({
@@ -92,32 +124,28 @@ export default {
       const needBeforeInsertedTabData = [
         {
           name: '直播介绍',
-          type: 'intro',
+          type: TabNavType.INTRO,
         },
       ];
 
-      const needAfterInsertedTabData = this.productEnable
-        ? [
-            {
-              name: '商品库',
-              type: 'product',
-            },
-          ]
-        : [];
-
       if (scene === PlvChannelScene.PPT) {
         userType = PlvChatUserType.SLICE;
-        needBeforeInsertedTabData.unshift({ name: '文档', type: 'ppt' });
+        needBeforeInsertedTabData.unshift({
+          name: '文档',
+          type: TabNavType.PPT,
+        });
+        this.activeTab = TabNavType.PPT;
+      } else {
+        this.activeTab = TabNavType.INTRO;
       }
+
+      const defaultTabData = getDefaultConfigChat().tabData;
 
       this.updateConfigChat({
         userType,
-        tabData: [
-          ...needBeforeInsertedTabData,
-          ...this.config.chat.tabData,
-          ...needAfterInsertedTabData,
-        ],
+        tabData: [...needBeforeInsertedTabData, ...defaultTabData],
       });
+      this.tabData = [...needBeforeInsertedTabData, ...this.tabData];
     },
     /** 根据直播场景来获取相关的播放器元素 */
     getPlayElByScene(scene) {
@@ -178,7 +206,7 @@ export default {
       );
 
       // 渲染商品库组件
-      this.renderProductEntrance();
+      this.enableRenderIRComponent = true;
 
       // 初始化-直播SDK
       PolyvLive.setInstance(
@@ -216,6 +244,7 @@ export default {
 
       // 播放器初始化
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
+        this.playerInited = true;
         this.renderLike(data);
         this.renderIntroMenuContent(data);
       });
@@ -262,13 +291,6 @@ export default {
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
     },
-    /** 渲染商品库组件 */
-    renderProductEntrance() {
-      if (!this.productEnable) return;
-      const { $el } = prodcutEntranceService.getProdcutEntranceComponent();
-      const $tabChat = document.getElementById('tab-product');
-      $tabChat.appendChild($el);
-    },
     /** 渲染点赞按钮 */
     renderLike(data) {
       const { $el, instance } = likeService.getLikeComponent();
@@ -279,12 +301,11 @@ export default {
     /** 渲染"直播介绍" Tab 中的内容 */
     renderIntroMenuContent(data) {
       const desMenu = data.channelMenus.find((i) => i.menuType === 'desc');
-      const { $el } = mobileIntroService.getMobileIntroComponent({
+      const introInfo = {
         channelData: data,
         descContent: desMenu ? desMenu.content : '',
-      });
-      const $tabIntro = document.querySelector('#tab-intro');
-      $tabIntro.appendChild($el);
+      };
+      this.introInfo = introInfo;
     },
   },
 };
@@ -318,7 +339,26 @@ export default {
   overflow: hidden;
 }
 
+.plv-watch-mobile-chatroom {
+  position: relative;
+}
+.plv-watch-mobile-chatroom .tab-nav {
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+.plv-watch-mobile-chatroom .custom-panel-wrapper {
+  position: relative;
+  padding-top: 38px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
 /* 移动端聊天室SDK样式覆写 */
+.plv-watch-mobile .polyv-chat-room .polyv-cr-head {
+  display: none;
+}
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room {
   background: #202127;
 }

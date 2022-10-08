@@ -92,6 +92,7 @@ export default class PolyvChat {
       enableOnlyTeacher: true, // 是否开启只看讲师功能，默认为true
       tabData: config.chat.tabData,
       enableLike: false,
+      showUserList: false,
       roomMessage: (data) => {
         // data为聊天室 socket 消息，当有聊天室消息时会触发此方法
         const event = data.EVENT;

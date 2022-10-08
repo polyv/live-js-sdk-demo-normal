@@ -1,17 +1,12 @@
 <template>
   <section v-if="visible">
-    <mobile-watch v-if="isMobile"
-                  :channelInfo="channelInfo"
-                  :chatInfo="chatInfo"
-                  :apiToken="apiToken"
-                  :productEnable="productEnable"
-                  @reload="reloadWatchPage" />
-    <pc-watch v-else
-              :channelInfo="channelInfo"
-              :chatInfo="chatInfo"
-              :apiToken="apiToken"
-              :productEnable="productEnable"
-              @reload="reloadWatchPage" />
+    <component :is="componentTagName"
+               :channelInfo="channelInfo"
+               :chatInfo="chatInfo"
+               :apiToken="apiToken"
+               :productEnable="productEnable"
+               @change-switch="handleChangeSwitch"
+               @reload="reloadWatchPage" />
   </section>
 </template>
 
@@ -42,6 +37,9 @@ export default {
       isMobile: (state) => state.isMobile,
       config: (state) => state.config,
     }),
+    componentTagName() {
+      return this.isMobile ? 'MobileWatch' : 'PcWatch';
+    },
   },
   created() {
     this.init();
@@ -55,6 +53,11 @@ export default {
       this.visible = false;
       this.resetConfigChat();
       await this.init();
+    },
+    handleChangeSwitch(data) {
+      Object.keys(data).forEach((key) => {
+        this[key] = data[key];
+      });
     },
     /** 初始化观看页需要的数据 */
     async init() {

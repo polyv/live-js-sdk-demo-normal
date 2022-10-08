@@ -20,6 +20,7 @@
 import { Product } from '@polyv/interactions-receive-sdk';
 import ProductList from '@polyv/interactions-receive-sdk-ui-default/lib/MobileProduct';
 import ProductBubble from '@polyv/interactions-receive-sdk-ui-default/lib/ProductBubble';
+import { ynToBool } from '@/utils';
 
 export default {
   components: {
@@ -43,6 +44,13 @@ export default {
 
   created() {
     this.productSdk = new Product();
+    this.productSdk.on(this.productSdk.events.PRODUCT_MESSAGE, (msg) => {
+      const ProductMessageStatus = this.productSdk.ProductMessageStatus;
+      const status = `${msg.status}`;
+      if (status === ProductMessageStatus.ProductSwitch) {
+        this.$emit('change-switch', ynToBool(msg.content.enabled));
+      }
+    });
   },
 
   beforeDestroy() {
@@ -73,6 +81,7 @@ export default {
 <style lang="scss" scoped>
 .plv-demo-product {
   position: relative;
+  height: 100%;
 }
 .c-product-bubble {
   position: absolute;

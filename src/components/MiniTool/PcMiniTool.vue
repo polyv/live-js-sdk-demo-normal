@@ -1,5 +1,6 @@
 <template>
-  <section v-if="visible">
+  <section v-if="visible"
+           class="pc-mini-tool">
     <div class="tool-entrance"
          @click="handleMainPanelVisible">
       小工具<span class="tool-entrance__close">x</span>

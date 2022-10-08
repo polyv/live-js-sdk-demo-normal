@@ -41,8 +41,20 @@
           <div class="plv-watch-pc__chat plv-skin--dark"
                ref="plv-pc-chat"
                id="plv-pc-chat">
-            <!-- renderIREntrance 和 renderLike 会渲染这一块区域 -->
             <pc-mini-tool />
+            <tab-nav v-if="playerInited"
+                     v-model="activeTab"
+                     :tabData="tabData"
+                     :originTabTypes="originTabTypes"
+                     class="custom-tab" />
+            <section class="custom-panel-wrapper"
+                     v-show="isCustomAcitveTab()">
+              <pc-product v-if="enableRenderIRComponent"
+                          v-show="isShowProductList"
+                          @change-switch="changeProductSwitch" />
+            </section>
+            <!-- 这一块会渲染  polyv-chat-room -->
+            <!-- renderIREntrance 和 renderLike 会渲染 polyv-chat-room  中 -->
           </div>
         </div>
       </div>
@@ -74,12 +86,13 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex';
+import WatchMixin from '@/components/Watch/WatchMixin';
+import TabNav from '@/components/TabNav/TabNav.vue';
 import WatchStatus from '@/components/WatchStatus/WatchStatus.vue';
 import LikeService from '@/components/Like';
 import PcMenu from '@/components/Menu/PcMenu.vue';
 import PcMiniTool from '@/components/MiniTool/PcMiniTool.vue';
 import IREntranceService from '@/components/InteractionsReceive';
-import ProdcutEntranceService from '@/components/InteractionsReceive/Product';
 
 import { MainScreenMap, PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {
@@ -96,25 +109,23 @@ import PolyvInteractionsReceive, {
 } from '@/sdk/interactions-receive';
 
 const irEntranceService = new IREntranceService();
-const prodcutEntranceService = new ProdcutEntranceService();
 const likeService = new LikeService();
 
 export default {
   name: 'PC-Watch',
-  /** 由父组件来保证数据存在 */
-  props: {
-    channelInfo: Object,
-    chatInfo: Object,
-    apiToken: String,
-    productEnable: Boolean,
-  },
+  mixins: [WatchMixin],
   components: {
     PcMenu,
     WatchStatus,
     PcMiniTool,
+    TabNav,
+    PcProduct: () =>
+      import('@/components/InteractionsReceive/Product/PcProduct.vue'),
   },
   data() {
     return {
+      playerInited: false,
+      enableRenderIRComponent: false,
       playerCtrl: {
         /** 是否全屏 */
         isFullScreen: false,
@@ -161,7 +172,6 @@ export default {
     plvIRMessageHub.trigger(PlvIRMessageHubEvents.DESTROY);
 
     irEntranceService.destroy();
-    prodcutEntranceService.destroy();
     likeService.destroy();
   },
   methods: {
@@ -172,22 +182,12 @@ export default {
     /** 根据直播场景更新聊天室配置 */
     updateConfigChatByScene(scene) {
       let userType = PlvChatUserType.STUDENT;
-      const needAfterInsertedTabData = this.productEnable
-        ? [
-            {
-              name: '商品库',
-              type: 'product',
-            },
-          ]
-        : [];
-
       if (scene === PlvChannelScene.PPT) {
         userType = PlvChatUserType.SLICE;
       }
 
       this.updateConfigChat({
         userType,
-        tabData: [...this.config.chat.tabData, ...needAfterInsertedTabData],
       });
     },
     /** 根据直播场景来获取相关的播放器元素 */
@@ -234,8 +234,8 @@ export default {
         }
       );
 
-      // 渲染商品库组件
-      this.renderProductEntrance();
+      // 设置当前可以渲染 IR 组件了
+      this.enableRenderIRComponent = true;
 
       // 初始化-直播SDK
       PolyvLive.setInstance(
@@ -277,6 +277,7 @@ export default {
 
       // 播放器初始化
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
+        this.playerInited = true;
         this.renderLike(data);
         this.bindPlayerControlEvents();
       });
@@ -316,13 +317,6 @@ export default {
     renderIREntrance() {
       const { $el } = irEntranceService.getIREntrance();
       const $tabChat = document.getElementById('tab-chat');
-      $tabChat.appendChild($el);
-    },
-    /** 渲染商品库组件 */
-    renderProductEntrance() {
-      if (!this.productEnable) return;
-      const { $el } = prodcutEntranceService.getProdcutEntranceComponent();
-      const $tabChat = document.getElementById('tab-product');
       $tabChat.appendChild($el);
     },
     /** 渲染点赞按钮 */
@@ -435,12 +429,30 @@ export default {
   width: 100%;
   height: 100%;
 }
+.plv-watch-pc__chat .tab-nav {
+  position: absolute;
+  top: 31.25%;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+}
+.plv-watch-pc__chat .custom-panel-wrapper {
+  position: relative;
+  padding-top: 38px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
 /* 普通直播，没有辅屏 */
 .plv-watch-pc--alone .plv-watch-pc__chat {
   padding-top: 0;
 }
 
 /* 聊天室样式覆写 */
+.plv-watch-pc .polyv-chat-room .polyv-cr-head {
+  display: none;
+}
 .plv-watch-pc .plv-skin--dark .polyv-chat-room {
   background-color: #202127;
 }

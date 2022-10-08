@@ -36,6 +36,20 @@ export const MainScreenMap = {
   }
 };
 
+/** Tab 类型 */
+export const TabNavType = {
+  /** 聊天 */
+  CHAT: 'chat',
+  /** 提问 */
+  ASK: 'ask',
+  /** 文档 */
+  PPT: 'ppt',
+  /** 直播介绍 */
+  INTRO: 'intro',
+  /** 商品库/边买边看 */
+  PRODUCT: 'porduct'
+};
+
 /**
  * 获取默认聊天配置
  */
@@ -46,11 +60,11 @@ export const getDefaultConfigChat = () => {
     tabData: [
       {
         name: '聊天', // 菜单栏名称
-        type: 'chat' // 菜单栏类型, 有3个已有的内置类型(chat, user-list, ask),详情请参考文档
+        type: TabNavType.CHAT // 菜单栏类型, 有3个已有的内置类型(chat, user-list, ask),详情请参考文档
       },
       {
         name: '提问',
-        type: 'ask'
+        type: TabNavType.ASK
       }
     ]
   };
