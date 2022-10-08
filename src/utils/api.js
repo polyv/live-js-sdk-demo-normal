@@ -47,4 +47,16 @@ export default class PolyvApi {
     return res.data.token;
   }
 
+  /**
+   * 查询频道商品库开关状态
+   * @see {@link https://help.polyv.net/index.html#/live/api/channel/operate/get_channel_product_enabled 文档-查询频道商品库开关状态}
+   * @param {Object} params 参与sign生成的参数，详细请看sign生成规则
+   */
+  static async getProductEnable(params) {
+    const res = await request.get('/channel/product/get-enabled', {
+      params
+    });
+    return res.data.enabled;
+  }
+
 }

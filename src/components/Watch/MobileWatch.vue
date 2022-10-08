@@ -48,6 +48,7 @@ export default {
     channelInfo: Object,
     chatInfo: Object,
     apiToken: String,
+    productEnable: Boolean,
   },
   computed: {
     ...mapState({
@@ -95,12 +96,14 @@ export default {
         },
       ];
 
-      const needAfterInsertedTabData = [
-        {
-          name: '商品库',
-          type: 'product',
-        },
-      ];
+      const needAfterInsertedTabData = this.productEnable
+        ? [
+            {
+              name: '商品库',
+              type: 'product',
+            },
+          ]
+        : [];
 
       if (scene === PlvChannelScene.PPT) {
         userType = PlvChatUserType.SLICE;
@@ -261,6 +264,7 @@ export default {
     },
     /** 渲染商品库组件 */
     renderProductEntrance() {
+      if (!this.productEnable) return;
       const { $el } = prodcutEntranceService.getProdcutEntranceComponent();
       const $tabChat = document.getElementById('tab-product');
       $tabChat.appendChild($el);

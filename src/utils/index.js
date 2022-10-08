@@ -51,3 +51,17 @@ export function debounce(fn, delay) {
     }, delay);
   };
 }
+
+/**
+ * Y 或者 N 转换为布尔值。
+ * @author tanyuqin
+ * @param {string} value Y 或者 N。
+ * @return {boolean} 布尔值。
+ */
+export function ynToBool(value) {
+  value = String(value).toUpperCase();
+  if (value !== 'Y' && value !== 'N') {
+    throw new Error('The value argument must be "Y" or "N"');
+  }
+  return value === 'Y';
+}
