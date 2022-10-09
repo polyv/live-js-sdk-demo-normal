@@ -9,6 +9,8 @@ export const plvChatMessageHub = new PubSub();
 export const PlvChatMessageHubEvents = {
   /** 聊天室消息变化 */
   ROOM_MESSAGE: 'roomMessage',
+  /** 红包点击回调 */
+  REDPACKET_CLICK: 'redpacketClick',
   /** 销毁 */
   DESTROY: 'destroy'
 };
@@ -93,6 +95,12 @@ export default class PolyvChat {
       tabData: config.chat.tabData,
       enableLike: false,
       showUserList: false,
+      enableRedpack: true, // 是否展示红包消息
+      enableRedpackResult: true, // 是否展示红包结果
+      // 点击红包消息的回调
+      handlerEvent: (type, data) => {
+        plvChatMessageHub.trigger(PlvChatMessageHubEvents.REDPACKET_CLICK, data);
+      },
       roomMessage: (data) => {
         // data为聊天室 socket 消息，当有聊天室消息时会触发此方法
         const event = data.EVENT;

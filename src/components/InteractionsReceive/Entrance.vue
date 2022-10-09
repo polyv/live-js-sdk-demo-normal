@@ -22,6 +22,7 @@
       'aside-right-wrapper': true,
       'aside-right-wrapper__mobile': isMobile,
     }">
+      <RedEnvelopeEntrance class="red-envelope-entrance" />
       <!-- 卡片推送 -->
       <PushCardEntrance class="push-card-entrance" />
       <!-- 条件抽奖 -->
@@ -40,6 +41,7 @@ import AnswerCardEntrance from './AnswerCard';
 import QuestionnaireEntrance from './Questionnaire';
 import PushCardEntrance from './PushCard';
 import WelfareLotteryEntrance from './WelfareLottery';
+import RedEnvelopeEntrance from './RedEnvelope';
 
 export default {
   components: {
@@ -50,6 +52,7 @@ export default {
     QuestionnaireEntrance,
     PushCardEntrance,
     WelfareLotteryEntrance,
+    RedEnvelopeEntrance,
   },
   computed: {
     ...mapState({
@@ -116,7 +119,7 @@ export default {
   }
 }
 
-.push-card-entrance, .welfare-lottery-entrance {
+.red-envelope-entrance, .push-card-entrance, .welfare-lottery-entrance {
   margin-top: 8px;
 }
 </style>
