@@ -6,6 +6,7 @@ module.exports = {
   ],
   rules: {
     indent: 0,
+    'vue/html-indent': 0,
     'vue/multi-word-component-names': 0,
     'no-unused-vars': 0,
     'promise/prefer-await-to-then': 0,

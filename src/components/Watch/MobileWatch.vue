@@ -8,22 +8,24 @@
              id="plv-mobile-player"></div>
       </div>
       <!-- 聊天室区域，包含 PPT 文档播放器和直播介绍页 -->
-      <div class="plv-watch-mobile-chatroom plv-skin--dark"
-           ref="plv-mobile-chat"
-           id="plv-mobile-chat">
+      <div class="plv-watch-mobile-chatroom plv-skin--dark">
         <tab-nav v-if="playerInited"
                  v-model="activeTab"
                  :tabData="tabData"
                  :originTabTypes="originTabTypes"
                  class="tab-nav" />
-        <section class="custom-panel-wrapper"
-                 v-show="isCustomAcitveTab()">
+        <section v-show="isCustomAcitveTab()"
+                 class="custom-tab-content-wrapper">
           <mobile-intro v-if="introInfo"
-                        v-bind="introInfo"
-                        v-show="isShowMobileIntro" />
+                        v-show="isShowMobileIntro"
+                        v-bind="introInfo" />
           <mobile-product v-if="enableRenderIRComponent"
                           v-show="isShowProductList"
                           @change-switch="changeProductSwitch" />
+        </section>
+        <section v-show="!isCustomAcitveTab()"
+                 class="plv-mobile-origin-tab-content"
+                 ref="plv-mobile-origin-tab-content">
         </section>
       </div>
     </div>
@@ -94,7 +96,7 @@ export default {
   },
   mounted() {
     const scene = this.channelInfo.scene || '';
-    const chatContainer = this.$refs['plv-mobile-chat'];
+    const chatContainer = this.$refs['plv-mobile-origin-tab-content'];
     const { playerEl, pptEl } = this.getPlayElByScene(scene);
 
     this.updateConfigChatByScene(scene);
@@ -347,9 +349,15 @@ export default {
   width: 100%;
   z-index: 1;
 }
-.plv-watch-mobile-chatroom .custom-panel-wrapper {
+.plv-watch-mobile-chatroom .custom-tab-content-wrapper {
   position: relative;
   padding-top: 38px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+.plv-watch-mobile-chatroom .plv-mobile-origin-tab-content {
+  position: relative;
   box-sizing: border-box;
   width: 100%;
   height: 100%;

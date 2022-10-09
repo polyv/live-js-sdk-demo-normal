@@ -38,23 +38,25 @@
 
         <!-- 侧边栏-聊天室 -->
         <div class="plv-watch-pc__side">
-          <div class="plv-watch-pc__chat plv-skin--dark"
-               ref="plv-pc-chat"
-               id="plv-pc-chat">
+          <div class="plv-watch-pc__chat plv-skin--dark">
             <pc-mini-tool />
             <tab-nav v-if="playerInited"
                      v-model="activeTab"
                      :tabData="tabData"
                      :originTabTypes="originTabTypes"
-                     class="custom-tab" />
-            <section class="custom-panel-wrapper"
-                     v-show="isCustomAcitveTab()">
+                     class="tab-nav" />
+            <section v-show="isCustomAcitveTab()"
+                     class="custom-tab-content-wrapper">
               <pc-product v-if="enableRenderIRComponent"
                           v-show="isShowProductList"
                           @change-switch="changeProductSwitch" />
             </section>
-            <!-- 这一块会渲染  polyv-chat-room -->
-            <!-- renderIREntrance 和 renderLike 会渲染 polyv-chat-room  中 -->
+            <section v-show="!isCustomAcitveTab()"
+                     class="plv-pc-origin-tab-content"
+                     ref="plv-pc-origin-tab-content">
+              <!-- 这一块会渲染  polyv-chat-room -->
+              <!-- renderIREntrance 和 renderLike 会渲染 polyv-chat-room  中 -->
+            </section>
           </div>
         </div>
       </div>
@@ -155,7 +157,7 @@ export default {
     /** 直播场景 */
     const scene = this.channelInfo.scene || '';
     const controllerEl = this.$refs['plv-pc-top'];
-    const chatContainer = this.$refs['plv-pc-chat'];
+    const chatContainer = this.$refs['plv-pc-origin-tab-content'];
     const { playerEl, pptEl } = this.getPlayElByScene(scene);
 
     this.updateConfigChatByScene(scene);
@@ -436,9 +438,16 @@ export default {
   width: 100%;
   z-index: 1;
 }
-.plv-watch-pc__chat .custom-panel-wrapper {
+.plv-watch-pc__chat .custom-tab-content-wrapper {
   position: relative;
   padding-top: 38px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
+.plv-watch-pc__chat .plv-pc-origin-tab-content {
+  position: relative;
   box-sizing: border-box;
   width: 100%;
   height: 100%;

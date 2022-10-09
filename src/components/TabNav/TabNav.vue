@@ -41,20 +41,26 @@ export default {
     $originTabWrapper = document.querySelector('.polyv-cr-head');
     $originTabBody = document.querySelector('.polyv-chat-room');
   },
+  watch: {
+    activeTab: {
+      handler() {
+        this.$nextTick(() => {
+          if (this.originTabTypes.includes(this.activeTab)) {
+            this.handleOriginTabClick(this.activeTab);
+          }
+        });
+      },
+      immediate: true,
+    },
+  },
   methods: {
     handleTabClick(tab) {
       this.$emit('change', tab.type);
-      if (this.originTabTypes.includes(tab.type)) {
-        $originTabBody.style.removeProperty('display');
-        this.handleOriginTabClick(tab);
-      } else {
-        $originTabBody.style.setProperty('display', 'none');
-      }
     },
-    handleOriginTabClick(tab) {
+    handleOriginTabClick(tabType) {
       const $tabEl =
         $originTabWrapper &&
-        $originTabWrapper.querySelector(`li[data-type='${tab.type}']`);
+        $originTabWrapper.querySelector(`li[data-type='${tabType}']`);
       $tabEl && $tabEl.click();
     },
   },
