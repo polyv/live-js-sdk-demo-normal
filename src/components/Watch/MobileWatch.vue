@@ -19,13 +19,17 @@
           <mobile-intro v-if="introInfo"
                         v-show="isShowMobileIntro"
                         v-bind="introInfo" />
-          <mobile-product v-if="enableRenderIRComponent"
-                          v-show="isShowProductList"
-                          @change-switch="changeProductSwitch" />
+          <mobile-product-list v-if="enableRenderIRComponent"
+                               v-show="isShowProductList"
+                               @change-switch="changeProductSwitch" />
         </section>
         <section v-show="!isCustomAcitveTab()"
                  class="plv-mobile-origin-tab-content"
                  ref="plv-mobile-origin-tab-content">
+        </section>
+
+        <section class="bubble-wrapper">
+          <product-bubble />
         </section>
       </div>
     </div>
@@ -39,6 +43,7 @@ import TabNav from '@/components/TabNav/TabNav.vue';
 import MobileIntro from '@/components/Intro/MobileIntro.vue';
 import LikeService from '@/components/Like';
 import IREntranceService from '@/components/InteractionsReceive';
+import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
 
 import {
   getDefaultConfigChat,
@@ -68,8 +73,9 @@ export default {
   components: {
     TabNav,
     MobileIntro,
-    MobileProduct: () =>
-      import('@/components/InteractionsReceive/Product/MobileProduct.vue'),
+    ProductBubble,
+    MobileProductList: () =>
+      import('@/components/InteractionsReceive/Product/MobileProductList.vue'),
   },
   data() {
     const chatConfig = getDefaultConfigChat();
@@ -361,6 +367,12 @@ export default {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+}
+.plv-watch-mobile-chatroom .bubble-wrapper {
+  position: absolute;
+  top: 38px;
+  left: 0;
+  width: 100%;
 }
 
 /* 移动端聊天室SDK样式覆写 */

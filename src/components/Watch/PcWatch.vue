@@ -47,15 +47,19 @@
                      class="tab-nav" />
             <section v-show="isCustomAcitveTab()"
                      class="custom-tab-content-wrapper">
-              <pc-product v-if="enableRenderIRComponent"
-                          v-show="isShowProductList"
-                          @change-switch="changeProductSwitch" />
+              <pc-product-list v-if="enableRenderIRComponent"
+                               v-show="isShowProductList"
+                               @change-switch="changeProductSwitch" />
             </section>
             <section v-show="!isCustomAcitveTab()"
                      class="plv-pc-origin-tab-content"
                      ref="plv-pc-origin-tab-content">
               <!-- 这一块会渲染  polyv-chat-room -->
               <!-- renderIREntrance 和 renderLike 会渲染 polyv-chat-room  中 -->
+            </section>
+
+            <section class="bubble-wrapper">
+              <product-bubble />
             </section>
           </div>
         </div>
@@ -95,6 +99,7 @@ import LikeService from '@/components/Like';
 import PcMenu from '@/components/Menu/PcMenu.vue';
 import PcMiniTool from '@/components/MiniTool/PcMiniTool.vue';
 import IREntranceService from '@/components/InteractionsReceive';
+import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
 
 import { MainScreenMap, PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {
@@ -121,8 +126,9 @@ export default {
     WatchStatus,
     PcMiniTool,
     TabNav,
-    PcProduct: () =>
-      import('@/components/InteractionsReceive/Product/PcProduct.vue'),
+    ProductBubble,
+    PcProductList: () =>
+      import('@/components/InteractionsReceive/Product/PcProductList.vue'),
   },
   data() {
     return {
@@ -451,6 +457,13 @@ export default {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+}
+
+.plv-watch-pc__chat .bubble-wrapper {
+  position: absolute;
+  top: 37.25%;
+  left: 0;
+  width: 100%;
 }
 
 /* 普通直播，没有辅屏 */
