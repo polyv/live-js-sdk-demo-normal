@@ -14,11 +14,9 @@
 <script>
 /** @type {null|HTMLElement} */
 let $originTabWrapper = null;
-/** @type {null|HTMLElement} */
-let $originTabBody = null;
 
 export default {
-  name: 'PC-Tab-Nav',
+  name: 'Tab-Nav',
   model: {
     prop: 'activeTab',
     event: 'change',
@@ -39,7 +37,6 @@ export default {
   },
   mounted() {
     $originTabWrapper = document.querySelector('.polyv-cr-head');
-    $originTabBody = document.querySelector('.polyv-chat-room');
   },
   watch: {
     activeTab: {
