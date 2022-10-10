@@ -11,7 +11,7 @@ export default class PolyvApi {
    * @param {Object} params 参与sign生成的参数，详细请看sign生成规则
    */
   static async getChannelInfo(params) {
-    const res = await request.get('/channel/basic/get', {
+    const res = await request.get('/v3/channel/basic/get', {
       params
     });
     return res.data;
@@ -24,7 +24,7 @@ export default class PolyvApi {
    * @param {Object} params 参与sign生成的参数，详细请看sign生成规则
    */
   static async getChatToken(params) {
-    const res = await request.get('/channel/common/get-chat-token', {
+    const res = await request.get('/v3/channel/common/get-chat-token', {
       params
     });
     return res.data;
@@ -37,7 +37,7 @@ export default class PolyvApi {
    */
   static async getApiToken(params) {
     const payload = qs.stringify(params);
-    const res = await request.post('/channel/watch/get-api-token', payload, {
+    const res = await request.post('/v3/channel/watch/get-api-token', payload, {
       // 这里设置 Header 头是为了处理 POST 跨域
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -53,10 +53,22 @@ export default class PolyvApi {
    * @param {Object} params 参与sign生成的参数，详细请看sign生成规则
    */
   static async getProductEnable(params) {
-    const res = await request.get('/channel/product/get-enabled', {
+    const res = await request.get('/v3/channel/product/get-enabled', {
       params
     });
     return res.data.enabled;
+  }
+
+  /**
+   * 查询频道打赏设置
+   * @see {@link https://help.polyv.net/index.html#/live/api/v4/channel/donate/get 文档-查询频道打赏设置(新版)}
+   * @param {Object} params 参与sign生成的参数，详细请看sign生成规则
+   */
+  static async getDonateConfig(params) {
+    const res = await request.get('/v4/channel/donate/get', {
+      params
+    });
+    return res.data;
   }
 
 }

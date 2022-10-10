@@ -26,10 +26,12 @@
         <section v-show="!isCustomAcitveTab()"
                  class="plv-mobile-origin-tab-content"
                  ref="plv-mobile-origin-tab-content">
+          <donate-entrance v-if="playerInited" />
         </section>
 
         <section class="bubble-wrapper">
           <product-bubble />
+          <mobile-donate-panel v-if="playerInited" />
         </section>
       </div>
     </div>
@@ -44,6 +46,8 @@ import MobileIntro from '@/components/Intro/MobileIntro.vue';
 import LikeService from '@/components/Like';
 import IREntranceService from '@/components/InteractionsReceive';
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
+import DonateEntrance from '@/components/Donate/DonateEntrance.vue';
+import MobileDonatePanel from '@/components/Donate/MobileDonatePanel.vue';
 
 import {
   getDefaultConfigChat,
@@ -76,6 +80,8 @@ export default {
     ProductBubble,
     MobileProductList: () =>
       import('@/components/InteractionsReceive/Product/MobileProductList.vue'),
+    DonateEntrance,
+    MobileDonatePanel,
   },
   data() {
     const chatConfig = getDefaultConfigChat();

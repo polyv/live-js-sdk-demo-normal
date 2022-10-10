@@ -70,6 +70,8 @@ export default {
         this.apiToken = await this.getApiToken();
         // 获取是否开启“商品库开关”
         this.productEnable = await this.getProductEnable();
+        const data = await this.getDonateConfig();
+        console.info(data);
 
         this.visible = true;
       } catch (error) {
@@ -141,6 +143,18 @@ export default {
 
       const enabled = await PolyvApi.getProductEnable(params);
       return PolyvUtil.ynToBool(enabled);
+    },
+    async getDonateConfig() {
+      const params = {
+        appId: this.config.appId,
+        timestamp: TIME_STAMP,
+        channelId: this.config.channelId,
+      };
+
+      // ！！！不要在前端生成sign，此处仅供参考
+      params.sign = PolyvUtil.getSign(this.config.appSecret, params);
+
+      return await PolyvApi.getDonateConfig(params);
     },
   },
 };

@@ -56,10 +56,12 @@
                      ref="plv-pc-origin-tab-content">
               <!-- 这一块会渲染  polyv-chat-room -->
               <!-- renderIREntrance 和 renderLike 会渲染 polyv-chat-room  中 -->
+              <donate-entrance v-if="playerInited" />
             </section>
 
             <section class="bubble-wrapper">
-              <product-bubble />
+              <product-bubble v-if="playerInited" />
+              <pc-donate-panel v-if="playerInited" />
             </section>
           </div>
         </div>
@@ -100,6 +102,8 @@ import PcMenu from '@/components/Menu/PcMenu.vue';
 import PcMiniTool from '@/components/MiniTool/PcMiniTool.vue';
 import IREntranceService from '@/components/InteractionsReceive';
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
+import DonateEntrance from '@/components/Donate/DonateEntrance';
+import PcDonatePanel from '@/components/Donate/PcDonatePanel.vue';
 
 import { MainScreenMap, PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {
@@ -129,6 +133,8 @@ export default {
     ProductBubble,
     PcProductList: () =>
       import('@/components/InteractionsReceive/Product/PcProductList.vue'),
+    DonateEntrance,
+    PcDonatePanel,
   },
   data() {
     return {

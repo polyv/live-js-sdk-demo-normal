@@ -42,6 +42,7 @@
     "stylelint-config-recommended-scss": "^4.2.0",
     "stylelint-scss": "^3.18.0",
     "vue-template-compiler": "2.6.11",
+    "vue-awesome-swiper": "4.1.1",
     "yorkie": "2.0.0"
   },
   "gitHooks": {

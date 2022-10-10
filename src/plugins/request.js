@@ -11,7 +11,7 @@ function _getProtocol() {
 
 /** Axios 实例 */
 const request = Axios.create({
-  baseURL: `${_getProtocol()}//api.polyv.net/live/v3`,
+  baseURL: `${_getProtocol()}//api.polyv.net/live`,
   timeout: 2 * 60 * 1000
 });
 

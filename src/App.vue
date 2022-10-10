@@ -41,6 +41,14 @@ body {
   font-size: 14px;
 }
 
+button,
+input[type='button'],
+input[type='reset'],
+input[type='submit'] {
+  -webkit-appearance: none;
+  border: none;
+}
+
 .polyv-chat-room .tab-chat-content {
   padding-bottom: 34px;
 }
