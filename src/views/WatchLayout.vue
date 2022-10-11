@@ -5,6 +5,7 @@
                :chatInfo="chatInfo"
                :apiToken="apiToken"
                :productEnable="productEnable"
+               :donateConfig="donateConfig"
                @change-switch="handleChangeSwitch"
                @reload="reloadWatchPage" />
   </section>
@@ -30,6 +31,7 @@ export default {
       chatInfo: {},
       apiToken: '',
       productEnable: false,
+      donateConfig: {},
     };
   },
   computed: {
@@ -70,8 +72,8 @@ export default {
         this.apiToken = await this.getApiToken();
         // 获取是否开启“商品库开关”
         this.productEnable = await this.getProductEnable();
-        const data = await this.getDonateConfig();
-        console.info(data);
+        // 获取”打赏“配置
+        this.donateConfig = await this.getDonateConfig();
 
         this.visible = true;
       } catch (error) {

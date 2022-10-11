@@ -7,6 +7,7 @@ export default {
     chatInfo: Object,
     apiToken: String,
     productEnable: Boolean,
+    donateConfig: Object
   },
   data() {
     const chatConfig = getDefaultConfigChat();

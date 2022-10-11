@@ -8,7 +8,7 @@
         <div v-if="reward"
              class="c-donate-tips__item">
           <p class="c-donate-tips__nick">{{ translateNick(reward.content.unick, lang) }}</p>
-          <p class="c-donate-tips__good">
+          <p class="c-donate-tips__gift">
             赠送 {{ reward.content.gimg ? '' : '￥' }} {{ reward.content.rewardContent || reward.content.rewardContent }}
           </p>
           <div class="c-donate-tips__img"
@@ -16,12 +16,12 @@
               'c-donate-tips__img--cash': !reward.content.gimg,
             }"
                :style="{ backgroundImage: `url(${reward.content.gimg})` }"></div>
-          <p v-if="reward.content.goodNum && reward.content.goodNum > 1"
+          <p v-if="reward.content.giftNum && reward.content.giftNum > 1"
              class="c-donate-tips__num"
              :class="{
-              'c-donate-tips__num--long': reward.content.goodNum && reward.content.goodNum > 99
+              'c-donate-tips__num--long': reward.content.giftNum && reward.content.giftNum > 99
             }">
-            <span>&times;</span> <span>{{ reward.content.goodNum }}</span>
+            <span>&times;</span> <span>{{ reward.content.giftNum }}</span>
           </p>
         </div>
       </transition>
@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import { messageHub } from '@/normal/assets/chat/v1.0/chat';
 import { loadImg } from '@/utils';
 import { mapState } from 'vuex';
 
@@ -43,7 +42,7 @@ export default {
   props: {
     isMobile: Boolean,
     // 付费打赏道具列表
-    notFreeGoods: {
+    notFreegifts: {
       type: Array,
     },
   },
@@ -64,7 +63,7 @@ export default {
   },
 
   mounted() {
-    messageHub.on('REWARD', this.handleReward);
+    // messageHub.on('REWARD', this.handleReward);
 
     this.queueTimer = setInterval(() => {
       this.handleRewardQueue();
@@ -72,7 +71,7 @@ export default {
   },
 
   beforeDestroy() {
-    messageHub.off('REWARD', this.handleReward);
+    // messageHub.off('REWARD', this.handleReward);
     clearInterval(this.queueTimer);
     this.queueTimer = null;
   },
@@ -88,14 +87,14 @@ export default {
   methods: {
     handleReward(evt) {
       const data = evt.data;
-      const isSelfGood =
+      const isSelfgift =
         data.content.rewardUser.userId === this.viewerInfo.viewerId;
-      const isFreeGood =
-        this.notFreeGoods.findIndex(
-          (good) => good.goodName === data.content?.rewardContent
+      const isFreegift =
+        this.notFreegifts.findIndex(
+          (gift) => gift.name === data.content?.rewardContent
         ) === -1;
       // 自己的打赏、收费道具必须显示。当前待显示打赏数量太多时（达到 100 个），免费道具丢弃。
-      if (isSelfGood || !isFreeGood || this.rewardQueue?.length < 100) {
+      if (isSelfgift || !isFreegift || this.rewardQueue?.length < 100) {
         this.rewardQueue.push(data);
       }
     },
@@ -163,7 +162,7 @@ export default {
   white-space: nowrap;
 }
 
-.c-donate-tips__good {
+.c-donate-tips__gift {
   font-size: 12px;
   color: #fff;
   margin-top: 4px;

@@ -31,7 +31,8 @@
 
         <section class="bubble-wrapper">
           <product-bubble />
-          <mobile-donate-panel v-if="playerInited" />
+          <mobile-donate-panel v-if="playerInited"
+                               :donateConfig="donateConfig" />
         </section>
       </div>
     </div>

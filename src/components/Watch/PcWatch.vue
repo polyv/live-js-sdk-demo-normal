@@ -61,7 +61,8 @@
 
             <section class="bubble-wrapper">
               <product-bubble v-if="playerInited" />
-              <pc-donate-panel v-if="playerInited" />
+              <pc-donate-panel v-if="playerInited"
+                               :donateConfig="donateConfig" />
             </section>
           </div>
         </div>

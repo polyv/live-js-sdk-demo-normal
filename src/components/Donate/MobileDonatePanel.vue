@@ -3,123 +3,127 @@
     <section class="c-donate"
              ref="donate"
              v-show="donatePanelVisible">
-      <section v-show="selectedDonateType !== 'cash'">
+      <section v-show="selectedDonateType !== DonateType.CASH">
         <section class="c-donate__swiper-wrap">
-          <section v-if="donatePointEnabled"
+          <section v-if="isGiftPonitPayWay"
                    class="c-donate__points">
-            我的积分：<span style="color: #FF5353;">{{ points }}</span>
+            我的积分：<span style="color: #FF5353;">{{ userPoints }}</span>
           </section>
           <swiper ref="mySwiper"
                   @slideChange="handleSlideChange">
             <swiper-slide v-for="(page, pageIndex) in donatePages"
                           :key="pageIndex">
-              <ul class="c-donate__good-list">
-                <template v-for="(good, goodIndex) in page">
-                  <!-- 现金打赏条目 -->
-                  <li :key="goodIndex"
-                      v-if="good._type === 'cash'"
-                      class="c-donate__good-item pws-donate-good-item"
-                      @click="handleItemEvent($event, {
-                    type: 'cash',
-                    goodName: '打赏',
-                    goodPrice: '现金',
+              <ul class="c-donate__gift-list">
+                <template v-for="(gift, giftIndex) in page">
+                  <!-- 现金打赏 -->
+                  <li :key="giftIndex"
+                      v-if="gift._type === 'cash'"
+                      class="c-donate__gift-item"
+                      @click="handleDonateItemClick($event, {
+                    type: DonateType.CASH,
+                    name: '打赏',
+                    price: '现金',
                   })">
-                    <p class="c-donate__good-img c-donate__good-img__cash"></p>
-                    <p class="c-donate__good-name pws-donate-good-name">打赏</p>
-                    <p class="c-donate__good-price pws-give-price-text-color">现金</p>
+                    <p class="c-donate__gift-img c-donate__gift-img__cash"></p>
+                    <p class="c-donate__gift-name">打赏</p>
+                    <p class="c-donate__gift-price">现金</p>
                   </li>
-                  <!-- 道具/积分打赏条目 -->
-                  <li v-else-if="isGoodVisible(good)"
-                      class="c-donate__good-item pws-donate-good-item"
-                      :key="goodIndex"
+                  <!-- 礼物打赏列表 -->
+                  <li v-else
+                      class="c-donate__gift-item"
+                      :key="giftIndex"
                       :class="{
-                    'c-donate__good-item--selected pws-donate-good-item--selected': selectedDonate && selectedDonate.goodId === pageIndex * 10 + (goodIndex + 1)
+                    'c-donate__gift-item--selected': selectedDonate && selectedDonate.giftId === pageIndex * 10 + (giftIndex + 1)
                   }"
-                      @click="handleItemEvent($event, {
-                    type: 'good',
-                    goodId: pageIndex * 10 + (goodIndex + 1),
-                    ...good
+                      @click="handleDonateItemClick($event, {
+                    type: DonateType.GIFT,
+                    giftId: pageIndex * 10 + (giftIndex + 1),
+                    ...gift
                   })">
-                    <img class="c-donate__good-img"
-                         :src="good.goodImg" />
-                    <p class="c-donate__good-name pws-donate-good-name">{{ good.goodName }}</p>
-                    <p class="c-donate__good-price pws-give-price-text-color">{{ goodsPriceText(good.goodPrice) }}</p>
+                    <img class="c-donate__gift-img"
+                         :src="gift.img" />
+                    <p class="c-donate__gift-name e">
+                      {{ gift.name }}
+                    </p>
+                    <p class="c-donate__gift-price ">{{ convertGiftPriceText(gift.price) }}</p>
                   </li>
                 </template>
               </ul>
             </swiper-slide>
           </swiper>
         </section>
+        <!-- 分页组件 -->
         <section v-if="donatePages && donatePages.length > 1"
                  class="c-donate__paginator">
-          <span class="c-donate__paginator__dot pws-donate__paginator__dot"
+          <span class="c-donate__paginator__dot"
                 v-for="(page, index) in donatePages"
                 :key="index"
                 :class="{
-            'c-donate__paginator__dot--cur pws-donate__paginator__dot--cur': curPage === index + 1
+            'c-donate__paginator__dot--cur': curPage === index + 1
           }"></span>
         </section>
 
-        <section v-if="donatePointEnabled"
+        <!-- "礼物打赏-积分支付"才会有数量选择 -->
+        <section v-if="isGiftPonitPayWay"
                  class="c-donate__selections">
-          <!-- 积分打赏才会有数量选择 -->
-          <section class="c-donate__good-num-wrap">
-            <span class="c-donate__good-num pws-donate-good-num"
-                  v-for="(goodNum, index) in goodNums"
+          <section class="c-donate__gift-num-wrap">
+            <span class="c-donate__gift-num"
+                  v-for="(giftNum, index) in giftNums"
                   :key="index"
                   :class="{
-              'c-donate__good-num--selected': selectedNum === goodNum
+              'c-donate__gift-num--selected': selectedGiftNum === giftNum
             }"
-                  @click="selectedNum = goodNum">{{ goodNum }}</span>
+                  @click="selectedGiftNum = giftNum">{{ giftNum }}</span>
           </section>
           <button class="c-donate__confirm-btn"
-                  @click="handlePointDonate">打赏</button>
+                  @click="handleGiftPointPayDonate">打赏</button>
         </section>
       </section>
 
-      <section v-show="selectedDonateType === 'cash'"
-               class="c-donate__cash-wrap pws-mob-chat-input-panel-bg-color">
-        <section class="c-donate__cash__header pws-donate__cash__header">
-          <i class="iconfont-mob g-icon-mob-back pws-mob-give-arrow-color"
-             @click="handleCashBack"></i>
+      <section v-show="selectedDonateType === DonateType.CASH"
+               class="c-donate__cash-wrap">
+        <section class="c-donate__cash__header">
+          <span class="iconfont-mob g-icon-mob-back"
+                @click="handleCashSelectPanelHidden">&lt;</span>
           <h3>现金打赏</h3>
         </section>
         <section class="c-donate__cash__body">
           <section v-show="!showCustomCash"
                    class="c-donate__cash__list-wrap">
             <section class="c-donate__cash__list">
-              <span class="c-donate__cash pws-mob-give-price-bg-color"
-                    v-for="(cash, index) in cashes"
+              <span class="c-donate__cash"
+                    v-for="(cash, index) in cashDonate.cashs"
                     :key="index"
-                    :title="cash | priceText"
-                    :class="{
-                'c-donate__cash--selected': selectedCashIndex === index
-              }"
-                    @click="handleSelectCash(index)">{{ cash | priceText }}</span>
+                    :class="{'c-donate__cash--selected': selectedCashIndex === index}"
+                    @click="handleSelectCash(index)">
+                {{ convertCashPriceText(cash) }}
+              </span>
             </section>
-            <p class="c-donate__cash__custom-btn pws-mob-give-var-price-text-color"
-               @click="handleClickCustom">自定义金额</p>
+            <p class="c-donate__cash__custom-btn"
+               @click="handleCustomCashBtnClick">
+              自定义金额<span style="letter-spacing: -5px;">>>></span>
+            </p>
           </section>
 
           <section v-show="showCustomCash"
                    class="c-donate__cash__custom">
             <section ref="customInputWrap"
-                     class="c-donate__cash__custom__input-wrap pws-mob-give-input-bg-color">
+                     class="c-donate__cash__custom__input-wrap">
               <span ref="customCashLabel"
-                    class="c-donate__cash__custom__label pws-mob-give-var-price-text-label-color">自定义金额</span>
-              <input class="c-donate__cash__custom__input pws-mob-give-input-bg-color pws-mob-give-input-color"
+                    class="c-donate__cash__custom__label">自定义金额</span>
+              <input class="c-donate__cash__custom__input"
                      placeholder="请输入金额"
                      :style="{ maxWidth: customCashMaxWidth }"
                      v-model="donateCash" />
               <span ref="customCashRandBtn"
-                    class="c-donate__cash__custom__rand-btn pws-mob-give-random-text-color"
-                    @click="setRandCash">随机</span>
+                    class="c-donate__cash__custom__rand-btn"
+                    @click="setRandomCash">随机</span>
             </section>
             <section class="c-donate__cash__btn__wrap">
-              <input type="button"
-                     class="c-donate__cash__btn pws-mob-give-btn-color"
-                     value="打赏"
-                     @click="handleCashDonate" />
+              <button class="c-donate__cash__btn"
+                      @click="handleCashDonate">
+                打赏
+              </button>
             </section>
           </section>
         </section>
@@ -133,7 +137,7 @@
 import { Swiper, SwiperSlide, directive } from 'vue-awesome-swiper';
 import 'swiper/css/swiper.css';
 
-import { isMobile, isWeixin } from '@/utils';
+import { isMobile } from '@/utils';
 import { toggleClass } from '@/utils/dom';
 import DonateMixin, {
   DonateMessageHub,
@@ -149,23 +153,38 @@ export default {
   directives: {
     swiper: directive,
   },
+
+  data() {
+    return {
+      donatePanelVisible: false,
+      curPage: 1,
+      showCustomCash: false, // 显示自定义金额输入框
+      selectedCashIndex: null,
+      giftId: '', // 礼品id
+      amount: '', // 打赏金额
+      customCashMaxWidth: null, // 自定义金额输入框宽度
+    };
+  },
   computed: {
     swiper() {
       return this.$refs.mySwiper.$swiper;
     },
 
-    // 打赏滑动分页
+    /**
+     * 打赏滑动分页，现金打赏会设置为礼物的形式展示，
+     * */
     donatePages() {
       const pages = [];
       let donateList = []; // 所有打赏种类
 
-      if (this.showGoods) {
-        donateList = donateList.concat(this.goods);
+      if (this.donateGiftEnabled) {
+        donateList = donateList.concat(this.giftList);
       }
+
       // 现金打赏，特殊处理
-      if (this.donateCashEnabled && this.weixinPayEnabled) {
+      if (this.donateCashEnabled) {
         donateList.push({
-          _type: 'cash',
+          _type: this.DonateType.CASH,
         });
       }
 
@@ -176,32 +195,7 @@ export default {
 
       return pages;
     },
-
-    formData() {
-      return {
-        channel_id: this.channelId,
-        roomId: this.channelRoomId || this.channelId,
-        donate_type: this.donateType,
-        good_id: this.goodId,
-        amount: this.amount,
-      };
-    },
   },
-
-  data() {
-    return {
-      donatePanelVisible: false,
-      curPage: 1,
-      showCustomCash: false, // 显示自定义金额输入框
-      selectedCashIndex: null,
-      payType: 'donate', // 支付类型：打赏
-      donateType: null, // 打赏类型
-      goodId: '', // 礼品id
-      amount: '', // 打赏金额
-      customCashMaxWidth: null, // 自定义金额输入框宽度
-    };
-  },
-
   watch: {
     showCustomCash() {
       // 设置自定义金额输入框宽度，避免溢出
@@ -219,8 +213,10 @@ export default {
   },
 
   mounted() {
+    // 挂载在聊天室区域
     const $tabChat = document.querySelector('#tab-chat');
     $tabChat.querySelector('.polyv-chat-input').appendChild(this.$el);
+
     DonateMessageHub.on(
       DonateMessageHubEvents.PANEL_VISIBLE_TOGGLE,
       ({ visible }) => {
@@ -228,25 +224,26 @@ export default {
         toggleClass($tabChat, 'plv-has-donate-panel');
 
         if (this.donatePanelVisible) {
-          window.addEventListener('click', this.handleContain, false);
+          window.addEventListener('click', this.handleContainEl, true);
+          window.addEventListener('touchend', this.handleContainEl, true);
         } else {
-          window.removeEventListener('click', this.handleContain, false);
+          window.removeEventListener('click', this.handleContainEl, true);
+          window.removeEventListener('touchend', this.handleContainEl, true);
         }
       }
     );
   },
 
   methods: {
-    handleContain(evt) {
+    handleContainEl(evt) {
       if (evt.target.getAttribute('data-type') === 'donate-entrance') return;
 
       /** @type {HTMLElement} */
       const $panel = this.$refs.donate;
-      console.info(evt.target);
+      if ($panel.contains(evt.target)) return;
 
-      if (!$panel.contains(evt.target)) {
-        DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
-      }
+      evt.preventDefault();
+      DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
     },
     handleSlideChange() {
       this.curPage =
@@ -254,23 +251,46 @@ export default {
           this.$refs.mySwiper.swiperInstance.activeIndex + 1) ||
         1;
     },
-    handleCashBack() {
-      this.donateCash = '';
-      this.showCustomCash = false;
-      this.selectedDonateType = '';
+
+    /** 打赏项点击处理 */
+    async handleDonateItemClick(e, donateItem) {
+      // 设置打赏类型后会切换窗口
+      this.selectedDonateType = donateItem.type;
+      this.selectedDonate = donateItem;
       this.selectedCashIndex = null;
+
+      // 如果是"礼物打赏-积分支付"，则需要在 handleGiftPointPayDonate 中处理
+      if (donateItem.type === this.DonateType.GIFT && this.isGiftCashPayWay) {
+        this.handleGiftCashPayDonate(donateItem);
+      }
     },
-    handleClickCustom() {
+    /** 处理礼物打赏-现金支付 */
+    async handleGiftCashPayDonate(donateItem) {
+      this.amount = '';
+      this.giftId = donateItem.giftId;
+      // TODO 处理真实的礼物打赏-积分支付逻辑
+      console.info('handleGiftCashPayDonate', donateItem);
+      DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
+      this.resetSelectedDonateInfo();
+    },
+    /** 当 selectedDonateType 为 DonateType.CASH 可以选择现金数量  */
+    handleSelectCash(index) {
+      this.selectedCashIndex = index;
+      this.selectedCash = this.cashDonate.cashs[index];
+      this.donateCash = this.selectedCash;
+      this.handleCashDonate();
+    },
+    handleCustomCashBtnClick() {
       this.donateCash = '';
       this.showCustomCash = true;
     },
     /** 现金打赏 */
     async handleCashDonate() {
-      this.donateType = 'cash';
-      this.goodId = '';
+      this.giftId = '';
 
       const cash = Number(this.donateCash);
-      if (isMobile() && !isWeixin()) {
+      if (isMobile()) {
+        // TODO 可以在这里增加 !isWeixin() 的判断
         this.$dialog.alert({ message: '请在微信中打开本页进行支付' });
         return;
       }
@@ -278,53 +298,41 @@ export default {
         this.$dialog.alert({ message: '输入金额不能是0' });
         return;
       }
-      if (cash < this.cashMin) {
-        this.$dialog.alert({ message: `请输入大于等于${this.cashMin}的金额` });
+      if (cash < this.cashDonate.cashMin) {
+        this.$dialog.alert({
+          message: `请输入大于等于${this.cashDonate.cashMin}的金额`,
+        });
         return;
       }
 
       this.amount = cash;
 
-      // TODO 处理真实的打赏逻辑
+      // TODO 处理真实的现金打赏逻辑
+      console.info('handleCashDonate', cash);
+      DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
+      this.resetSelectedDonateInfo();
     },
-    async handleItemEvent(e, item) {
-      this.selectedDonateType = item.type;
-      this.selectedDonate = item;
+    handleCashSelectPanelHidden() {
+      this.donateCash = '';
+      this.showCustomCash = false;
+      this.selectedDonateType = '';
       this.selectedCashIndex = null;
-
-      // 如果是积分打赏，点击道具仅仅是选中道具
-      if (item.type === 'good' && !this.donatePointEnabled) {
-        this.handleGoodDonate(item);
-        DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
-      }
-    },
-    // 道具打赏
-    async handleGoodDonate(item) {
-      this.donateType = 'good';
-      this.amount = '';
-      this.goodId = item.goodId;
-
-      // TODO 处理真实的打赏逻辑
-    },
-    handleSelectCash(index) {
-      this.selectedCashIndex = index;
-      this.selectedCash = this.cashes[index];
-      this.donateCash = this.selectedCash;
-      this.handleCashDonate();
     },
   },
 };
 </script>
 
 <style lang="scss">
-.plv-has-donate-panel {
-  padding-bottom: 350px;
+$donatePanelHeight: 280px;
+
+// hack 聊天室区域来展示当前面板
+.mobile-wrap .tab-chat.plv-has-donate-panel {
+  padding-bottom: 330px;
   .polyv-chat-input {
-    bottom: 300px;
+    bottom: $donatePanelHeight;
   }
 }
-</style>
-<style lang="scss" scoped>
+
 .intr-panel-slide-up-enter-active {
   animation: intr-panel-slide-up .3s ease-in;
 }
@@ -369,6 +377,7 @@ export default {
 .c-donate {
   position: relative;
   background-color: #2b2c35;
+  min-height: $donatePanelHeight;
   z-index: 100;
 }
 .c-donate__swiper-wrap {
@@ -381,7 +390,7 @@ export default {
   margin: 8px 8px 4px 0;
   text-align: right;
 }
-.c-donate__good-item {
+.c-donate__gift-item {
   width: 20%;
   height: 95px;
   text-align: center;
@@ -395,9 +404,9 @@ export default {
     border: 1px solid #ADADC0;
     border-radius: 4px;
   }
-  .c-donate__good {
+  .c-donate__gift {
     &-img {
-      margin: 6px auto;
+      margin: auto;
       width: 48px;
       height: 48px;
     }
@@ -417,7 +426,7 @@ export default {
     }
   }
 }
-.c-donate__good-img__cash {
+.c-donate__gift-img__cash {
   background-image: url(./imgs/redpack-cash.png);
   background-size: 100% 100%;
   background-position: center;
@@ -452,8 +461,8 @@ $paginator-size: 4px;
   align-items: center;
   justify-content: space-between;
 }
-.c-donate__good-num-wrap {
-  .c-donate__good-num {
+.c-donate__gift-num-wrap {
+  .c-donate__gift-num {
     width: 36px;
     line-height: 24px;
     display: inline-block;
@@ -501,7 +510,8 @@ $paginator-size: 4px;
     left: 16px;
     width: 28px;
     height: 28px;
-    font-size: 28px;
+    font-size: 22px;
+    transform: scaleY(1.5);
     color: #9195A1;
   }
   .c-donate__cash__back {
@@ -541,7 +551,7 @@ $paginator-size: 4px;
   }
 }
 .c-donate__cash__custom-btn {
-  margin: 20px 0;
+  margin: 20px 0 !important;
   text-align: center;
   font-size: 16px;
   color: #ADADC0;
@@ -587,12 +597,12 @@ $paginator-size: 4px;
   color: #fff;
   border: none;
   font-size: 16px;
-  background: #1A1B1F;
+  background: #1A1B1F !important;
   flex: 1;
 }
 .c-donate__cash__custom__label {
   color: #ADADC0;
-  padding: 0 16px;
+  padding: 0 16px !important;
 }
 .c-donate__cash__custom__rand-btn {
   color: #3082FE;
@@ -600,8 +610,8 @@ $paginator-size: 4px;
 }
 
 @media screen and (max-width: 320px) {
-  .c-donate__good-num-wrap {
-    .c-donate__good-num {
+  .c-donate__gift-num-wrap {
+    .c-donate__gift-num {
       width: 32px;
     }
   }
