@@ -29,6 +29,7 @@
           <donate-entrance v-if="playerInited && isEnableDonate" />
           <mobile-donate-panel v-if="playerInited && isEnableDonate"
                                :donateConfig="donateConfig" />
+          <mobile-point-record v-if="enableRenderIRComponent" />
         </section>
 
         <section class="bubble-wrapper">
@@ -49,6 +50,7 @@ import LikeService from '@/components/Like';
 import IREntranceService from '@/components/InteractionsReceive';
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
 import DonateBubble from '@/components/Donate/DonateBubble.vue';
+import MobilePointRecord from '@/components/InteractionsReceive/RedEnvelope/MobilePointRecord';
 
 import {
   getDefaultConfigChat,
@@ -85,6 +87,7 @@ export default {
     MobileDonatePanel: () =>
       import('@/components/Donate/MobileDonatePanel.vue'),
     DonateBubble,
+    MobilePointRecord,
   },
   data() {
     const chatConfig = getDefaultConfigChat();

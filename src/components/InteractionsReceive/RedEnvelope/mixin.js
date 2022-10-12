@@ -1,5 +1,12 @@
+import PubSub from 'jraiser/pubsub/1.2/pubsub';
 import { plvChatMessageHub, PlvChatMessageHubEvents } from '@/sdk/chat';
 import { RedEnvelope } from '@polyv/interactions-receive-sdk';
+
+export const RedEnvelopeMessageHub = new PubSub();
+export const RedEnvelopeMessageHubEvents = {
+  /** 积分记录展示 */
+  POINT_RECORD_SHOW: 'point-record-show'
+};
 
 export default {
   props: {

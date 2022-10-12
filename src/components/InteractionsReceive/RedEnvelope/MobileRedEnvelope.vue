@@ -9,10 +9,11 @@
                          :with-draw-enabled="true"
                          :lang="lang"
                          :redirect-url="watchUrl"
+                         :customImgConfig="customImgConfig"
                          @close="handleCloseRedEnvelope"
                          @statusChange="handleStatusChange"
                          @click-withdraw="handleClickWidthdraw"
-                         @click-point-record="handleClickPoint" />、
+                         @click-point-record="handleClickPoint" />
     </section>
     <!-- 红包挂件内容,挂件只展示倒计时和提示，点击不弹窗 -->
     <red-envelope-pendant v-if="showPendant"
@@ -30,7 +31,10 @@
 import RedEnvelopeComp from '@polyv/interactions-receive-sdk-ui-default/lib/MobileRedEnvelope';
 import RedEnvelopePendant from '@polyv/interactions-receive-sdk-ui-default/lib/RedEnvelopePendant';
 import MobileRedpackRain from './RedpackRain/MobileRedpackRain.vue';
-import mixin from './mixin';
+import mixin, {
+  RedEnvelopeMessageHub,
+  RedEnvelopeMessageHubEvents,
+} from './mixin';
 
 export default {
   components: {
@@ -41,38 +45,7 @@ export default {
   mixins: [mixin],
   data() {
     return {
-      customImgConfig: {
-        // 消息封面图
-        // eslint-disable-next-line sonarjs/no-duplicate-string
-        normalEntranceImg: 'https://s0.2mdn.net/simgad/5769778541448121689',
-        passwordEntranceImg: 'https://s0.2mdn.net/simgad/5769778541448121689',
-        rainEntranceImg: 'https://s0.2mdn.net/simgad/5769778541448121689',
-
-        // 挂件图
-        normalPendantImg: 'https://s0.2mdn.net/simgad/5769778541448121689',
-        passwordPendantImg: 'https://s0.2mdn.net/simgad/5769778541448121689',
-        rainPendantImg: 'https://s0.2mdn.net/simgad/5769778541448121689',
-
-        // 普通红包和口令红包-弹出封面图
-        redpackCoverImg: 'https://s0.2mdn.net/simgad/5769778541448121689',
-
-        // 红包雨-弹出层顶部背景图
-        rainModalTopBgImg: 'https://s0.2mdn.net/simgad/5769778541448121689',
-        // 红包雨-弹出层右侧挂件图
-        rainModalRightPendantImg:
-          'https://liveimages.videocc.net/uploaded/images/2022/08/gcgnw0prx5.png',
-
-        // 红包雨开始倒计时图
-        redpackBeginingBgImg: 'https://s0.2mdn.net/simgad/5769778541448121689',
-
-        // 红包雨动画-底部背景图
-        rainThemeBottomBgImg:
-          'https://liveimages.videocc.net/uploaded/images/2022/08/gcgnw53p23.png',
-        // 红包雨动画-飘落图 (随机选择数组图片)
-        rainThemeBollImgArray: [
-          'https://liveimages.videocc.net/uploaded/images/2022/08/gcgnw0prx5.png',
-        ],
-      },
+      customImgConfig: {},
       // 微信 openId
       openId: '',
     };
@@ -86,9 +59,16 @@ export default {
     },
     handleClickWidthdraw() {
       console.info('handleClickWidthdraw');
+      this.$dialog.alert({
+        title: '提现弹窗',
+        message: '当前只是示例，需要自行处理提现',
+      });
     },
     handleClickPoint() {
       console.info('handleClickPointRecord');
+      RedEnvelopeMessageHub.trigger(
+        RedEnvelopeMessageHubEvents.POINT_RECORD_SHOW
+      );
     },
   },
 };
