@@ -32,7 +32,8 @@
         </section>
 
         <section class="bubble-wrapper">
-          <product-bubble />
+          <product-bubble v-if="playerInited" />
+          <donate-bubble />
         </section>
       </div>
     </div>
@@ -47,6 +48,7 @@ import MobileIntro from '@/components/Intro/MobileIntro.vue';
 import LikeService from '@/components/Like';
 import IREntranceService from '@/components/InteractionsReceive';
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
+import DonateBubble from '@/components/Donate/DonateBubble.vue';
 
 import {
   getDefaultConfigChat,
@@ -82,6 +84,7 @@ export default {
     DonateEntrance: () => import('@/components/Donate/DonateEntrance.vue'),
     MobileDonatePanel: () =>
       import('@/components/Donate/MobileDonatePanel.vue'),
+    DonateBubble,
   },
   data() {
     const chatConfig = getDefaultConfigChat();

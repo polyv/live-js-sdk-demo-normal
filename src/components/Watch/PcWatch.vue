@@ -63,6 +63,7 @@
 
             <section class="bubble-wrapper">
               <product-bubble v-if="playerInited" />
+              <donate-bubble />
             </section>
           </div>
         </div>
@@ -103,6 +104,7 @@ import PcMenu from '@/components/Menu/PcMenu.vue';
 import PcMiniTool from '@/components/MiniTool/PcMiniTool.vue';
 import IREntranceService from '@/components/InteractionsReceive';
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
+import DonateBubble from '@/components/Donate/DonateBubble.vue';
 
 import { MainScreenMap, PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {
@@ -134,6 +136,7 @@ export default {
       import('@/components/InteractionsReceive/Product/PcProductList.vue'),
     DonateEntrance: () => import('@/components/Donate/DonateEntrance'),
     PcDonatePanel: () => import('@/components/Donate/PcDonatePanel.vue'),
+    DonateBubble,
   },
   data() {
     return {
