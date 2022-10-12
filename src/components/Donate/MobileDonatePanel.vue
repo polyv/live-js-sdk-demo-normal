@@ -186,9 +186,10 @@ export default {
         });
       }
 
-      const totalPages = Math.ceil(donateList.length / 10);
+      const pageSize = window.innerWidth <= 320 ? 5 : 10;
+      const totalPages = Math.ceil(donateList.length / pageSize);
       for (let i = 0; i < totalPages; i++) {
-        pages.push(donateList.slice(i * 10, i * 10 + 10));
+        pages.push(donateList.slice(i * pageSize, i * pageSize + pageSize));
       }
 
       return pages;
