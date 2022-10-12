@@ -5,6 +5,8 @@ export const DonateMessageHub = new PubSub();
 export const DonateMessageHubEvents = {
   PANEL_VISIBLE_TOGGLE: 'panel-visible-toggle',
   PANEL_CLOSE: 'panel-close',
+  /** 发送打赏消息 */
+  SEND_REWARD_MSG: 'send-reward-msg'
 };
 
 /** 打赏-礼物打赏-支付方式 */
@@ -181,7 +183,21 @@ export default {
       });
       this.userPoints = 100;
       DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
+      this.handleSendRewardMsg({
+        donateType: 'good',
+        content: this.selectedDonate.name,
+        goodImage: this.selectedDonate.img,
+        goodNum: this.selectedGiftNum,
+      });
       this.resetSelectedDonateInfo();
+    },
+
+    /**
+     * 发送打赏消息
+     * 注意此处打赏不涉及到真实处理逻辑，仅进行消息通知
+     * */
+    handleSendRewardMsg(data) {
+      DonateMessageHub.trigger(DonateMessageHubEvents.SEND_REWARD_MSG, { data });
     },
 
     resetSelectedDonateInfo() {

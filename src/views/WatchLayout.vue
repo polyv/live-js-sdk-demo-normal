@@ -17,6 +17,10 @@ import { TIME_STAMP } from '@/const';
 
 import PolyvApi from '@/utils/api';
 import * as PolyvUtil from '@/utils';
+import {
+  DonateMessageHub,
+  DonateMessageHubEvents,
+} from '@/components/Donate/DonateMixin';
 
 export default {
   name: 'Watch-Layout',
@@ -45,6 +49,7 @@ export default {
   },
   created() {
     this.init();
+    this.bindEventBus();
   },
   methods: {
     ...mapMutations({
@@ -60,6 +65,14 @@ export default {
       Object.keys(data).forEach((key) => {
         this[key] = data[key];
       });
+    },
+    bindEventBus() {
+      DonateMessageHub.on(
+        DonateMessageHubEvents.SEND_REWARD_MSG,
+        ({ data }) => {
+          this.sendRewardMsg(data);
+        }
+      );
     },
     /** 初始化观看页需要的数据 */
     async init() {
@@ -157,6 +170,29 @@ export default {
       params.sign = PolyvUtil.getSign(this.config.appSecret, params);
 
       return await PolyvApi.getDonateConfig(params);
+    },
+    async sendRewardMsg(donateData) {
+      try {
+        const params = {
+          appId: this.config.appId,
+          timestamp: TIME_STAMP,
+          channelId: this.config.channelId,
+          viewerId: this.config.userId,
+          nickname: this.config.nickname,
+          avatar: this.config.avatar,
+          ...donateData,
+        };
+
+        // ！！！不要在前端生成sign，此处仅供参考
+        params.sign = PolyvUtil.getSign(this.config.appSecret, params);
+
+        await PolyvApi.sendRewardMsg(params);
+      } catch (error) {
+        console.error('接口请求失败！', error.message);
+        this.$dialog.alert({
+          message: '接口请求失败！' + error.message,
+        });
+      }
     },
   },
 };

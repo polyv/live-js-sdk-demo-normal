@@ -56,13 +56,13 @@
                      ref="plv-pc-origin-tab-content">
               <!-- 这一块会渲染  polyv-chat-room -->
               <!-- renderIREntrance 和 renderLike 会渲染 polyv-chat-room  中 -->
-              <donate-entrance v-if="playerInited" />
+              <donate-entrance v-if="playerInited && isEnableDonate" />
+              <pc-donate-panel v-if="playerInited && isEnableDonate"
+                               :donateConfig="donateConfig" />
             </section>
 
             <section class="bubble-wrapper">
               <product-bubble v-if="playerInited" />
-              <pc-donate-panel v-if="playerInited"
-                               :donateConfig="donateConfig" />
             </section>
           </div>
         </div>
@@ -103,8 +103,6 @@ import PcMenu from '@/components/Menu/PcMenu.vue';
 import PcMiniTool from '@/components/MiniTool/PcMiniTool.vue';
 import IREntranceService from '@/components/InteractionsReceive';
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
-import DonateEntrance from '@/components/Donate/DonateEntrance';
-import PcDonatePanel from '@/components/Donate/PcDonatePanel.vue';
 
 import { MainScreenMap, PlvChannelScene, PlvChatUserType } from '@/const';
 import PolyvChat, {
@@ -134,8 +132,8 @@ export default {
     ProductBubble,
     PcProductList: () =>
       import('@/components/InteractionsReceive/Product/PcProductList.vue'),
-    DonateEntrance,
-    PcDonatePanel,
+    DonateEntrance: () => import('@/components/Donate/DonateEntrance'),
+    PcDonatePanel: () => import('@/components/Donate/PcDonatePanel.vue'),
   },
   data() {
     return {
@@ -275,6 +273,15 @@ export default {
       plvChatMessageHub.on(PlvChatMessageHubEvents.ROOM_MESSAGE, ({ data }) => {
         plvLive.sendBarrage(data);
       });
+
+      // 登录回调
+      plvChatMessageHub.on(
+        PlvChatMessageHubEvents.LOGIN_CALLBACK,
+        ({ data }) => {
+          const nick = data.user.nick;
+          this.updateConfigNickname(nick);
+        }
+      );
     },
     /** 绑定-直播消息总线事件 */
     bindLiveEvents() {

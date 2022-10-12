@@ -1,4 +1,5 @@
 import { getDefaultConfigChat, TabNavType } from '@/const';
+import { ynToBool } from '@/utils';
 
 export default {
   /** 由父组件来保证数据存在 */
@@ -21,6 +22,9 @@ export default {
     isShowProductList() {
       return this.activeTab === TabNavType.PRODUCT && this.productEnable;
     },
+    isEnableDonate() {
+      return ynToBool(this.donateConfig.donateCashEnabled) || ynToBool(this.donateConfig.donateGiftEnabled);
+    }
   },
   watch: {
     productEnable: {

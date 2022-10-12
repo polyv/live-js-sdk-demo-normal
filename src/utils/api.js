@@ -71,4 +71,21 @@ export default class PolyvApi {
     return res.data;
   }
 
+  /**
+   * 发送打赏消息
+   * @see {@link https://help.polyv.net/index.html#/live/api/live_interaction/send_reward_msg 文档-发送打赏消息}
+   * @param {Object} params 参与sign生成的参数，详细请看sign生成规则
+   */
+  static async sendRewardMsg(params) {
+    const payload = qs.stringify(params);
+    const res = await request.post('/v3/channel/chat/send-reward-msg', payload, {
+      // 这里设置 Header 头是为了处理 POST 跨域
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      }
+    }
+    );
+    return res.data;
+  }
+
 }

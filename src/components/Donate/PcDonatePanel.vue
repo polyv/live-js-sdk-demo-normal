@@ -205,15 +205,14 @@ export default {
       const $panel = this.$refs.donate;
       const $hoverPanel = this.$refs.hoverPanel;
       const $donateList = this.$refs.donateList;
-      if (
-        $panel.contains(evt.target) ||
-        $hoverPanel.contains(evt.target) ||
-        $donateList.contains(evt.target)
-      ) {
-        return;
-      }
 
-      DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
+      if (
+        !$panel.contains(evt.target) &&
+        !$hoverPanel.contains(evt.target) &&
+        !$donateList.contains(evt.target)
+      ) {
+        DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
+      }
     },
     // 鼠标点击某打赏条目
     handleDonateItemClick($donateItem, donateItem) {
@@ -292,6 +291,10 @@ export default {
       // TODO 处理真实的现金打赏逻辑
       console.info('handleCashDonate', cash);
       DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
+      this.handleSendRewardMsg({
+        donateType: 'cash',
+        content: cash,
+      });
       this.resetSelectedDonateInfo();
     },
     /** 处理礼物打赏-现金支付 */
@@ -299,6 +302,10 @@ export default {
       // TODO 处理真实的礼物打赏-积分支付逻辑
       console.info('handleGiftCashPayDonate', donateItem);
       DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
+      this.handleSendRewardMsg({
+        donateType: 'cash',
+        content: this.selectedDonate.price,
+      });
       this.resetSelectedDonateInfo();
     },
   },

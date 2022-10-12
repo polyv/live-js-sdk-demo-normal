@@ -7,10 +7,14 @@ const PolyvChatRoom = window.PolyvChatRoom; // 聊天室JS-SDK
 export const plvChatMessageHub = new PubSub();
 /** 聊天室消息总线-事件列表 */
 export const PlvChatMessageHubEvents = {
+  /** 登录回调 */
+  LOGIN_CALLBACK: 'loginCallback',
   /** 聊天室消息变化 */
   ROOM_MESSAGE: 'roomMessage',
   /** 红包点击回调 */
   REDPACKET_CLICK: 'redpacketClick',
+  /** 打赏回调 */
+  DONATE_CALLBACK: 'donateCallback',
   /** 销毁 */
   DESTROY: 'destroy'
 };
@@ -64,6 +68,7 @@ export default class PolyvChat {
     const chatroom = this.createChatRoom({ config, chatInfo }, { chatContainer });
     this.chatroom = chatroom;
     this.socket = chatroom.chat.socket;
+    this.proxySocketEvent();
 
     plvChatMessageHub.on(PlvChatMessageHubEvents.DESTROY, () => {
       this.destroy();
@@ -120,6 +125,27 @@ export default class PolyvChat {
       }
     });
 
+  }
+
+  /** 代理 socket 事件给到 plvChatMessageHub */
+  proxySocketEvent() {
+    this.socket.on('message', (msg) => {
+      let socketData = null;
+      try {
+        socketData = JSON.parse(msg);
+      } catch (e) {
+        console.error('Invalid message: ' + e.message);
+      }
+      if (!socketData) { return; }
+
+      if (socketData.EVENT === 'LOGIN') {
+        plvChatMessageHub.trigger(PlvChatMessageHubEvents.LOGIN_CALLBACK, { data: socketData });
+      }
+
+      if (socketData.EVENT === 'REWARD') {
+        plvChatMessageHub.trigger(PlvChatMessageHubEvents.DONATE_CALLBACK, { data: socketData });
+      }
+    });
   }
 
   /** 销毁钩子 */

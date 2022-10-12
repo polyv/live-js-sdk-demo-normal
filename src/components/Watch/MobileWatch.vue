@@ -26,13 +26,13 @@
         <section v-show="!isCustomAcitveTab()"
                  class="plv-mobile-origin-tab-content"
                  ref="plv-mobile-origin-tab-content">
-          <donate-entrance v-if="playerInited" />
+          <donate-entrance v-if="playerInited && isEnableDonate" />
+          <mobile-donate-panel v-if="playerInited && isEnableDonate"
+                               :donateConfig="donateConfig" />
         </section>
 
         <section class="bubble-wrapper">
           <product-bubble />
-          <mobile-donate-panel v-if="playerInited"
-                               :donateConfig="donateConfig" />
         </section>
       </div>
     </div>
@@ -47,8 +47,6 @@ import MobileIntro from '@/components/Intro/MobileIntro.vue';
 import LikeService from '@/components/Like';
 import IREntranceService from '@/components/InteractionsReceive';
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
-import DonateEntrance from '@/components/Donate/DonateEntrance.vue';
-import MobileDonatePanel from '@/components/Donate/MobileDonatePanel.vue';
 
 import {
   getDefaultConfigChat,
@@ -81,8 +79,9 @@ export default {
     ProductBubble,
     MobileProductList: () =>
       import('@/components/InteractionsReceive/Product/MobileProductList.vue'),
-    DonateEntrance,
-    MobileDonatePanel,
+    DonateEntrance: () => import('@/components/Donate/DonateEntrance.vue'),
+    MobileDonatePanel: () =>
+      import('@/components/Donate/MobileDonatePanel.vue'),
   },
   data() {
     const chatConfig = getDefaultConfigChat();
@@ -242,6 +241,15 @@ export default {
       plvChatMessageHub.on(PlvChatMessageHubEvents.ROOM_MESSAGE, ({ data }) => {
         plvLive.sendBarrage(data);
       });
+
+      // 登录回调
+      plvChatMessageHub.on(
+        PlvChatMessageHubEvents.LOGIN_CALLBACK,
+        ({ data }) => {
+          const nick = data.user.nick;
+          this.updateConfigNickname(nick);
+        }
+      );
     },
     /** 绑定-直播消息总线事件 */
     bindLiveEvents() {

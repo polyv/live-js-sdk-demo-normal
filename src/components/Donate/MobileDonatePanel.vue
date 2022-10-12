@@ -137,7 +137,6 @@
 import { Swiper, SwiperSlide, directive } from 'vue-awesome-swiper';
 import 'swiper/css/swiper.css';
 
-import { isMobile } from '@/utils';
 import { toggleClass } from '@/utils/dom';
 import DonateMixin, {
   DonateMessageHub,
@@ -161,7 +160,6 @@ export default {
       showCustomCash: false, // 显示自定义金额输入框
       selectedCashIndex: null,
       giftId: '', // 礼品id
-      amount: '', // 打赏金额
       customCashMaxWidth: null, // 自定义金额输入框宽度
     };
   },
@@ -240,10 +238,10 @@ export default {
 
       /** @type {HTMLElement} */
       const $panel = this.$refs.donate;
-      if ($panel.contains(evt.target)) return;
-
-      evt.preventDefault();
-      DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
+      if (!$panel.contains(evt.target)) {
+        evt.preventDefault();
+        DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
+      }
     },
     handleSlideChange() {
       this.curPage =
@@ -251,7 +249,6 @@ export default {
           this.$refs.mySwiper.swiperInstance.activeIndex + 1) ||
         1;
     },
-
     /** 打赏项点击处理 */
     async handleDonateItemClick(e, donateItem) {
       // 设置打赏类型后会切换窗口
@@ -266,11 +263,14 @@ export default {
     },
     /** 处理礼物打赏-现金支付 */
     async handleGiftCashPayDonate(donateItem) {
-      this.amount = '';
       this.giftId = donateItem.giftId;
-      // TODO 处理真实的礼物打赏-积分支付逻辑
+      // TODO 处理真实的礼物打赏-现金支付逻辑
       console.info('handleGiftCashPayDonate', donateItem);
       DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
+      this.handleSendRewardMsg({
+        donateType: 'cash',
+        content: this.selectedDonate.price,
+      });
       this.resetSelectedDonateInfo();
     },
     /** 当 selectedDonateType 为 DonateType.CASH 可以选择现金数量  */
@@ -289,11 +289,6 @@ export default {
       this.giftId = '';
 
       const cash = Number(this.donateCash);
-      if (isMobile()) {
-        // TODO 可以在这里增加 !isWeixin() 的判断
-        this.$dialog.alert({ message: '请在微信中打开本页进行支付' });
-        return;
-      }
       if (cash === 0) {
         this.$dialog.alert({ message: '输入金额不能是0' });
         return;
@@ -305,11 +300,13 @@ export default {
         return;
       }
 
-      this.amount = cash;
-
       // TODO 处理真实的现金打赏逻辑
       console.info('handleCashDonate', cash);
       DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
+      this.handleSendRewardMsg({
+        donateType: 'cash',
+        content: cash,
+      });
       this.resetSelectedDonateInfo();
     },
     handleCashSelectPanelHidden() {
