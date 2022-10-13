@@ -50,6 +50,10 @@
               <pc-product-list v-if="enableRenderIRComponent"
                                v-show="isShowProductList"
                                @change-switch="changeProductSwitch" />
+              <pc-rtc-panel v-if="playerInited"
+                            v-show="isShowPcRtcPanel"
+                            @open="handleRTCTab(true)"
+                            @close="handleRTCTab(false)" />
             </section>
             <section v-show="!isCustomAcitveTab()"
                      class="plv-pc-origin-tab-content"
@@ -105,8 +109,14 @@ import PcMiniTool from '@/components/MiniTool/PcMiniTool.vue';
 import IREntranceService from '@/components/InteractionsReceive';
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
 import DonateBubble from '@/components/Donate/DonateBubble.vue';
+import PcRtcPanel from '@/components/RTC/PcRtcPanel.vue';
 
-import { MainScreenMap, PlvChannelScene, PlvChatUserType } from '@/const';
+import {
+  MainScreenMap,
+  PlvChannelScene,
+  PlvChatUserType,
+  TabNavType,
+} from '@/const';
 import PolyvChat, {
   plvChatMessageHub,
   PlvChatMessageHubEvents,
@@ -137,6 +147,7 @@ export default {
     DonateEntrance: () => import('@/components/Donate/DonateEntrance'),
     PcDonatePanel: () => import('@/components/Donate/PcDonatePanel.vue'),
     DonateBubble,
+    PcRtcPanel,
   },
   data() {
     return {
@@ -165,6 +176,9 @@ export default {
     /** 是否使用 PPT 文档播放器作为主屏 */
     isPPTMainPosition() {
       return this.playerCtrl.mainPosition === MainScreenMap.ppt.value;
+    },
+    isShowPcRtcPanel() {
+      return this.activeTab === TabNavType.RTC;
     },
   },
   mounted() {
@@ -383,6 +397,24 @@ export default {
       plvLive.liveSdk.player.on('switchMainScreen', (nextMainPosition) => {
         _handleSwitchPlayer(nextMainPosition);
       });
+    },
+
+    /**
+     * @param {Boolean} visible
+     */
+    handleRTCTab(visible) {
+      if (visible) {
+        this.tabData.unshift({
+          name: '连线',
+          type: TabNavType.RTC,
+        });
+        this.activeTab = TabNavType.RTC;
+      } else {
+        this.tabData = this.tabData.filter(
+          (tab) => tab.type !== TabNavType.RTC
+        );
+        this.activeTab = TabNavType.CHAT;
+      }
     },
   },
 };

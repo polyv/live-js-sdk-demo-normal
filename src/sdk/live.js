@@ -183,7 +183,8 @@ export default class PolyvLive {
       barrage: true, // 是否开启弹幕
       defaultBarrageStatus: true,
       autoplay: true, // 是否自动播放
-      lowLatency: true, // 是否使用无延迟，设置为 true 后，SDK 内部会自行判断支不支持
+      lowLatency: true, // 是否使用无延迟，设置为 true 后，SDK 内部会自行判断支不支持,
+      rtc: true // 在非无延迟的频道里面设置后可进行连麦，sdk会加载连麦sdk并返回实例
     });
 
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_INIT, data);
@@ -203,6 +204,15 @@ export default class PolyvLive {
         Notify('当前网络状态较差，建议切换网络观看');
       }
     });
+  }
+
+  /** 检查当前系统设备是否支持 rtc 连线 */
+  checkSystemRequirements() {
+    return PolyvLiveSdk.checkSystemRequirements();
+  }
+
+  getRTCInstance() {
+    return this.liveSdk.player.rtcInstance;
   }
 
   /** 销毁钩子 */

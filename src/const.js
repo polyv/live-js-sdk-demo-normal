@@ -47,7 +47,9 @@ export const TabNavType = {
   /** 直播介绍 */
   INTRO: 'intro',
   /** 商品库/边买边看 */
-  PRODUCT: 'porduct'
+  PRODUCT: 'porduct',
+  /** 连线/连麦 */
+  RTC: 'rtc'
 };
 
 /**

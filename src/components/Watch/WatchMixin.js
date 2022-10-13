@@ -13,7 +13,7 @@ export default {
   data() {
     const chatConfig = getDefaultConfigChat();
     return {
-      activeTab: 'chat',
+      activeTab: TabNavType.CHAT,
       originTabTypes: chatConfig.tabData.map((i) => i.type),
       tabData: [...chatConfig.tabData],
     };
