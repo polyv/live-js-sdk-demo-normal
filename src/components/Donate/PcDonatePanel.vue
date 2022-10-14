@@ -211,6 +211,7 @@ export default {
         !$hoverPanel.contains(evt.target) &&
         !$donateList.contains(evt.target)
       ) {
+        this.handleHoverPanelClose();
         DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
       }
     },
@@ -346,10 +347,13 @@ export default {
 .c-donate {
   height: 158px;
   box-sizing: border-box;
-  overflow: visible;
   position: relative;
-  background-color: #2b2c35;
   top: -158px;
+  /* 需要大于播放器控制条和互动功能的 z-inedx */
+  z-index: 2002;
+
+  overflow: visible;
+  background-color: #2b2c35;
 }
 .c-donate__gift-list {
   height: 100%;

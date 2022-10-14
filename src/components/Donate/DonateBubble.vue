@@ -55,7 +55,7 @@ export default {
         this.isShowBubble = true;
 
         const player = new SVGA.Player('#svga-player-container');
-        player.loops = 1;
+        // player.loops = 1;
         const parser = new SVGA.Parser('#svga-player-container');
 
         parser.load(
@@ -81,6 +81,9 @@ export default {
 
 <style lang="scss">
 .c-donate-bubble {
+  position: relative;
+  /* 需要大于播放器控制条和互动功能的 z-inedx */
+  z-index: 2002;
   .svga-player-container {
     max-height: 280px;
     &.mobile {
