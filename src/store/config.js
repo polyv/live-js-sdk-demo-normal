@@ -4,13 +4,9 @@ export default {
   namespaced: true,
 
   state: {
-    // channelId: '', // 频道号
-    // appId: '', // 直播后台AppID(应用ID)
-    // appSecret: '', // ！！！不建议 appSecret 暴露在前端中
-
-    channelId: '3263712',
-    appId: 'gc16qf1gp2',
-    appSecret: 'c0b1c61f49c6428abac78d762b694a84',
+    channelId: '', // 频道号
+    appId: '', // 直播后台AppID(应用ID)
+    appSecret: '', // ！！！不建议 appSecret 暴露在前端中
 
     // 以下三个值应设置为用户系统中的对应值，本 demo 生成方式仅供演示
     nickname: '观众' + USER_ID, // 昵称, 可以设置为用户系统中的用户昵称

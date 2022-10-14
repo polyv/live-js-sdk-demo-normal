@@ -68,9 +68,6 @@ export default {
         case 'sliderOff':
           toolkit.sliderOff();
           break;
-        case 'switch':
-          this.switchFacingModeHandle();
-          break;
         default:
           break;
       }
