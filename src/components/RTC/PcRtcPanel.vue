@@ -1,7 +1,6 @@
 <template>
   <section class="pc-rtc-panel">
-    <div class="rtc-list"
-         id="rtcList">
+    <div class="rtc-list">
       <div :class="{'rtc-box':true,'rtc-box-local':true,'only-one': isOnlyOneRTCBox}"
            v-show="localRtcDetail">
         <div class="rtc-box-video"

@@ -1,0 +1,167 @@
+.rtc-toolkit {
+  box-sizing: border-box;
+  z-index: 2000;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  padding: 8px 0;
+  background-color: #4e4c5b;
+  color: #fff;
+  box-shadow: 0 1px 8px 0 rgba(0, 0, 0, .1);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-right: 0;
+  border-top-left-radius: 24px;
+  border-bottom-left-radius: 24px;
+  line-height: 32px;
+  font-size: 0;
+  transform: translateX(0);
+  transition: width .3s;
+  user-select: none;
+  // display: none;
+  overflow: hidden;
+  width: 0;
+
+  &.rtc-toolkit-hide-border {
+    border: 0;
+  }
+
+  .rtc-toolkit-layout {
+    white-space: nowrap;
+    padding: 0 16px 0 8px;
+    font-size: 0;
+  }
+
+  span {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    vertical-align: middle;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  >div>div {
+    display: inline-block;
+    font-size: 16px;
+    vertical-align: middle;
+  }
+
+  .rtc-toolkit-text {
+    padding-left: 8px;
+  }
+
+  .rtc-toolkit-apply {
+    background-image: url(./imgs/phone.png);
+    background-size: 22px 7px;
+    background-color: #41c08c;
+    transform: rotate(-135deg);
+  }
+
+  &.rtc-toolkit-cancel,
+  &.rtc-toolkit-success {
+    .rtc-toolkit-apply {
+      background-color: #e96064;
+      transform: rotate(0);
+    }
+  }
+
+  &.rtc-toolkit-video-off {
+    .rtc-toolkit-cam,
+    .rtc-toolkit-switch {
+      display: none;
+    }
+  }
+
+  .rtc-toolkit-cam {
+    background-image: url(./imgs/btn-cam-on.png);
+  }
+
+  .rtc-toolkit-mic {
+    background-image: url(./imgs/btn-mic-on.png);
+  }
+
+  .rtc-toolkit-switch {
+    background-image: url(./imgs/btn-switch-cam-on.png);
+  }
+
+  &.rtc-toolkit-switch-hide {
+    .rtc-toolkit-switch {
+      display: none;
+    }
+  }
+
+  &.rtc-toolkit-cam-off {
+    .rtc-toolkit-cam {
+      background-image: url(./imgs/btn-cam-off.png);
+    }
+  }
+
+  &.rtc-toolkit-mic-off {
+    .rtc-toolkit-mic {
+      background-image: url(./imgs/btn-mic-off.png);
+    }
+  }
+
+  &.rtc-toolkit-switch-off {
+    .rtc-toolkit-switch {
+      background-image: url(./imgs/btn-switch-cam-off.png);
+    }
+  }
+
+  .rtc-toolkit-oc {
+    background-image: url(./imgs/btn-close.png);
+    background-size: 8px 14px;
+    display: none;
+    background-position: 20px center;
+    position: relative;
+    >span {
+      width: 48px;
+      height: 50px;
+      position: absolute;
+      top: -9px;
+      left: 0;
+    }
+  }
+
+  .rtc-toolkit-oo {
+    background-image: url(./imgs/btn-set.png);
+    display: none;
+  }
+
+  &.rtc-toolkit-slider-off.rtc-toolkit-success {
+    .rtc-toolkit-oo {
+      background-image: url(./imgs/btn-set.png);
+      background-size: 100% 100%;
+      background-position: center center;
+      display: inline-block;
+    }
+
+    .rtc-toolkit-apply {
+      // margin-left: 16px;
+      display: none;
+    }
+  }
+
+  div.rtc-toolkit-control {
+    display: none;
+    font-size: 0;
+
+    >span {
+      margin-left: 8px;
+    }
+  }
+
+  &.rtc-toolkit-success {
+    .rtc-toolkit-text {
+      display: none !important;
+    }
+
+    div.rtc-toolkit-control,
+    .rtc-toolkit-oc {
+      display: inline-block;
+    }
+  }
+}

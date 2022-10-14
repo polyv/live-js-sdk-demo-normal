@@ -7,6 +7,7 @@
              ref="plv-mobile-player"
              id="plv-mobile-player"></div>
       </div>
+      <mobile-rtc-panel v-if="playerInited" />
       <!-- 聊天室区域，包含 PPT 文档播放器和直播介绍页 -->
       <div class="plv-watch-mobile-chatroom plv-skin--dark">
         <tab-nav v-if="playerInited"
@@ -51,6 +52,7 @@ import IREntranceService from '@/components/InteractionsReceive';
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
 import DonateBubble from '@/components/Donate/DonateBubble.vue';
 import MobilePointRecord from '@/components/InteractionsReceive/RedEnvelope/MobilePointRecord';
+import MobileRtcPanel from '@/components/RTC/MobileRtcPanel.vue';
 
 import {
   getDefaultConfigChat,
@@ -88,6 +90,7 @@ export default {
       import('@/components/Donate/MobileDonatePanel.vue'),
     DonateBubble,
     MobilePointRecord,
+    MobileRtcPanel,
   },
   data() {
     const chatConfig = getDefaultConfigChat();
