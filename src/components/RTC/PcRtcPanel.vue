@@ -16,26 +16,31 @@
         </div>
       </div>
     </div>
+
+    <button class="setting-btn"
+            @click="handleSetting"
+            v-if="buttonCtrl.settingBtnVisible">
+      设备检测
+    </button>
+
     <div class="rtc-btn-group">
-      <button class="btn"
-              v-if="buttonCtrl.settingBtnVisible"
-              @click="handleSetting">
-        设备检测
-      </button>
-      <button class="btn"
+      <button class="btn btn-apply"
               v-if="buttonCtrl.appalyBtnVisible"
               @click="handleApply">
-        申请连线
+        <i class="btn__icon"></i>
+        <span class="btn__text">申请连线</span>
       </button>
-      <button class="btn"
+      <button class="btn btn-cancel"
               v-if="buttonCtrl.cancelBtnVisible"
               @click="handleCancel">
-        取消申请
+        <i class="btn__icon"></i>
+        <span class="btn__text">取消申请</span>
       </button>
-      <button class="btn"
+      <button class="btn btn-stop"
               v-if="buttonCtrl.stopBtnVisible"
               @click="handleStop">
-        结束连线
+        <i class="btn__icon"></i>
+        <span class="btn__text">结束连线</span>
       </button>
     </div>
   </section>
@@ -80,7 +85,7 @@ export default {
       rtc && rtc.joinChannel();
       this.buttonCtrl = {
         appalyBtnVisible: false,
-        settingBtnVisible: false,
+        settingBtnVisible: true,
         cancelBtnVisible: true,
         stopBtnVisible: false,
       };
@@ -158,7 +163,7 @@ export default {
         };
       });
 
-      // 挂断/结束连线 回调，重置状态
+      // 挂断/结束连线/被讲师下麦，重置状态
       rtc.on('LEAVE_CHANNEL_SUCCESS', (evt) => {
         this.resetComponentState();
       });
@@ -270,10 +275,12 @@ export default {
   overflow: hidden;
 }
 
+$rtxBtnGroupHeight: 42px;
+
 .rtc-list {
   display: flex;
   flex-wrap: wrap;
-  padding-bottom: 42px;
+  padding-bottom: $rtxBtnGroupHeight;
   overflow-y: auto;
   overflow-x: hidden;
   @include scrollbar();
@@ -305,20 +312,60 @@ export default {
   }
 }
 
+.setting-btn {
+  position: absolute;
+  left: 50%;
+  bottom: $rtxBtnGroupHeight + 10;
+  transform: translateX(-50%);
+
+  padding: 0 16px;
+  height: 32px;
+  font-size: 14px;
+  border-radius: 18px;
+  background: #3e3e4e;
+  color: #e4e4e4;
+  cursor: pointer;
+}
+
 .rtc-btn-group {
   position: absolute;
   bottom: 0;
   width: 100%;
-  justify-content: center;
-  align-items: center;
-  height: 42px;
-  display: flex;
+  height: $rtxBtnGroupHeight;
   background: #3e3e4e;
   .btn {
-    margin-right: 20px;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    background: #3e3e4e;
     cursor: pointer;
-    &:last-child {
-      margin-right: 0;
+    .btn__icon {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+    }
+    .btn__text {
+      font-size: 14px;
+      margin-left: 8px;
+      color: #fff;
+    }
+  }
+
+  $btn-status: (
+    'apply' #fff url(./imgs/btn-icon-default.png),
+    'cancel' #FF5B5B url(./imgs/btn-icon-hangup.png),
+    'stop' #FF5B5B url(./imgs/btn-icon-hangup.png),
+  );
+
+  @each $status, $textColor, $bg in $btn-status {
+    .btn-#{$status} {
+      .btn__icon {
+        background-image: $bg;
+        background-size: 100% 100%;
+      }
+      .btn__text { color: $textColor; }
     }
   }
 }
