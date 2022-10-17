@@ -1,6 +1,5 @@
 <template>
-  <section v-if="channelData"
-           class="tab-intro">
+  <section class="tab-intro">
     <div class="tab-intro-info">
       <img class="tab-intro-info__logo"
            :src="channelData.coverImage" />
@@ -11,7 +10,9 @@
         <p class="tab-intro-info__time">
           {{ (channelData.startTime || '— —') +'|' + channelData.pageView + '次观看' }}
         </p>
-        <watch-status />
+        <watch-status isMobile />
+        <span v-show="isShowLowLatencyIcon"
+              class="tab-intro-info__low-latency"></span>
       </div>
     </div>
     <div class="tab-intro-author">
@@ -31,20 +32,47 @@
 </template>
 
 <script>
-import WatchStatus from '@/components/WatchStatus/WatchStatus.vue';
+import WatchStatus from './WatchStatus.vue';
+import PolyvLive, {
+  plvLiveMessageHub,
+  PlvLiveMessageHubEvents,
+} from '@/sdk/live';
 
 export default {
   name: 'Mobile-Intro',
   components: { WatchStatus },
-  props: {
-    channelData: {
-      type: [Object, null],
-      default: null,
-    },
-    descContent: {
-      type: String,
-      default: '',
-    },
+  data() {
+    return {
+      channelData: {
+        pageView: 0,
+      },
+      descContent: '',
+      isShowLowLatencyIcon: false,
+    };
+  },
+  created() {
+    // 播放器初始化
+    plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
+      this.channelData = data;
+
+      const desMenu = data.channelMenus.find((i) => i.menuType === 'desc');
+      this.descContent = desMenu ? desMenu.content : '';
+
+      const plive = PolyvLive.getInstance();
+      const isLiveStatus = data.status === 'Y';
+      const isEnableLowLatency = plive.liveSdk.player.lowLatency;
+      this.isShowLowLatencyIcon = isLiveStatus && isEnableLowLatency;
+    });
+
+    // 监听流状态变化
+    plvLiveMessageHub.on(
+      PlvLiveMessageHubEvents.STREAM_UPDATE,
+      ({ status }) => {
+        if (status !== 'live') {
+          this.isShowLowLatencyIcon = false;
+        }
+      }
+    );
   },
 };
 </script>
@@ -73,35 +101,6 @@ export default {
   color: #fff;
   line-height: 20px;
   font-size: 16px;
-}
-
-.tab-intro .tab-intro-info__status::after {
-  position: absolute;
-  top: 0;
-  right: 0;
-  border-radius: 2px;
-  font-size: 12px;
-  padding: 4px;
-  border: 1px solid;
-  line-height: 1;
-}
-
-.tab-intro .tab-intro-info__status--nolive::after {
-  border-color: hsla(0, 0%, 100%, .6);
-  color: hsla(0, 0%, 100%, .6);
-  content: '暂无直播';
-}
-
-.tab-intro .tab-intro-info__status--playback::after {
-  color: #78a7ed;
-  border-color: #78a7ed;
-  content: '回放中';
-}
-
-.tab-intro .tab-intro-info__status--live::after {
-  color: #f06e6e;
-  border-color: #f06e6e;
-  content: '进行中';
 }
 
 .tab-intro .tab-intro-info__time {
@@ -149,5 +148,18 @@ export default {
   color: #adadc0;
   white-space: pre-wrap;
   font-size: 16px;
+}
+
+.tab-intro .tab-intro-info__low-latency {
+  float: right;
+
+  margin-top: -3px;
+  width: 58px;
+  height: 18px;
+
+  background-image: url(./imgs/low-latency-bg-mob.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 </style>

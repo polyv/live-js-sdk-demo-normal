@@ -72,27 +72,9 @@
           </div>
         </div>
       </div>
-
       <!-- 频道信息 -->
-      <div class="plv-watch-pc__info">
-        <img class="plv-watch-pc__info__logo"
-             src="https://live.polyv.cn/assets/wimages/pc_images/logo.png" />
-        <div class="plv-watch-pc__info__desc">
-          <p class="plv-watch-pc__info__desc__name">
-            {{ channelInfo.name }}
-            <watch-status />
-          </p>
-          <span class="plv-watch-pc__info__desc__publisher-ico"></span>
-          <span class="plv-watch-pc__info__desc__publisher">
-            {{ channelInfo.publisher }}
-          </span>
-          <span class="plv-watch-pc__info__desc__view">
-            {{ channelInfo.pageView + ' 次观看' }}
-          </span>
-        </div>
-      </div>
+      <pc-intro />
     </div>
-
     <!-- 菜单栏 -->
     <pc-menu />
   </section>
@@ -102,8 +84,8 @@
 import { mapState, mapMutations } from 'vuex';
 import WatchMixin from '@/components/Watch/WatchMixin';
 import TabNav from '@/components/TabNav/TabNav.vue';
-import WatchStatus from '@/components/WatchStatus/WatchStatus.vue';
 import LikeService from '@/components/Like';
+import PcIntro from '@/components/Intro/PcIntro.vue';
 import PcMenu from '@/components/Menu/PcMenu.vue';
 import PcMiniTool from '@/components/MiniTool/PcMiniTool.vue';
 import IREntranceService from '@/components/InteractionsReceive';
@@ -138,7 +120,7 @@ export default {
   mixins: [WatchMixin],
   components: {
     PcMenu,
-    WatchStatus,
+    PcIntro,
     PcMiniTool,
     TabNav,
     ProductBubble,
@@ -639,45 +621,6 @@ export default {
 }
 .plv-watch-pc .plv-watch-pc__top--fullscreen .pv-ppt-controller {
   width: 100%;
-}
-
-/* 频道信息 */
-.plv-watch-pc__info {
-  padding: 30px 0;
-  color: #fff;
-  font-size: 0;
-}
-.plv-watch-pc__info__logo {
-  width: 50px;
-  height: 100%;
-  margin-right: 10px;
-}
-.plv-watch-pc__info__desc {
-  display: inline-block;
-  vertical-align: top;
-}
-.plv-watch-pc__info__desc__name {
-  margin-bottom: 8px;
-  line-height: 24px;
-  font-size: 18px;
-}
-.plv-watch-pc__info__desc__publisher-ico {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  vertical-align: middle;
-  background: url('~@/assets/chat-imgs/person.png') no-repeat;
-  background-size: 18px 18px;
-  margin-right: 4px;
-}
-.plv-watch-pc__info__desc__publisher,
-.plv-watch-pc__info__desc__view {
-  font-size: 14px;
-  vertical-align: middle;
-}
-.plv-watch-pc__info__desc__publisher::after {
-  content: '|';
-  margin: 0 16px;
 }
 
 .polyv-chat-room .other-message,

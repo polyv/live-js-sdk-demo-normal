@@ -17,9 +17,7 @@
                  class="tab-nav" />
         <section v-show="isCustomAcitveTab()"
                  class="custom-tab-content-wrapper">
-          <mobile-intro v-if="introInfo"
-                        v-show="isShowMobileIntro"
-                        v-bind="introInfo" />
+          <mobile-intro v-show="isShowMobileIntro" />
           <mobile-product-list v-if="enableRenderIRComponent"
                                v-show="isShowProductList"
                                @change-switch="changeProductSwitch" />
@@ -101,7 +99,6 @@ export default {
         .concat(TabNavType.PPT),
       playerInited: false,
       enableRenderIRComponent: false,
-      introInfo: null,
     };
   },
   computed: {
@@ -278,7 +275,6 @@ export default {
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
         this.playerInited = true;
         this.renderLike(data);
-        this.renderIntroMenuContent(data);
       });
 
       // 点赞互动
@@ -329,15 +325,6 @@ export default {
       instance.setData({ likeNum: data.likes });
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
-    },
-    /** 渲染"直播介绍" Tab 中的内容 */
-    renderIntroMenuContent(data) {
-      const desMenu = data.channelMenus.find((i) => i.menuType === 'desc');
-      const introInfo = {
-        channelData: data,
-        descContent: desMenu ? desMenu.content : '',
-      };
-      this.introInfo = introInfo;
     },
   },
 };

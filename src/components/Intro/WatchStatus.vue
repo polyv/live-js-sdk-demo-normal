@@ -1,6 +1,9 @@
 <template>
-  <div :class="statusClass"
-       id="plv-watch__status"></div>
+  <div :class="{
+        'plv-watch__status':true,
+        [statusClass]:true,
+        'mobile':isMobile
+      }"></div>
 </template>
 
 <script>
@@ -8,6 +11,12 @@ import { plvLiveMessageHub, PlvLiveMessageHubEvents } from '@/sdk/live';
 
 export default {
   name: 'watch-status',
+  props: {
+    isMobile: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       statusClass: '',
@@ -35,30 +44,28 @@ export default {
 
 <style lang="scss">
 /* 直播状态 */
-.plv-watch-mobile #plv-watch__status {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
-.plv-watch-mobile #plv-watch__status::after {
-  border-radius: 2px;
-  font-size: 12px;
-  padding: 4px;
-  border: 1px solid;
-  line-height: 1;
-}
-
-.plv-watch-pc #plv-watch__status {
+.plv-watch__status {
   display: inline-block;
   margin-left: 10px;
-}
-.plv-watch-pc #plv-watch__status::after {
-  border-radius: 2px;
-  font-size: 12px;
-  padding: 0 4px;
-  border: 1px solid;
-  line-height: 1;
+  &::after {
+    border-radius: 2px;
+    font-size: 12px;
+    padding: 0 4px;
+    border: 1px solid;
+    line-height: 1;
+  }
+  &.mobile {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  &::after {
+    border-radius: 2px;
+    font-size: 12px;
+    padding: 4px;
+    border: 1px solid;
+    line-height: 1;
+  }
 }
 
 .plv-watch__status--end::after {
@@ -76,6 +83,6 @@ export default {
 .plv-watch__status--live::after {
   color: #f06e6e;
   border-color: #f06e6e;
-  content: '进行中';
+  content: '直播中';
 }
 </style>
