@@ -22,7 +22,7 @@
 </template>
 
 <script>
-/** 红包入口来自“聊天列表红包消息组件内容” */
+/** 注意。红包入口来自“聊天列表红包消息组件内容” */
 
 import RedEnvelopeComp from '@polyv/interactions-receive-sdk-ui-default/lib/PcRedEnvelope';
 import RedEnvelopePendant from '@polyv/interactions-receive-sdk-ui-default/lib/RedEnvelopePendant';
@@ -37,7 +37,12 @@ export default {
     PcRedpackRain,
   },
   mounted() {
-    document.body.appendChild(this.$refs['red-envelope-wrapper']);
+    this.customMountEl();
+  },
+  methods: {
+    customMountEl() {
+      document.body.appendChild(this.$refs['red-envelope-wrapper']);
+    },
   },
 };
 </script>

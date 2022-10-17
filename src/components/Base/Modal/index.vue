@@ -34,10 +34,10 @@
 
 <script>
 /**
- * 模态框组件，可自行实现
+ * @file 模态框组件，可自行实现
  */
 export default {
-  name: 'modal',
+  name: 'Modal',
 
   props: {
     appendToBody: {

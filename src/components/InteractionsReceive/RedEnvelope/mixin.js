@@ -96,6 +96,7 @@ export default {
       }
       this.getNewestRequestEnd = true;
     },
+    /** 挂件倒计时结束 */
     handlePendantCountDownEnd() {
       this.showPendant = false;
     },

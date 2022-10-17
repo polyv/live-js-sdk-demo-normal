@@ -14,7 +14,7 @@
 import { Product } from '@polyv/interactions-receive-sdk';
 import ProductBubble from '@polyv/interactions-receive-sdk-ui-default/lib/ProductBubble';
 
-/** 用于展示推送商品的气泡框 */
+/** 用于展示推送商品的气泡消息 */
 export default {
   components: {
     ProductBubble,

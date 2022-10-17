@@ -8,15 +8,15 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import { DonateMessageHub, DonateMessageHubEvents } from './DonateMixin';
 
 export default {
   name: 'DonateEntrance',
-  computed: {
-    ...mapState({
-      isMobile: (state) => state.isMobile,
-    }),
+  props: {
+    isMobile: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -29,27 +29,33 @@ export default {
       this.handleDonate();
     });
   },
+  mounted() {
+    if (this.isMobile) {
+      this.customMountEl_Mobile();
+    } else {
+      this.customMountEl_PC();
+    }
+  },
   methods: {
+    customMountEl_PC() {
+      const $tabChatInputController = document
+        .getElementById('tab-chat')
+        .querySelector('.polyv-chat-input-main>div');
+      $tabChatInputController.style.setProperty('padding-left', '60px');
+      $tabChatInputController.appendChild(this.$el);
+    },
+    customMountEl_Mobile() {
+      const $tabChatInputController = document
+        .getElementById('tab-chat')
+        .querySelector('.polyv-chat-input-main .polyv-chat-input-top');
+      $tabChatInputController.appendChild(this.$el);
+    },
     handleDonate() {
       this.panelVisible = !this.panelVisible;
       DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_VISIBLE_TOGGLE, {
         visible: this.panelVisible,
       });
     },
-  },
-  mounted() {
-    if (!this.isMobile) {
-      const $tabChatInputController = document
-        .getElementById('tab-chat')
-        .querySelector('.polyv-chat-input-main .polyv-chat-input-top');
-      $tabChatInputController.appendChild(this.$el);
-    } else {
-      const $tabChatInputController = document
-        .getElementById('tab-chat')
-        .querySelector('.polyv-chat-input-main>div');
-      $tabChatInputController.style.setProperty('padding-left', '60px');
-      $tabChatInputController.appendChild(this.$el);
-    }
   },
 };
 </script>

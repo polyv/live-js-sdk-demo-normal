@@ -6,8 +6,9 @@
         <div class="plv-watch-mobile-player"
              ref="plv-mobile-player"
              id="plv-mobile-player"></div>
+        <!-- 用于展示 RTC 主讲的 DOM -->
         <div class="plv-watch-mobile-player"
-             id="plv-mobile-rtc-player"
+             id="plv-mobile-master-rtc-player"
              style="display: none;"></div>
       </div>
       <mobile-rtc-panel v-if="playerInited" />
@@ -20,6 +21,7 @@
                  class="tab-nav" />
         <section v-show="isCustomAcitveTab()"
                  class="custom-tab-content-wrapper">
+          <!-- 这一区域用来展示定制的 Tab 面板 -->
           <mobile-intro v-show="isShowMobileIntro" />
           <mobile-product-list v-if="enableRenderIRComponent"
                                v-show="isShowProductList"
@@ -28,15 +30,18 @@
         <section v-show="!isCustomAcitveTab()"
                  class="plv-mobile-origin-tab-content"
                  ref="plv-mobile-origin-tab-content">
-          <donate-entrance v-if="playerInited && isEnableDonate" />
+          <!-- 这一块会渲染  polyv-chat-room -->
+          <donate-entrance v-if="playerInited && isEnableDonate"
+                           isMobile />
           <mobile-donate-panel v-if="playerInited && isEnableDonate"
                                :donateConfig="donateConfig" />
-          <mobile-point-record v-if="enableRenderIRComponent" />
+          <mobile-red-envelope-point-record v-if="enableRenderIRComponent" />
         </section>
-
+        <!-- 用于展示一些气泡消息/动画特效 -->
         <section class="bubble-wrapper">
           <product-bubble v-if="playerInited" />
-          <donate-bubble />
+          <donate-bubble v-show="isActiveChatTab"
+                         isMobile />
         </section>
       </div>
     </div>
@@ -52,7 +57,7 @@ import LikeService from '@/components/Like';
 import IREntranceService from '@/components/InteractionsReceive';
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
 import DonateBubble from '@/components/Donate/DonateBubble.vue';
-import MobilePointRecord from '@/components/InteractionsReceive/RedEnvelope/MobilePointRecord';
+import MobileRedEnvelopePointRecord from '@/components/InteractionsReceive/RedEnvelope/MobileRedEnvelopePointRecord.vue';
 import MobileRtcPanel from '@/components/RTC/MobileRtcPanel.vue';
 
 import {
@@ -90,16 +95,17 @@ export default {
     MobileDonatePanel: () =>
       import('@/components/Donate/MobileDonatePanel.vue'),
     DonateBubble,
-    MobilePointRecord,
+    MobileRedEnvelopePointRecord,
     MobileRtcPanel,
   },
   data() {
     const chatConfig = getDefaultConfigChat();
 
     return {
+      /** 聊天室 SDK 中的 Tab 类型，文档这一块比较特殊，需要手动 concat 一下 */
       originTabTypes: chatConfig.tabData
         .map((i) => i.type)
-        .concat(TabNavType.PPT),
+        .concat([TabNavType.PPT]),
       playerInited: false,
       enableRenderIRComponent: false,
     };
@@ -356,7 +362,7 @@ export default {
   height: 100%;
 }
 
-#plv-mobile-rtc-player {
+#plv-mobile-master-rtc-player {
   z-index: 9999;
 }
 

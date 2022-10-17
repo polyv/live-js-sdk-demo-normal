@@ -1,3 +1,7 @@
+/**
+ * @file 用于移动端侧边栏操作的工具组件
+ */
+
 import './index.scss';
 
 const getMicBtnTemplate = () => {

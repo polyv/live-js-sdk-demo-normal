@@ -10,7 +10,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 import SVGA from 'svgaplayerweb';
 
 import { plvChatMessageHub, PlvChatMessageHubEvents } from '@/sdk/chat';
@@ -20,6 +19,13 @@ import { getSvgaUrl } from './svga-util';
  * 打赏动效组件
  */
 export default {
+  props: {
+    isMobile: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
   data() {
     return {
       isShowBubble: false,
@@ -38,12 +44,6 @@ export default {
       PlvChatMessageHubEvents.DONATE_CALLBACK,
       this.handleReward
     );
-  },
-
-  computed: {
-    ...mapState({
-      isMobile: (state) => state.isMobile,
-    }),
   },
 
   methods: {

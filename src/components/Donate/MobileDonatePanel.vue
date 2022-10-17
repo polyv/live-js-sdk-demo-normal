@@ -212,10 +212,8 @@ export default {
   },
 
   mounted() {
-    // 挂载在聊天室区域
+    this.customMountEl();
     const $tabChat = document.querySelector('#tab-chat');
-    $tabChat.querySelector('.polyv-chat-input').appendChild(this.$el);
-
     DonateMessageHub.on(
       DonateMessageHubEvents.PANEL_VISIBLE_TOGGLE,
       ({ visible }) => {
@@ -234,6 +232,11 @@ export default {
   },
 
   methods: {
+    customMountEl() {
+      // 挂载在聊天室区域
+      const $tabChat = document.querySelector('#tab-chat');
+      $tabChat.querySelector('.polyv-chat-input').appendChild(this.$el);
+    },
     handleContainEl(evt) {
       if (evt.target.getAttribute('data-type') === 'donate-entrance') return;
 

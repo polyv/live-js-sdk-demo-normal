@@ -49,7 +49,7 @@
 import PolyvLive from '@/sdk/live';
 
 export default {
-  name: 'pc-rtc-panel',
+  name: 'PC-RTC-Panel',
   data() {
     return {
       // 本地用户 RTC 流数据
@@ -122,7 +122,7 @@ export default {
       const plive = PolyvLive.getInstance();
       const player = plive.liveSdk.player;
       const rtc = plive.getRTCInstance();
-      const $masterVideo = document.querySelector('#plv-pc-rtc-player');
+      const $masterVideo = document.querySelector('#plv-pc-master-rtc-player');
 
       // 讲师-开启连麦
       rtc.on('OPEN_MICROPHONE', () => {
@@ -223,7 +223,7 @@ export default {
         if (previousUser.leave) {
           // 设置到主讲位置
           rtc.play(currentUser.streamId, {
-            element: document.getElementById('plv-pc-rtc-player'),
+            element: document.getElementById('plv-pc-master-rtc-player'),
           });
 
           // 上一个主讲已经离开，不需要原来的位置了，删掉元素
@@ -252,6 +252,7 @@ export default {
         );
       });
     },
+    // 重置组件状态
     resetComponentState() {
       this.localRtcDetail = null;
       this.rtcList = [];

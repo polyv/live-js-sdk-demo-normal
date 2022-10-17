@@ -14,14 +14,21 @@ export default {
     const chatConfig = getDefaultConfigChat();
     return {
       activeTab: TabNavType.CHAT,
+      /** 聊天室 SDK 中的 Tab 类型 */
       originTabTypes: chatConfig.tabData.map((i) => i.type),
       tabData: [...chatConfig.tabData],
     };
   },
   computed: {
+    /** 当前 Tab 是否为 "聊天" Tab */
+    isActiveChatTab() {
+      return this.activeTab === TabNavType.CHAT;
+    },
+    /** 是否展示商品库列表 */
     isShowProductList() {
       return this.activeTab === TabNavType.PRODUCT && this.productEnable;
     },
+    /** 是否启用打赏功能 */
     isEnableDonate() {
       return ynToBool(this.donateConfig.donateCashEnabled) || ynToBool(this.donateConfig.donateGiftEnabled);
     }
@@ -43,6 +50,7 @@ export default {
     },
   },
   methods: {
+    /** 判断是否需要展示定制面板的 Tab 类型 */
     isCustomAcitveTab() {
       return !this.originTabTypes.includes(this.activeTab);
     },

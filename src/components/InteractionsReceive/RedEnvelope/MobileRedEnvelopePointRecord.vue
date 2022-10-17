@@ -44,11 +44,14 @@ export default {
     );
   },
   mounted() {
-    const $morePanel = document.querySelector('.polyv-more-control-list');
-    const $li = this.$refs['point-record-entrance'];
-    $morePanel.appendChild($li);
+    this.customMountEl();
   },
   methods: {
+    customMountEl() {
+      const $morePanel = document.querySelector('.polyv-more-control-list');
+      const $li = this.$refs['point-record-entrance'];
+      $morePanel.appendChild($li);
+    },
     setPonitRecordPanelVisible(visible) {
       this.pointRecordPanelVisible = visible;
     },

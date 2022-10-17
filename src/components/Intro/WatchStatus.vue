@@ -10,7 +10,7 @@
 import { plvLiveMessageHub, PlvLiveMessageHubEvents } from '@/sdk/live';
 
 export default {
-  name: 'watch-status',
+  name: 'Watch-Status',
   props: {
     isMobile: {
       type: Boolean,

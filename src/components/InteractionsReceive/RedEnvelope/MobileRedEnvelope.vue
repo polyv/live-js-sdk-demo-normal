@@ -51,12 +51,16 @@ export default {
     };
   },
   mounted() {
-    document.body.appendChild(this.$refs['red-envelope-wrapper']);
+    this.customMountEl();
   },
   methods: {
+    customMountEl() {
+      document.body.appendChild(this.$refs['red-envelope-wrapper']);
+    },
     handleStatusChange(redpackId, status) {
       console.info('handleStatusChange', redpackId, status);
     },
+    /** 提现按钮点击 */
     handleClickWidthdraw() {
       console.info('handleClickWidthdraw');
       this.$dialog.alert({
@@ -64,6 +68,7 @@ export default {
         message: '当前只是示例，需要自行处理提现',
       });
     },
+    /** 积分明细按钮点击 */
     handleClickPoint() {
       console.info('handleClickPointRecord');
       RedEnvelopeMessageHub.trigger(

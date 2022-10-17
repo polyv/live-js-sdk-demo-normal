@@ -180,8 +180,7 @@ export default {
   },
 
   mounted() {
-    const $tabChat = document.querySelector('#tab-chat');
-    $tabChat.appendChild(this.$el);
+    this.customMountEl();
     DonateMessageHub.on(
       DonateMessageHubEvents.PANEL_VISIBLE_TOGGLE,
       ({ visible }) => {
@@ -197,6 +196,10 @@ export default {
   },
 
   methods: {
+    customMountEl() {
+      const $tabChat = document.querySelector('#tab-chat');
+      $tabChat.appendChild(this.$el);
+    },
     /** 判断点击区域是否需要隐藏当前面板 */
     handleContainEl(evt) {
       if (evt.target.getAttribute('data-type') === 'donate-entrance') return;

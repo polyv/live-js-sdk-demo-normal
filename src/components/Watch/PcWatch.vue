@@ -33,8 +33,9 @@
             <div class="plv-watch-pc__screen__inner"
                  ref="plv-pc-side"
                  id="plv-pc-side"></div>
+            <!-- 用于展示 RTC 主讲的 DOM -->
             <div class="plv-watch-pc__screen__inner"
-                 id="plv-pc-rtc-player"
+                 id="plv-pc-master-rtc-player"
                  style="display: none;"></div>
           </div>
         </div>
@@ -50,6 +51,7 @@
                      class="tab-nav" />
             <section v-show="isCustomAcitveTab()"
                      class="custom-tab-content-wrapper">
+              <!-- 这一区域用来展示定制的 Tab 面板 -->
               <pc-product-list v-if="enableRenderIRComponent"
                                v-show="isShowProductList"
                                @change-switch="changeProductSwitch" />
@@ -67,10 +69,10 @@
               <pc-donate-panel v-if="playerInited && isEnableDonate"
                                :donateConfig="donateConfig" />
             </section>
-
+            <!-- 用于展示一些气泡消息/动画特效 -->
             <section class="bubble-wrapper">
               <product-bubble v-if="playerInited" />
-              <donate-bubble />
+              <donate-bubble v-show="isActiveChatTab" />
             </section>
           </div>
         </div>
@@ -249,7 +251,7 @@ export default {
         }
       );
 
-      // 设置当前可以渲染 IR 组件了
+      // 状态位设置，表示 IR SDK 已初始化
       this.enableRenderIRComponent = true;
 
       // 初始化-直播SDK
@@ -383,8 +385,8 @@ export default {
         _handleSwitchPlayer(nextMainPosition);
       });
     },
-
     /**
+     * 是否展示用于连麦功能的"连线"Tab
      * @param {Boolean} visible
      */
     handleRTCTab(visible) {

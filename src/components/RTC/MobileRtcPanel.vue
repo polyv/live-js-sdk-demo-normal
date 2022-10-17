@@ -22,10 +22,11 @@
 import PolyvLive from '@/sdk/live';
 import Toolkit from './MobileRTCPlayerToolkit';
 
+/** 单例处理 */
 let _existToolKit = null;
 
 export default {
-  name: 'mobile-rtc-panel',
+  name: 'Mobile-RTC-Panel',
   data() {
     return {
       localRtcDetail: null,
@@ -89,7 +90,9 @@ export default {
       const plive = PolyvLive.getInstance();
       const player = plive.liveSdk.player;
       const rtc = plive.getRTCInstance();
-      const $masterVideo = document.querySelector('#plv-mobile-rtc-player');
+      const $masterVideo = document.querySelector(
+        '#plv-mobile-master-rtc-player'
+      );
 
       // 讲师-开启连麦
       rtc.on('OPEN_MICROPHONE', () => {
@@ -194,7 +197,7 @@ export default {
         if (previousUser.leave) {
           // 设置到主讲位置
           rtc.play(currentUser.streamId, {
-            element: document.getElementById('plv-pc-rtc-player'),
+            element: document.getElementById('plv-mobile-master-rtc-player'),
           });
 
           // 上一个主讲已经离开，不需要原来的位置了，删掉元素

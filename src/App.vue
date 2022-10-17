@@ -8,7 +8,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'app',
+  name: 'App',
   computed: {
     ...mapGetters({
       isNeedLogin: 'config/isNeedLogin',

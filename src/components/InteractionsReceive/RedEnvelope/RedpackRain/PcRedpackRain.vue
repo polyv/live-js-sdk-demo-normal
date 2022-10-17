@@ -36,7 +36,7 @@ export default {
   },
 
   mounted() {
-    document.body.appendChild(this.$refs['plv-pc-redpack-rain']);
+    this.customMountEl();
   },
 
   beforeDestroy() {
@@ -45,6 +45,9 @@ export default {
   },
 
   methods: {
+    customMountEl() {
+      document.body.appendChild(this.$refs['plv-pc-redpack-rain']);
+    },
     // 用于测试的方法
     openRedpackRain() {
       const data = {
