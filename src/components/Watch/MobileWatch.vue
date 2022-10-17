@@ -6,6 +6,9 @@
         <div class="plv-watch-mobile-player"
              ref="plv-mobile-player"
              id="plv-mobile-player"></div>
+        <div class="plv-watch-mobile-player"
+             id="plv-mobile-rtc-player"
+             style="display: none;"></div>
       </div>
       <mobile-rtc-panel v-if="playerInited" />
       <!-- 聊天室区域，包含 PPT 文档播放器和直播介绍页 -->
@@ -351,6 +354,10 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
+}
+
+#plv-mobile-rtc-player {
+  z-index: 9999;
 }
 
 .plv-watch-mobile-chatroom {

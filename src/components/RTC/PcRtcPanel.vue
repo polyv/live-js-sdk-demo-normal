@@ -52,7 +52,9 @@ export default {
   name: 'pc-rtc-panel',
   data() {
     return {
+      // 本地用户 RTC 流数据
       localRtcDetail: null,
+      // 除主讲，本地用户外其他 RTC 流的集合
       rtcList: [],
       buttonCtrl: {
         settingBtnVisible: true,
@@ -118,7 +120,9 @@ export default {
     },
     bindRTCEvent() {
       const plive = PolyvLive.getInstance();
+      const player = plive.liveSdk.player;
       const rtc = plive.getRTCInstance();
+      const $masterVideo = document.querySelector('#plv-pc-rtc-player');
 
       // 讲师-开启连麦
       rtc.on('OPEN_MICROPHONE', () => {
@@ -134,25 +138,29 @@ export default {
       rtc.on('CLOSE_MICROPHONE', () => {
         console.warn('讲师关闭连麦');
         this.$emit('close');
+        player.play();
+        $masterVideo.style.setProperty('display', 'none');
         this.resetComponentState();
       });
 
       // 本地流流初始化成功
       rtc.on('INIT_LOCAL_STREAM_READY', (evt) => {
+        // 非无延迟连麦时会走 CDN 混流，这里隐藏原本的播放器，并暂停，在 USER_STREAM_ADDED 中订阅 master 流展示再另外的 DOM 容器中
+        if (!player.lowLatency) {
+          player.pause();
+        }
+
         this.localRtcDetail = evt;
         const $localVideo = this.$refs['rtc-box-local-video'];
         // 准备推流，设置推流参数
         evt.init({
           element: $localVideo,
-          playCallBack: (err) => {
-            console.error('INIT_LOCAL_STREAM_READY', err);
-          },
           playConfig: {
             fit: 'contain',
           },
         });
       });
-      // 推流成功
+      // 本地流推流成功
       rtc.on('PUBLIC_STREAM_SUCCESS', () => {
         this.buttonCtrl = {
           settingBtnVisible: false,
@@ -164,10 +172,13 @@ export default {
 
       // 挂断/结束连线/被讲师下麦，重置状态
       rtc.on('LEAVE_CHANNEL_SUCCESS', (evt) => {
+        player.play();
+        $masterVideo.style.setProperty('display', 'none');
         this.resetComponentState();
       });
 
-      // 监听频道中其他流并且订阅，注意，无延迟场景下该事件不会触发，由sdk内部处理
+      // 监听频道中其他流并且订阅
+      // 注意，无延迟场景下该事件不会触发，由sdk内部处理
       rtc.on('USER_STREAM_ADDED', (evt) => {
         function sub(evt, $video) {
           evt.subscribe({
@@ -178,7 +189,7 @@ export default {
           });
         }
 
-        console.warn(evt.nick, evt.streamId, '加入');
+        console.warn('USER_STREAM_ADDED', evt.nick, evt.streamId, evt.master);
         if (!evt.master) {
           this.rtcList.push(evt);
           this.$nextTick(() => {
@@ -186,16 +197,18 @@ export default {
             sub(evt, $video);
           });
         } else {
-          const $video = document.getElementById('playerRTC');
-          sub(evt, $video);
+          $masterVideo.style.setProperty('display', 'block');
+          sub(evt, $masterVideo);
         }
       });
       rtc.on('USER_STREAM_SUBSCRIBED', (evt) => {
         console.warn('订阅成功', evt.streamId);
       });
 
-      // 切换主讲，注意，无延迟场景下该事件不会触发，由sdk内部处理
+      // 切换主讲
+      // 注意，无延迟场景下该事件不会触发，由sdk内部处理
       rtc.on('SWITCH_MASTER', (evt) => {
+        console.warn('切换主讲');
         const currentUser = evt.currentUser;
         const previousUser = evt.previousUser;
 
@@ -210,7 +223,7 @@ export default {
         if (previousUser.leave) {
           // 设置到主讲位置
           rtc.play(currentUser.streamId, {
-            element: document.getElementById('playerRTC'),
+            element: document.getElementById('plv-pc-rtc-player'),
           });
 
           // 上一个主讲已经离开，不需要原来的位置了，删掉元素
@@ -230,7 +243,8 @@ export default {
         }
       });
 
-      // 有用户离开，删除相应节点，注意，无延迟场景下该事件不会触发，有sdk内部处理
+      // 有用户离开，删除相应节点
+      // 注意，无延迟场景下该事件不会触发，有sdk内部处理
       rtc.on('USER_PEER_LEAVE', (evt) => {
         console.warn('USER_PEER_LEAVE', evt.streamId);
         this.rtcList = this.rtcList.filter(
@@ -293,9 +307,9 @@ $rtxBtnGroupHeight: 42px;
     &.rtc-box-local.only-one {
       max-width: 100%;
     }
-    &.rtc-box-other {
-      pointer-events: none;
-    }
+    // &.rtc-box-other {
+    //   pointer-events: none;
+    // }
   }
   .rtc-box:before {
     content: '';

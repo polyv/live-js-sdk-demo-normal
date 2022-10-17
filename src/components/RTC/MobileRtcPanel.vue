@@ -22,13 +22,14 @@
 import PolyvLive from '@/sdk/live';
 import Toolkit from './MobileRTCPlayerToolkit';
 
+let _existToolKit = null;
+
 export default {
   name: 'mobile-rtc-panel',
   data() {
     return {
       localRtcDetail: null,
       rtcList: [],
-      rtc: null,
       toolkit: null,
     };
   },
@@ -42,7 +43,10 @@ export default {
   },
   methods: {
     toolkitHandle(type) {
-      const { rtc, toolkit } = this;
+      const plive = PolyvLive.getInstance();
+      const rtc = plive.getRTCInstance();
+      const { toolkit } = this;
+
       switch (type) {
         case 'applyAndStop':
           if (rtc.rtcConnected) {
@@ -83,7 +87,9 @@ export default {
     },
     bindRTCEvent() {
       const plive = PolyvLive.getInstance();
+      const player = plive.liveSdk.player;
       const rtc = plive.getRTCInstance();
+      const $masterVideo = document.querySelector('#plv-mobile-rtc-player');
 
       // 讲师-开启连麦
       rtc.on('OPEN_MICROPHONE', () => {
@@ -92,33 +98,38 @@ export default {
           return;
         }
         console.warn('讲师开启连麦');
-        this.rtc = rtc;
-        this.toolkit = Toolkit(this.toolkitHandle, (type) => {
-          const lang = {
-            apply: '申请连线',
-            calling: '请求中...',
-          };
-          return lang[type];
-        });
+        if (!_existToolKit) {
+          _existToolKit = Toolkit(this.toolkitHandle, (type) => {
+            const lang = {
+              apply: '申请连线',
+              calling: '请求中...',
+            };
+            return lang[type];
+          });
+        }
+        this.toolkit = _existToolKit;
         this.toolkit.show();
       });
 
       // 讲师-关闭连麦
       rtc.on('CLOSE_MICROPHONE', () => {
         console.warn('讲师关闭连麦');
+        player.play();
+        $masterVideo.style.setProperty('display', 'none');
         this.resetComponentState();
       });
 
       // 本地流流初始化成功
       rtc.on('INIT_LOCAL_STREAM_READY', (evt) => {
-        console.warn('INIT_LOCAL_STREAM_READY', evt);
+        // 非无延迟连麦时会走 CDN 混流，这里隐藏原本的播放器，并暂停，在 USER_STREAM_ADDED 中订阅 master 流展示再另外的 DOM 容器中
+        if (!player.lowLatency) {
+          player.pause();
+        }
+
         this.localRtcDetail = evt;
         const $localVideo = this.$refs['rtc-box-local-video'];
         evt.init({
           element: $localVideo,
-          playCallBack: (err) => {
-            console.error('INIT_LOCAL_STREAM_READY', err);
-          },
           playConfig: {
             fit: 'contain',
           },
@@ -130,8 +141,86 @@ export default {
         this.toolkit.success('video');
       });
 
+      // 挂断/结束连线/被讲师下麦，重置状态
       rtc.on('LEAVE_CHANNEL_SUCCESS', (evt) => {
+        player.play();
+        $masterVideo.style.setProperty('display', 'none');
         this.resetComponentState();
+      });
+
+      // 监听频道中其他流并且订阅
+      // 注意，无延迟场景下该事件不会触发，由sdk内部处理
+      rtc.on('USER_STREAM_ADDED', (evt) => {
+        function sub(evt, $video) {
+          evt.subscribe({
+            element: $video,
+            playConfig: {
+              fit: 'contain',
+            },
+          });
+        }
+
+        console.warn('USER_STREAM_ADDED', evt.nick, evt.streamId, evt.master);
+        if (!evt.master) {
+          this.rtcList.push(evt);
+          this.$nextTick(() => {
+            const $video = this.$refs[`rtc-box-other-video-${evt.streamId}`][0];
+            sub(evt, $video);
+          });
+        } else {
+          $masterVideo.style.setProperty('display', 'block');
+          sub(evt, $masterVideo);
+        }
+      });
+      rtc.on('USER_STREAM_SUBSCRIBED', (evt) => {
+        console.warn('订阅成功', evt.streamId);
+      });
+
+      // 切换主讲
+      // 注意，无延迟场景下该事件不会触发，由sdk内部处理
+      rtc.on('SWITCH_MASTER', (evt) => {
+        console.warn('切换主讲');
+        const currentUser = evt.currentUser;
+        const previousUser = evt.previousUser;
+
+        // 上一个主讲，只在离开的情况为空
+        const previousElement = previousUser.element;
+        // 当前需要设置的主讲
+        const currentElement = currentUser.element;
+
+        rtc.remove(currentUser.streamId);
+
+        // 上一个是因为离开才切换的
+        if (previousUser.leave) {
+          // 设置到主讲位置
+          rtc.play(currentUser.streamId, {
+            element: document.getElementById('plv-pc-rtc-player'),
+          });
+
+          // 上一个主讲已经离开，不需要原来的位置了，删掉元素
+          const pn = currentElement.parentNode;
+          pn && pn.removeChild(currentElement);
+        } else {
+          // 设置到上一个主讲位置
+          rtc.remove(previousUser.streamId);
+          rtc.play(currentUser.streamId, {
+            element: previousElement,
+          });
+
+          // 不是因为离开才切换的需要重新播放上一个主讲的流到新的位置
+          rtc.play(previousUser.streamId, {
+            element: currentElement,
+          });
+        }
+      });
+
+      // 有用户离开，删除相应节点
+      // 注意，无延迟场景下该事件不会触发，有sdk内部处理
+      rtc.on('USER_PEER_LEAVE', (evt) => {
+        console.warn('USER_PEER_LEAVE', evt.streamId);
+        this.rtcList = this.rtcList.filter(
+          (rtcItem) => rtcItem.streamId !== evt.streamId
+        );
       });
     },
 
@@ -139,7 +228,7 @@ export default {
       this.localRtcDetail = null;
       this.rtcList = [];
 
-      this.toolkit.hide();
+      this.toolkit && this.toolkit.hide();
       this.rtc = null;
     },
   },

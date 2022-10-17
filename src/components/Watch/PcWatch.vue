@@ -33,6 +33,9 @@
             <div class="plv-watch-pc__screen__inner"
                  ref="plv-pc-side"
                  id="plv-pc-side"></div>
+            <div class="plv-watch-pc__screen__inner"
+                 id="plv-pc-rtc-player"
+                 style="display: none;"></div>
           </div>
         </div>
 

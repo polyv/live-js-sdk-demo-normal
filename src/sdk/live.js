@@ -184,6 +184,17 @@ export default class PolyvLive {
       defaultBarrageStatus: true,
       autoplay: true, // 是否自动播放
       lowLatency: true, // 是否使用无延迟，设置为 true 后，SDK 内部会自行判断支不支持,
+      lowLatencyConfig: {
+        // 是否显示每个人的控制栏, 默认显示，如果没有视频或者关闭摄像头则还会显示
+        controls: true,
+        // 是否隐藏每个人的昵称, 默认显示
+        hideNickname: false,
+        /*
+        * 默认按 http://wiki.igeeker.org/pages/viewpage.action?pageId=106267167 的主讲模式排版
+        * 设置后非主讲按每个人宽 1/3, 宽高 16/9显示，在一行显示，鼠标或者左右滑切换,建议在小尺寸和移动端使用
+        */
+        drag: true
+      },
       rtc: true // 在非无延迟的频道里面设置后可进行连麦，sdk会加载连麦sdk并返回实例
     });
 
