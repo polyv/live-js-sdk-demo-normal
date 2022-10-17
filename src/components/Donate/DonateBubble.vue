@@ -55,7 +55,7 @@ export default {
         this.isShowBubble = true;
 
         const player = new SVGA.Player('#svga-player-container');
-        // player.loops = 1;
+        player.loops = 1;
         const parser = new SVGA.Parser('#svga-player-container');
 
         parser.load(
