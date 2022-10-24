@@ -40,14 +40,14 @@ export default {
     customMountEl_PC() {
       const $tabChatInputController = document
         .getElementById('tab-chat')
-        .querySelector('.polyv-chat-input-main>div');
-      $tabChatInputController.style.setProperty('padding-left', '60px');
+        .querySelector('.polyv-chat-input-main .polyv-chat-input-top');
       $tabChatInputController.appendChild(this.$el);
     },
     customMountEl_Mobile() {
       const $tabChatInputController = document
         .getElementById('tab-chat')
-        .querySelector('.polyv-chat-input-main .polyv-chat-input-top');
+        .querySelector('.polyv-chat-input-main>div');
+      $tabChatInputController.style.setProperty('padding-left', '60px');
       $tabChatInputController.appendChild(this.$el);
     },
     handleDonate() {
