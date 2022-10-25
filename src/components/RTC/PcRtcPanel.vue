@@ -1,6 +1,9 @@
 <template>
   <section class="pc-rtc-panel">
-    <div class="rtc-list">
+    <div :class="{
+      'rtc-list': true,
+      'rtc-list--audio': microPhoneType === 'audio'
+    }">
       <div :class="{'rtc-box':true,'rtc-box-local':true,'only-one': isOnlyOneRTCBox}"
            v-show="localRtcDetail">
         <div class="rtc-box-video"
@@ -52,6 +55,7 @@ export default {
   name: 'PC-RTC-Panel',
   data() {
     return {
+      microPhoneType: 'video',
       // 本地用户 RTC 流数据
       localRtcDetail: null,
       // 除主讲，本地用户外其他 RTC 流的集合
@@ -118,6 +122,9 @@ export default {
         this.bindRTCEvent();
       });
     },
+    /**
+     * {@link https://help.polyv.net/index.html#/live/js/live_js_sdk/live_video_chat 连麦接入}
+     */
     bindRTCEvent() {
       const plive = PolyvLive.getInstance();
       const player = plive.liveSdk.player;
@@ -125,11 +132,12 @@ export default {
       const $masterVideo = document.querySelector('#plv-pc-master-rtc-player');
 
       // 讲师-开启连麦
-      rtc.on('OPEN_MICROPHONE', () => {
+      rtc.on('OPEN_MICROPHONE', (evt) => {
         if (!plive.checkSystemRequirements()) {
           this.$dialog.alert({ message: '讲师开始连麦，但是当前设备不支持' });
           return;
         }
+        this.microPhoneType = evt.type; // video/audio (视频/音频通话)
         console.warn('讲师开启连麦');
         this.$emit('open');
       });
@@ -304,7 +312,8 @@ $rtxBtnGroupHeight: 42px;
     display: inline-block;
     max-width: 50%;
     flex: 1;
-    background-color: bisque;
+    background-color: #202127;
+    border: 1px solid #3e3e4e;
     &.rtc-box-local.only-one {
       max-width: 100%;
     }
@@ -323,6 +332,29 @@ $rtxBtnGroupHeight: 42px;
     left: 0;
     width: 100%;
     height: 100%;
+  }
+}
+
+.rtc-list--audio {
+  .rtc-box {
+    &::after {
+      content: '音频连麦中';
+      position: absolute;
+      top: 0;
+      color: #fff;
+      font-size: 14px;
+      height: 100%;
+      width: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  .rtc-box-local {
+    &::after {
+      content: '(我)音频连麦中';
+    }
   }
 }
 

@@ -20,6 +20,10 @@
             <div class="plv-watch-pc__screen__inner"
                  ref="plv-pc-main"
                  id="plv-pc-main"></div>
+            <div v-if="isAloneChannelScene"
+                 class="plv-watch-pc__screen__inner"
+                 id="plv-pc-master-rtc-player"
+                 style="display: none;"></div>
           </div>
         </div>
 
@@ -34,7 +38,8 @@
                  ref="plv-pc-side"
                  id="plv-pc-side"></div>
             <!-- 用于展示 RTC 主讲的 DOM -->
-            <div class="plv-watch-pc__screen__inner"
+            <div v-if="!isAloneChannelScene"
+                 class="plv-watch-pc__screen__inner"
                  id="plv-pc-master-rtc-player"
                  style="display: none;"></div>
           </div>
@@ -443,6 +448,10 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
+}
+/* 需要比播放器高一层 */
+#plv-pc-master-rtc-player {
+  z-index: 2002;
 }
 
 /* 主屏（左侧） */

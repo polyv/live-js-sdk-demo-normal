@@ -1,6 +1,9 @@
 <template>
   <section class="mobile-rtc-panel">
-    <div class="rtc-list">
+    <div :class="{
+      'rtc-list': true,
+      'rtc-list--audio': microPhoneType === 'audio'
+    }">
       <div :class="{'rtc-box':true,'rtc-box-local':true,'only-one': isOnlyOneRTCBox}"
            v-show="localRtcDetail">
         <div class="rtc-box-video"
@@ -29,6 +32,7 @@ export default {
   name: 'Mobile-RTC-Panel',
   data() {
     return {
+      microPhoneType: 'video',
       localRtcDetail: null,
       rtcList: [],
       toolkit: null,
@@ -86,6 +90,9 @@ export default {
         this.bindRTCEvent();
       });
     },
+    /**
+     * {@link https://help.polyv.net/index.html#/live/js/live_js_sdk/live_video_chat 连麦接入}
+     */
     bindRTCEvent() {
       const plive = PolyvLive.getInstance();
       const player = plive.liveSdk.player;
@@ -95,12 +102,13 @@ export default {
       );
 
       // 讲师-开启连麦
-      rtc.on('OPEN_MICROPHONE', () => {
+      rtc.on('OPEN_MICROPHONE', (evt) => {
         if (!plive.checkSystemRequirements()) {
           this.$dialog.alert({ message: '讲师开始连麦，但是当前设备不支持' });
           return;
         }
         console.warn('讲师开启连麦');
+        this.microPhoneType = evt.type; // video/audio (视频/音频通话)
         if (!_existToolKit) {
           _existToolKit = Toolkit(this.toolkitHandle, (type) => {
             const lang = {
@@ -256,7 +264,8 @@ export default {
     display: inline-block;
     max-width: 33%;
     flex: 1;
-    background-color: bisque;
+    background-color: #202127;
+    border: 1px solid #3e3e4e;
     // &.rtc-box-local.only-one {
     //   max-width: 100%;
     // }
@@ -277,4 +286,28 @@ export default {
     height: 100%;
   }
 }
+
+.rtc-list--audio {
+  .rtc-box {
+    &::after {
+      content: '音频连麦中';
+      position: absolute;
+      top: 0;
+      color: #fff;
+      font-size: 14px;
+      height: 100%;
+      width: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  .rtc-box-local {
+    &::after {
+      content: '(我)音频连麦中';
+    }
+  }
+}
+
 </style>
