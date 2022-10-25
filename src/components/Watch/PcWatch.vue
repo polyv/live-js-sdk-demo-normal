@@ -506,6 +506,12 @@ export default {
 .plv-watch-pc--alone .plv-watch-pc__chat {
   padding-top: 0;
 }
+.plv-watch-pc--alone .plv-watch-pc__chat .bubble-wrapper {
+  top: 10%;
+}
+.plv-watch-pc--alone .tab-nav {
+  top: 0;
+}
 
 /* 聊天室样式覆写 */
 .plv-watch-pc .polyv-chat-room .polyv-cr-head {
