@@ -23,10 +23,9 @@ const svgas = {
  * @param {string} gimg 打赏道具图片地址
  */
 export function getSvgaUrl(gimg) {
+  if (!gimg) return '';
   const pathname = gimg.split('/');
   const key = pathname[pathname.length - 1].split('.')[0];
   const svgaFileName = svgas[key];
-  if (svgaFileName) {
-    return BASE_URL + '/' + svgaFileName;
-  }
+  return svgaFileName ? BASE_URL + '/' + svgaFileName : '';
 }
