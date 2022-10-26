@@ -479,6 +479,10 @@ export default {
 .plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-more-control-list>li>span {
   color: #fff;
 }
+.plv-watch-mobile .polyv-chat-room .polyv-other-msg.polyv-redpack-result-msg {
+  display: inline-block;
+  width: 100%;
+}
 
 .plv-chatroom__more-content__pop-ups {
   /* 需要大于播放器控制条的 z-inedx */

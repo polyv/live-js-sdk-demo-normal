@@ -648,6 +648,10 @@ export default {
   /* 需要大于播放器控制条的 z-inedx */
   z-index: 2002;
 }
+.plv-watch-pc .polyv-chat-room .polyv-other-msg.polyv-redpack-result-msg {
+  display: inline-block;
+  width: 100%;
+}
 
 // /* 适配不同屏幕尺寸 */
 // @media (min-width: 1366px) {
