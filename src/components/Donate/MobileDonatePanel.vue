@@ -272,9 +272,11 @@ export default {
       // TODO 处理真实的礼物打赏-现金支付逻辑
       console.info('handleGiftCashPayDonate', donateItem);
       DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
+
       this.handleSendRewardMsg({
-        donateType: 'cash',
-        content: this.selectedDonate.price,
+        donateType: 'good', // 虽然是现金支付，但需要用道具的动效展示
+        content: this.selectedDonate.name,
+        goodImage: this.selectedDonate.img,
       });
       this.resetSelectedDonateInfo();
     },
