@@ -77,7 +77,7 @@
             <!-- 用于展示一些气泡消息/动画特效 -->
             <section class="bubble-wrapper">
               <product-bubble v-if="playerInited" />
-              <donate-bubble v-show="isActiveChatTab" />
+              <donate-bubble :enable="isActiveChatTab" />
             </section>
           </div>
         </div>
