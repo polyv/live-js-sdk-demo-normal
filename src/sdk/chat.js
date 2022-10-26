@@ -104,7 +104,7 @@ export default class PolyvChat {
       enableRedpackResult: true, // 是否展示红包结果
       // 点击红包消息的回调
       handlerEvent: (type, data) => {
-        plvChatMessageHub.trigger(PlvChatMessageHubEvents.REDPACKET_CLICK, data);
+        plvChatMessageHub.trigger(PlvChatMessageHubEvents.REDPACKET_CLICK, { data });
       },
       roomMessage: (data) => {
         // data为聊天室 socket 消息，当有聊天室消息时会触发此方法

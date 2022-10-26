@@ -49,8 +49,8 @@ export default {
      * 监听红包消息点击事件
      * 注意，聊天信息中的红包信息才是真实的入口
      * */
-    plvChatMessageHub.on(PlvChatMessageHubEvents.REDPACKET_CLICK, (data) => {
-      console.info('redEnvelopeData', data);
+    plvChatMessageHub.on(PlvChatMessageHubEvents.REDPACKET_CLICK, ({ data }) => {
+      console.info('data', data);
       this.redEnvelopeData = data;
     });
   },
