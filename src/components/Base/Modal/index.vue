@@ -194,6 +194,8 @@ export default {
   padding-top: 48px;
   width: 80%;
   max-width: 560px;
+  max-height: 80vh;
+  overflow-y: auto;
 
   font-size: 16px;
 
