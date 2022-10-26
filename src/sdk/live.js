@@ -133,7 +133,7 @@ export default class PolyvLive {
   bindSdkEventListener() {
     // 监听频道信息并初始化播放器
     this.liveSdk.on(PolyvLiveSdk.EVENTS.CHANNEL_DATA_INIT, (event, data) => {
-      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.CHANNEL_DATA_INIT, data);
+      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.CHANNEL_DATA_INIT, { channelData: data });
       this.createLiveSdkPlayer(data);
       this.bindPlayerLowLatencyEvent();
     }
@@ -198,7 +198,7 @@ export default class PolyvLive {
       rtc: true // 在非无延迟的频道里面设置后可进行连麦，sdk会加载连麦sdk并返回实例
     });
 
-    plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_INIT, data);
+    plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_INIT, { data });
   }
 
   /**

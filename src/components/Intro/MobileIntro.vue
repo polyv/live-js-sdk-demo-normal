@@ -52,7 +52,7 @@ export default {
   },
   created() {
     // 播放器初始化
-    plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
+    plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, ({ data }) => {
       this.channelData = data;
 
       const desMenu = data.channelMenus.find((i) => i.menuType === 'desc');

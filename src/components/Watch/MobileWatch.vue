@@ -273,7 +273,7 @@ export default {
       // 渠道初始化
       plvLiveMessageHub.on(
         PlvLiveMessageHubEvents.CHANNEL_DATA_INIT,
-        (channelData) => {
+        ({ channelData }) => {
           const plvIR = PolyvInteractionsReceive.getInstance();
           // 更新 sessionId
           plvIR.updateOriginChannelData(channelData);
@@ -281,7 +281,7 @@ export default {
       );
 
       // 播放器初始化
-      plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
+      plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, ({ data }) => {
         this.playerInited = true;
         this.renderLike(data);
       });

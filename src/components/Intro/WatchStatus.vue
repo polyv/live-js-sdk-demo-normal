@@ -24,7 +24,7 @@ export default {
   },
   created() {
     // 播放器初始化
-    plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, (data) => {
+    plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, ({ data }) => {
       const status = data.status === 'Y' ? 'live' : 'end';
       const statusClass = 'plv-watch__status--' + status;
       this.statusClass = statusClass;
