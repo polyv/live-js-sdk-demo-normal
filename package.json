@@ -51,12 +51,10 @@
   },
   "lint-staged": {
     "*.{js,jsx,vue}": [
-      "npm run lint:es",
-      "git add"
+      "eslint"
     ],
     "*.{css,sass,scss,vue}": [
-      "npm run lint:style",
-      "git add"
+      "stylelint"
     ]
   }
 }
