@@ -52,7 +52,11 @@ input[type='submit'] {
 .polyv-chat-room .tab-chat-content {
   padding-bottom: 34px;
 }
-html, body, #app ,.g-moblie-page-container, .plv-watch-mobile-main{
+html,
+body,
+#app,
+.g-moblie-page-container,
+.plv-watch-mobile-main {
   width: 100%;
   height: 100%;
 }
