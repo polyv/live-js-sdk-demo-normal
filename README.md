@@ -130,6 +130,13 @@ npm run dev  #启动项目
   - 安装依赖时，会出现 `integrity checksum failed` 的错误，原因主要是 `sha` 加密算法不同，删掉 `packgae-lock.json` 再安装依赖即可
   - 由于依赖的 `eslint` 版本较高，执行 `npm run dev` 时可能会报错，可以执行 `npm run serve` 绕过校验来启动项目，如果需要运行在 IE 浏览器上，可以执行 `npm run serve:ie`
 
+## Demo 服务器部署
+
+由于项目中使用了 `vue-router`，所以本 demo 中也支持了**两种**构建模式。前置知识可以看下这篇文档 [VueRouter-不同的历史模式](https://router.vuejs.org/zh/guide/essentials/history-mode.html)
+
+- 一种是执行 `npm run build` 命令，可以构建基于 `history` 模式的产物，需要服务器使用 `nginx` 之类的工具进行代理转发
+- 一种是执行 `npm run build-static` 命令，可以构建基于 `hash` 模式的产物，不需要在服务器上进行特殊处理，直接将文件放到服务器上即可
+
 ## 浏览器兼容性
 
 - 支持主流 PC 浏览器，包括 Chrome、Safari、Edge、Firefox、IE(>=10) 等 。
