@@ -247,7 +247,7 @@ export default {
       /** @type {HTMLElement} */
       const $panel = this.$refs.donate;
       if (!$panel.contains(evt.target)) {
-        evt.preventDefault();
+        // evt.preventDefault();
         this.resetSelectedDonateInfo();
         DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
       }
