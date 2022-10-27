@@ -6,12 +6,18 @@
           :class="{ 'tab-active': tab.type === activeTab }"
           @click="handleTabClick(tab)">
         <span>{{ tab.name }}</span>
+        <span v-if="isUserListTab(tab)">
+          (<span>{{userCount}}</span>)
+        </span>
       </li>
     </ul>
   </section>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+import { TabNavType } from '@/const';
+
 /** @type {null|HTMLElement} */
 let $originTabWrapper = null;
 
@@ -20,6 +26,12 @@ export default {
   model: {
     prop: 'activeTab',
     event: 'change',
+  },
+  data() {
+    return {
+      userCount: '',
+      smoothUserCountTimer: null,
+    };
   },
   props: {
     activeTab: {
@@ -35,8 +47,10 @@ export default {
       default: () => [],
     },
   },
-  mounted() {
-    $originTabWrapper = document.querySelector('.polyv-cr-head');
+  computed: {
+    ...mapState({
+      config: (state) => state.config,
+    }),
   },
   watch: {
     activeTab: {
@@ -49,8 +63,37 @@ export default {
       },
       immediate: true,
     },
+    'config.chat.showUserList': {
+      handler(val) {
+        if (!val) {
+          this.smoothUserCountTimer && clearInterval(this.smoothUserCountTimer);
+          return;
+        }
+
+        setTimeout(() => {
+          this.setUserCount();
+        }, 500);
+        this.smoothUserCountTimer = setInterval(() => {
+          this.setUserCount();
+        }, 3000);
+      },
+      immediate: true,
+    },
+  },
+  mounted() {
+    $originTabWrapper = document.querySelector('.polyv-cr-head');
+  },
+  beforeDestroy() {
+    this.smoothUserCountTimer && clearInterval(this.smoothUserCountTimer);
   },
   methods: {
+    isUserListTab(tab) {
+      return tab.type === TabNavType.ONLINE;
+    },
+    setUserCount() {
+      const $userCount = document.querySelector('.polyv-user-count');
+      this.userCount = $userCount.innerHTML;
+    },
     handleTabClick(tab) {
       this.$emit('change', tab.type);
     },

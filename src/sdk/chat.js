@@ -98,8 +98,8 @@ export default class PolyvChat {
       enableFlower: false, // 是否开启送花功能，默认为true
       enableOnlyTeacher: true, // 是否开启只看讲师功能，默认为true
       tabData: config.chat.tabData,
+      showUserList: config.chat.showUserList,
       enableLike: false,
-      showUserList: false,
       enableRedpack: true, // 是否展示红包消息
       enableRedpackResult: true, // 是否展示红包结果
       // 点击红包消息的回调
