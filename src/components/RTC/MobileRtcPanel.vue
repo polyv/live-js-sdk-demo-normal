@@ -32,6 +32,8 @@ export default {
   name: 'Mobile-RTC-Panel',
   data() {
     return {
+      /** 主播是否开启连麦 */
+      enableRemoteConnect: false,
       microPhoneType: 'video',
       localRtcDetail: null,
       rtcList: [],
@@ -100,13 +102,14 @@ export default {
         '#plv-mobile-master-rtc-player'
       );
 
-      // 讲师-开启连麦
+      // 主播-开启连麦
       rtc.on('OPEN_MICROPHONE', (evt) => {
         if (!plive.checkSystemRequirements()) {
-          this.$dialog.alert({ message: '讲师开始连麦，但是当前设备不支持' });
+          this.$dialog.alert({ message: '主播开始连麦，但是当前设备不支持' });
           return;
         }
-        console.warn('讲师开启连麦');
+        console.warn('主播开启连麦');
+        this.enableRemoteConnect = true;
         this.microPhoneType = evt.type; // video/audio (视频/音频通话)
         if (!_existToolKit) {
           _existToolKit = Toolkit(this.toolkitHandle, (type) => {
@@ -121,12 +124,11 @@ export default {
         this.toolkit.show();
       });
 
-      // 讲师-关闭连麦
+      // 主播-关闭连麦
       rtc.on('CLOSE_MICROPHONE', () => {
-        console.warn('讲师关闭连麦');
-        player.play();
-        $masterVideo.style.setProperty('display', 'none');
-        this.resetComponentState();
+        console.warn('主播关闭连麦');
+        this.enableRemoteConnect = false;
+        // 关闭连麦后，rtc 会触发 LEAVE_CHANNEL_SUCCESS 钩子
       });
 
       // 本地流流初始化成功
@@ -151,12 +153,14 @@ export default {
         this.toolkit.success('video');
       });
 
-      // 挂断/结束连线/被讲师下麦，重置状态
+      // 挂断/结束连线/被主播下麦/主播结束连麦，重置状态
       rtc.on('LEAVE_CHANNEL_SUCCESS', (evt) => {
         player.play();
         $masterVideo.style.setProperty('display', 'none');
         this.resetComponentState();
-        this.toolkit.show();
+        if (this.enableRemoteConnect) {
+          this.toolkit.show();
+        }
       });
 
       // 监听频道中其他流并且订阅
@@ -232,6 +236,21 @@ export default {
         this.rtcList = this.rtcList.filter(
           (rtcItem) => rtcItem.streamId !== evt.streamId
         );
+      });
+
+      // 处理声音对应的开闭钩子
+      rtc.on('LOCAL_MUTE_AUDIO', (evt) => {
+        this.toolkit.toggleMic(true);
+      });
+      rtc.on('LOCAL_UNMUTE_AUDIO', (evt) => {
+        this.toolkit.toggleMic(false);
+      });
+      // 处理摄像头对应的开闭钩子
+      rtc.on('LOCAL_MUTE_VIDEO', (evt) => {
+        this.toolkit.toggleCamera(true);
+      });
+      rtc.on('LOCAL_UNMUTE_VIDEO', (evt) => {
+        this.toolkit.toggleCamera(false);
       });
     },
 

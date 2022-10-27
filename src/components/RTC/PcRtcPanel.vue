@@ -131,24 +131,22 @@ export default {
       const rtc = plive.getRTCInstance();
       const $masterVideo = document.querySelector('#plv-pc-master-rtc-player');
 
-      // 讲师-开启连麦
+      // 主播-开启连麦
       rtc.on('OPEN_MICROPHONE', (evt) => {
         if (!plive.checkSystemRequirements()) {
-          this.$dialog.alert({ message: '讲师开始连麦，但是当前设备不支持' });
+          this.$dialog.alert({ message: '主播开始连麦，但是当前设备不支持' });
           return;
         }
         this.microPhoneType = evt.type; // video/audio (视频/音频通话)
-        console.warn('讲师开启连麦');
+        console.warn('主播开启连麦');
         this.$emit('open');
       });
 
-      // 讲师-关闭连麦
+      // 主播-关闭连麦
       rtc.on('CLOSE_MICROPHONE', () => {
-        console.warn('讲师关闭连麦');
+        console.warn('主播关闭连麦');
         this.$emit('close');
-        player.play();
-        $masterVideo.style.setProperty('display', 'none');
-        this.resetComponentState();
+        // 关闭连麦后，rtc 会触发 LEAVE_CHANNEL_SUCCESS 钩子
       });
 
       // 本地流流初始化成功
@@ -178,7 +176,7 @@ export default {
         };
       });
 
-      // 挂断/结束连线/被讲师下麦，重置状态
+      // 挂断/结束连线/被主播下麦/主播结束连麦，重置状态
       rtc.on('LEAVE_CHANNEL_SUCCESS', (evt) => {
         player.play();
         $masterVideo.style.setProperty('display', 'none');
