@@ -57,9 +57,8 @@ export default {
           if (rtc.rtcConnected) {
             rtc.leaveChannel(false);
           } else if (rtc.applyStatus) {
-            this.cancelApply();
-            rtc.cancelJoinChannel();
             toolkit.cancel();
+            rtc.cancelJoinChannel();
           } else {
             rtc.joinChannel();
             toolkit.apply();
@@ -157,6 +156,7 @@ export default {
         player.play();
         $masterVideo.style.setProperty('display', 'none');
         this.resetComponentState();
+        this.toolkit.show();
       });
 
       // 监听频道中其他流并且订阅
@@ -269,9 +269,7 @@ export default {
     // &.rtc-box-local.only-one {
     //   max-width: 100%;
     // }
-    &.rtc-box-other {
-      pointer-events: none;
-    }
+    pointer-events: none;
   }
   .rtc-box:before {
     content: '';
