@@ -11,7 +11,7 @@
            title="积分记录"
            @close="setPonitRecordPanelVisible(false)"
            class="mobile-point-record-modal">
-      <MobilePointRERecord :visible="pointRecordPanelVisible"
+      <MobilePointRERecord v-if="pointRecordPanelVisible"
                            :red-envelope-sdk="redEnvelopeSdk"
                            unit="点" />
     </modal>
