@@ -92,7 +92,7 @@ export default class PolyvChat {
       version: '2.0',
       role: config.role, // 角色
       token: chatInfo.token, // 授权校验码
-      mediaChannelKey: chatInfo.mediaChannelKey, // 连麦token, 注， 目前聊天室JS-SDK还不支持连麦
+      mediaChannelKey: chatInfo.mediaChannelKey, // 连麦token, 注，目前聊天室JS-SDK还不支持连麦，需要借助 JS-SDK 来支持连麦功能，详情见该文档 https://help.polyv.net/index.html#/live/js/live_js_sdk/live_video_chat
       container: chatContainer,
       enableWelcome: true, // 是否开启欢迎语，默认为true
       enableFlower: false, // 是否开启送花功能，默认为true
