@@ -14,8 +14,25 @@ export default class PolyvApi {
     const res = await request.get('/v3/channel/basic/get', {
       params
     });
-    return res.data;
 
+    const sessionList = await this.getSessionList(params);
+    const latestedSessionId = Array.isArray(sessionList) && sessionList.length > 0 ? sessionList[0].sessionId : undefined;
+
+    return {
+      ...res.data,
+      sessionId: latestedSessionId
+    };
+  }
+
+  /**
+   * 查询频道场次信息
+   * @see {@link https://help.polyv.net/index.html#/live/api/channel/session/session_list 文档-查询频道场次信息}
+   */
+  static async getSessionList(params) {
+    const res = await request.get('/v3/channel/session/data/list', {
+      params
+    });
+    return res.data.contents;
   }
 
   /**
