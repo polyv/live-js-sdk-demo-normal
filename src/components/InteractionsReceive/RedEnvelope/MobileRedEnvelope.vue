@@ -63,6 +63,7 @@ export default {
     /** 提现按钮点击 */
     handleClickWidthdraw() {
       console.info('handleClickWidthdraw');
+      this.handleCloseRedEnvelope();
       this.$dialog.alert({
         title: '提现弹窗',
         message: '当前只是示例，需要自行处理提现',
@@ -71,6 +72,7 @@ export default {
     /** 积分明细按钮点击 */
     handleClickPoint() {
       console.info('handleClickPointRecord');
+      this.handleCloseRedEnvelope();
       RedEnvelopeMessageHub.trigger(
         RedEnvelopeMessageHubEvents.POINT_RECORD_SHOW
       );

@@ -11,7 +11,7 @@
            title="积分记录"
            @close="setPonitRecordPanelVisible(false)"
            class="mobile-point-record-modal">
-      <MobilePointRERecord v-if="pointRecordPanelVisible"
+      <MobilePointRERecord v-if="pointRecordPanelRender"
                            :red-envelope-sdk="redEnvelopeSdk"
                            unit="点" />
     </modal>
@@ -32,6 +32,7 @@ export default {
       // 红包 SDK 实例
       redEnvelopeSdk: null,
       pointRecordPanelVisible: false,
+      pointRecordPanelRender: false,
     };
   },
   created() {
@@ -54,6 +55,14 @@ export default {
     },
     setPonitRecordPanelVisible(visible) {
       this.pointRecordPanelVisible = visible;
+
+      if (visible) {
+        this.pointRecordPanelRender = true;
+      } else {
+        setTimeout(() => {
+          this.pointRecordPanelRender = false;
+        }, 500);
+      }
     },
   },
 };
