@@ -1,5 +1,5 @@
 <template>
-  <section v-if="visible">
+  <section v-if="visible" class="g-moblie-page-container">
     <component :is="componentTagName"
                :channelInfo="channelInfo"
                :chatInfo="chatInfo"

@@ -133,7 +133,7 @@ export default {
     /** 获取用户可用的积分 */
     async getUserGiftPoints() {
       try {
-        // TODO 获取真实的积分数
+        // TODO 获取真实的积分数，此处只是模拟，需要自行请求接口拿到个人用户可用积分（对外）
         this.userPoints = 100;
       } catch (e) {
         this.$dialog.alert({
@@ -176,12 +176,21 @@ export default {
 
     /** 处理"礼物打赏-积分支付" */
     async handleGiftPointPayDonate() {
+      // 先判断礼物花费的总积分和当前可用积分对比
+      if (this.selectedDonate.price * this.selectedGiftNum > this.userPoints) {
+        this.$dialog.alert({
+          message: '积分不足，无法打赏',
+        });
+        return;
+      }
+
+      //  需要调用用户消耗积分更新接口来扣除积分（对外）
+
       // TODO 请求积分打赏接口来设置用户积分
       console.info('handleGiftPointPayDonate', {
         selectedDonate: this.selectedDonate,
         selectedGiftNum: this.selectedGiftNum
       });
-      this.userPoints = 100;
       DonateMessageHub.trigger(DonateMessageHubEvents.PANEL_CLOSE);
       this.handleSendRewardMsg({
         donateType: 'good',

@@ -175,7 +175,7 @@ export default class PolyvLive {
       pptPlaceholder: true,
       switchPlayer: true,
       controllerPosition: 'ppt',
-      fixedController: true,
+      fixedController: false,
       controllerEl: els.controllerEl,
       type: config.playerType,
       vid: config.vid,

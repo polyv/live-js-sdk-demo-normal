@@ -218,7 +218,11 @@ export default {
       DonateMessageHubEvents.PANEL_VISIBLE_TOGGLE,
       ({ visible }) => {
         this.donatePanelVisible = visible;
-        toggleClass($tabChat, 'plv-has-donate-panel');
+        if (this.isGiftPonitPayWay) {
+          toggleClass($tabChat, 'plv-has-donate-panel-score');
+        } else {
+          toggleClass($tabChat, 'plv-has-donate-panel-cash');
+        }
 
         if (this.donatePanelVisible) {
           window.addEventListener('click', this.handleContainEl, true);
@@ -327,15 +331,8 @@ export default {
 </script>
 
 <style lang="scss">
-$donatePanelHeight: 280px;
-
-// hack 聊天室区域来展示当前面板
-.mobile-wrap .tab-chat.plv-has-donate-panel {
-  padding-bottom: 330px;
-  .polyv-chat-input {
-    bottom: $donatePanelHeight;
-  }
-}
+$donatePanelHeightScore: 280px;
+$donatePanelHeightCash: 220px;
 
 .intr-panel-slide-up-enter-active {
   animation: intr-panel-slide-up .3s ease-in;
@@ -378,12 +375,6 @@ $donatePanelHeight: 280px;
   }
 }
 
-.c-donate {
-  position: relative;
-  background-color: #2b2c35;
-  min-height: $donatePanelHeight;
-  z-index: 100;
-}
 .c-donate__swiper-wrap {
   padding: 6px 8px 8px;
   box-sizing: border-box;
@@ -618,6 +609,33 @@ $paginator-size: 4px;
     .c-donate__gift-num {
       width: 32px;
     }
+  }
+}
+
+// hack 聊天室区域来展示当前面板
+.mobile-wrap .tab-chat.plv-has-donate-panel-cash {
+  padding-bottom: 260px;
+  .polyv-chat-input {
+    bottom: $donatePanelHeightCash;
+  }
+  .c-donate {
+    position: relative;
+    background-color: #2b2c35;
+    min-height: $donatePanelHeightCash;
+    z-index: 100;
+  }
+}
+
+.mobile-wrap .tab-chat.plv-has-donate-panel-score {
+  padding-bottom: 320px;
+  .polyv-chat-input {
+    bottom: $donatePanelHeightScore;
+  }
+  .c-donate {
+    position: relative;
+    background-color: #2b2c35;
+    min-height: $donatePanelHeightScore;
+    z-index: 100;
   }
 }
 </style>
