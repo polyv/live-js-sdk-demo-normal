@@ -5,10 +5,10 @@
                    :name="entrance.name"
                    :icon="entrance.icon"
                    :open="handleClickEntranceIcon" />
-    <div class="plv-demo-lottery-default__lottery">
+    <div class="plv-demo-lottery-default__lottery"
+         ref="plv-demo-lottery-default__lottery">
       <!-- 抽奖中 -->
-      <on-lottery v-if="lotterySdk"
-                  v-show="isLotteryShowing"
+      <on-lottery v-show="isLotteryShowing"
                   :lottery-sdk="lotterySdk"
                   :lang="lang"
                   :delay-time="1000"
@@ -21,10 +21,9 @@
            :visible="isShowRecord"
            :close-on-click-modal="false"
            @close="isShowRecord = false">
-      <lottery-record v-if="lotterySdk"
-                      :lottery-sdk="lotterySdk"
+      <lottery-record :lottery-sdk="lotterySdk"
                       :lang="lang"
-                      :delay-time="3000"
+                      :delay-time="2000"
                       @lottery-list="onLotteryRecord"
                       @submit-info="onClickRecord"
                       @check-info="onClickRecord" />
@@ -36,12 +35,12 @@
            :visible="isShowResult"
            :close-on-click-modal="false"
            :lang="lang"
-           @close="isShowResult = false">
-      <lottery-end v-if="lotterySdk"
-                   ref="lotteryEnd"
+           @close="setLotteryResultHide">
+      <lottery-end ref="lotteryEnd"
                    :lottery-sdk="lotterySdk"
                    :lottery-list="lotteryList"
                    :lang="lang"
+                   :delayTime="2000"
                    @to-show="setLotteryResultShow"
                    @to-hide="setLotteryResultHide" />
     </modal>
@@ -86,18 +85,25 @@ export default {
   },
 
   watch: {
-    lotteryList() {
-      const hasNoReceived = this.lotteryList.some((item) => !item.received); // 是否还有未提交的中奖信息
-      if (this.lotteryList.length > 0 && hasNoReceived) {
-        this.entranceVisible = true;
-      } else {
-        this.entranceVisible = false;
-      }
+    lotteryList: {
+      handler() {
+        const hasNoReceived = this.lotteryList.some((item) => !item.received); // 是否还有未提交的中奖信息
+        if (this.lotteryList.length > 0 && hasNoReceived) {
+          this.entranceVisible = true;
+        } else {
+          this.entranceVisible = false;
+        }
+      },
+      immediate: true,
     },
   },
 
   created() {
     this.lotterySdk = new Lottery();
+  },
+
+  mounted() {
+    this.customMountEl();
   },
 
   beforeDestroy() {
@@ -106,10 +112,20 @@ export default {
   },
 
   methods: {
-    handleClickEntranceIcon() {
-      this.setLotteryResultShow();
+    customMountEl() {
+      const $el = this.$refs['plv-demo-lottery-default__lottery'];
+      document.body.appendChild($el);
     },
 
+    handleClickEntranceIcon() {
+      if (this.lotteryList.length === 1) {
+        this.setLotteryResultShow();
+      } else {
+        this.isShowRecord = true;
+      }
+    },
+
+    /** 抽奖中-状态回调钩子 */
     onLotteryStatusChange(status) {
       if (status === 'running') {
         this.isLotteryShowing = true;
@@ -118,34 +134,19 @@ export default {
       }
     },
 
+    /** 抽奖中-是否显示回调钩子 */
     onLotteryShowChange(isShowing) {
       this.isLotteryShowing = isShowing;
     },
 
-    // 展示抽奖结果
-    setLotteryResultShow() {
-      this.isShowResult = true;
-    },
-
-    // 隐藏抽奖结果
-    setLotteryResultHide() {
-      this.isShowResult = false;
-      this.$refs.lotteryEnd && this.$refs.lotteryEnd.toBack();
-    },
-
-    // 切换中奖记录列表组件可见性
-    setLotteryRecordVisible() {
-      this.isShowRecord = !this.isShowRecord;
-    },
-
-    // 中奖记录数据更新
+    /** 中奖记录数据回调 - 如果有中奖记录数据，那组件初始化后会自动回调一次 */
     onLotteryRecord(lotteryList = []) {
       if (lotteryList.length) {
         this.lotteryList = lotteryList;
       }
     },
 
-    // 点击查看中奖结果详情
+    /** 中奖记录-点击查看中奖结果详情回调 */
     onClickRecord(record = {}) {
       this.isShowRecord = false;
       const { prize, lotteryId, collectInfo, winnerCode, sessionId, received } =
@@ -159,6 +160,20 @@ export default {
         sessionId,
         isWinner: true,
       });
+      this.setLotteryResultShow();
+    },
+
+    /** 中奖结果-展示 */
+    setLotteryResultShow() {
+      this.isShowResult = true;
+    },
+
+    /** 中奖结果-隐藏 */
+    setLotteryResultHide() {
+      this.isShowResult = false;
+      setTimeout(() => {
+        this.$refs.lotteryEnd && this.$refs.lotteryEnd.toBack();
+      }, 500);
     },
   },
 };
@@ -170,5 +185,6 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 2002;
 }
 </style>
