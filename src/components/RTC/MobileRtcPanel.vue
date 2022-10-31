@@ -129,7 +129,7 @@ export default {
         console.warn('主播关闭连麦');
         this.enableRemoteConnect = false;
         this.resetComponentState();
-        // 关闭连麦后，rtc 会触发 LEAVE_CHANNEL_SUCCESS 钩子
+        // 如果是接通状态下，关闭连麦后，rtc 会触发 LEAVE_CHANNEL_SUCCESS 钩子
       });
 
       // 本地流流初始化成功
