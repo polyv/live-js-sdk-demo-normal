@@ -128,7 +128,8 @@ export default {
       rtc.on('CLOSE_MICROPHONE', () => {
         console.warn('主播关闭连麦');
         this.enableRemoteConnect = false;
-        // 关闭连麦后，rtc 会触发 LEAVE_CHANNEL_SUCCESS 钩子
+        this.resetComponentState();
+        // 如果是接通状态下，关闭连麦后，rtc 会触发 LEAVE_CHANNEL_SUCCESS 钩子
       });
 
       // 本地流流初始化成功
@@ -155,6 +156,7 @@ export default {
 
       // 挂断/结束连线/被主播下麦/主播结束连麦，重置状态
       rtc.on('LEAVE_CHANNEL_SUCCESS', (evt) => {
+        console.warn(evt);
         player.play();
         $masterVideo.style.setProperty('display', 'none');
         this.resetComponentState();
