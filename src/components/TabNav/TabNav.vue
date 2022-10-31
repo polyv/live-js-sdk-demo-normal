@@ -112,12 +112,11 @@ export default {
   box-sizing: border-box;
   display: flex;
   padding: 0 10px;
-
+  justify-content: space-around;
   font-size: 12px;
   list-style: none;
 }
 .c-tab-nav > li {
-  flex: 1;
   color: #adadc0;
   line-height: 35px;
   text-align: center;
