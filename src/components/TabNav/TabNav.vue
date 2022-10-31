@@ -112,15 +112,21 @@ export default {
   box-sizing: border-box;
   display: flex;
   padding: 0 10px;
-  justify-content: space-around;
   font-size: 12px;
+  white-space: nowrap;
   list-style: none;
+  overflow: auto;
 }
 .c-tab-nav > li {
   color: #adadc0;
   line-height: 35px;
   text-align: center;
   cursor: pointer;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
 }
 .c-tab-nav > li.tab-active {
   color: #2196f3;
