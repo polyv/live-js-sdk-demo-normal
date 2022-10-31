@@ -3,7 +3,7 @@
  */
 module.exports = {
 
-  publicPath: '/live',
+  publicPath: process.env.VUE_APP_BUILD_MODE === 'STATIC' ? './' : '/live',
 
   productionSourceMap: false,
 

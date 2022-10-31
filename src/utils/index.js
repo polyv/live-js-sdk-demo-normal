@@ -40,6 +40,14 @@ export function isMobile() {
 }
 
 /**
+ * 检查当前 UA 是否符合微信客户端特征。
+ */
+export function isWeixin() {
+  const ua = navigator.userAgent;
+  return /\bMicroMessenger\//.test(ua);
+}
+
+/**
  * 防抖函数
  */
 export function debounce(fn, delay) {
@@ -50,4 +58,41 @@ export function debounce(fn, delay) {
       fn.apply(this, args);
     }, delay);
   };
+}
+
+/**
+ * Y 或者 N 转换为布尔值。
+ * @author tanyuqin
+ * @param {string} value Y 或者 N。
+ * @return {boolean} 布尔值。
+ */
+export function ynToBool(value) {
+  if (typeof value !== 'string') value = 'N';
+  value = String(value).toUpperCase();
+  if (value !== 'Y' && value !== 'N') {
+    throw new Error('The value argument must be "Y" or "N"');
+  }
+  return value === 'Y';
+}
+
+export const isFunction = (func) => func instanceof Function;
+/**
+ * 下载图片
+ * @param {object} options 参数对象
+ */
+export function loadImg(options = {}) {
+  const { onSuccess, onFail } = options;
+  let imgs = options.imgs;
+  if (typeof imgs === 'string') {
+    imgs = [imgs];
+  }
+  if (Array.isArray(imgs)) {
+    imgs.forEach((path, index) => {
+      const image = new Image();
+      const result = { image, index };
+      image.src = path;
+      image.onload = isFunction(onSuccess) ? onSuccess(result) : null;
+      image.onerror = isFunction(onFail) ? onFail(result) : null;
+    });
+  }
 }

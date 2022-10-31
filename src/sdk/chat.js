@@ -7,8 +7,14 @@ const PolyvChatRoom = window.PolyvChatRoom; // 聊天室JS-SDK
 export const plvChatMessageHub = new PubSub();
 /** 聊天室消息总线-事件列表 */
 export const PlvChatMessageHubEvents = {
+  /** 登录回调 */
+  LOGIN_CALLBACK: 'loginCallback',
   /** 聊天室消息变化 */
   ROOM_MESSAGE: 'roomMessage',
+  /** 红包点击回调 */
+  REDPACKET_CLICK: 'redpacketClick',
+  /** 打赏回调 */
+  DONATE_CALLBACK: 'donateCallback',
   /** 销毁 */
   DESTROY: 'destroy'
 };
@@ -62,6 +68,7 @@ export default class PolyvChat {
     const chatroom = this.createChatRoom({ config, chatInfo }, { chatContainer });
     this.chatroom = chatroom;
     this.socket = chatroom.chat.socket;
+    this.proxySocketEvent();
 
     plvChatMessageHub.on(PlvChatMessageHubEvents.DESTROY, () => {
       this.destroy();
@@ -85,13 +92,20 @@ export default class PolyvChat {
       version: '2.0',
       role: config.role, // 角色
       token: chatInfo.token, // 授权校验码
-      mediaChannelKey: chatInfo.mediaChannelKey, // 连麦token, 注， 目前聊天室JS-SDK还不支持连麦
+      mediaChannelKey: chatInfo.mediaChannelKey, // 连麦token, 注，目前聊天室JS-SDK还不支持连麦，需要借助 JS-SDK 来支持连麦功能，详情见该文档 https://help.polyv.net/index.html#/live/js/live_js_sdk/live_video_chat
       container: chatContainer,
       enableWelcome: true, // 是否开启欢迎语，默认为true
-      enableFlower: true, // 是否开启送花功能，默认为true
+      enableFlower: false, // 是否开启送花功能，默认为true
       enableOnlyTeacher: true, // 是否开启只看讲师功能，默认为true
       tabData: config.chat.tabData,
+      showUserList: config.chat.showUserList,
       enableLike: false,
+      enableRedpack: true, // 是否展示红包消息
+      enableRedpackResult: true, // 是否展示红包结果
+      // 点击红包消息的回调
+      handlerEvent: (type, data) => {
+        plvChatMessageHub.trigger(PlvChatMessageHubEvents.REDPACKET_CLICK, { data });
+      },
       roomMessage: (data) => {
         // data为聊天室 socket 消息，当有聊天室消息时会触发此方法
         const event = data.EVENT;
@@ -111,6 +125,27 @@ export default class PolyvChat {
       }
     });
 
+  }
+
+  /** 代理 socket 事件给到 plvChatMessageHub */
+  proxySocketEvent() {
+    this.socket.on('message', (msg) => {
+      let socketData = null;
+      try {
+        socketData = JSON.parse(msg);
+      } catch (e) {
+        console.error('Invalid message: ' + e.message);
+      }
+      if (!socketData) { return; }
+
+      if (socketData.EVENT === 'LOGIN') {
+        plvChatMessageHub.trigger(PlvChatMessageHubEvents.LOGIN_CALLBACK, { data: socketData });
+      }
+
+      if (socketData.EVENT === 'REWARD') {
+        plvChatMessageHub.trigger(PlvChatMessageHubEvents.DONATE_CALLBACK, { data: socketData });
+      }
+    });
   }
 
   /** 销毁钩子 */

@@ -1,15 +1,13 @@
 <template>
-  <section v-if="visible">
-    <mobile-watch v-if="isMobile"
-                  :channelInfo="channelInfo"
-                  :chatInfo="chatInfo"
-                  :apiToken="apiToken"
-                  @reload="reloadWatchPage" />
-    <pc-watch v-else
-              :channelInfo="channelInfo"
-              :chatInfo="chatInfo"
-              :apiToken="apiToken"
-              @reload="reloadWatchPage" />
+  <section v-if="visible" class="g-moblie-page-container">
+    <component :is="componentTagName"
+               :channelInfo="channelInfo"
+               :chatInfo="chatInfo"
+               :apiToken="apiToken"
+               :productEnable="productEnable"
+               :donateConfig="donateConfig"
+               @change-switch="handleChangeSwitch"
+               @reload="reloadWatchPage" />
   </section>
 </template>
 
@@ -19,12 +17,16 @@ import { TIME_STAMP } from '@/const';
 
 import PolyvApi from '@/utils/api';
 import * as PolyvUtil from '@/utils';
+import {
+  DonateMessageHub,
+  DonateMessageHubEvents,
+} from '@/components/Donate/DonateMixin';
 
 export default {
   name: 'Watch-Layout',
   components: {
-    PcWatch: () => import('@/components/pc/Watch.vue'),
-    MobileWatch: () => import('@/components/mobile/Watch.vue'),
+    PcWatch: () => import('@/components/Watch/PcWatch.vue'),
+    MobileWatch: () => import('@/components/Watch/MobileWatch.vue'),
   },
   data() {
     return {
@@ -32,6 +34,8 @@ export default {
       channelInfo: {},
       chatInfo: {},
       apiToken: '',
+      productEnable: false,
+      donateConfig: {},
     };
   },
   computed: {
@@ -39,9 +43,13 @@ export default {
       isMobile: (state) => state.isMobile,
       config: (state) => state.config,
     }),
+    componentTagName() {
+      return this.isMobile ? 'MobileWatch' : 'PcWatch';
+    },
   },
   created() {
     this.init();
+    this.bindEventBus();
   },
   methods: {
     ...mapMutations({
@@ -53,6 +61,19 @@ export default {
       this.resetConfigChat();
       await this.init();
     },
+    handleChangeSwitch(data) {
+      Object.keys(data).forEach((key) => {
+        this[key] = data[key];
+      });
+    },
+    bindEventBus() {
+      DonateMessageHub.on(
+        DonateMessageHubEvents.SEND_REWARD_MSG,
+        ({ data }) => {
+          this.sendRewardMsg(data);
+        }
+      );
+    },
     /** 初始化观看页需要的数据 */
     async init() {
       try {
@@ -62,11 +83,17 @@ export default {
         this.chatInfo = await this.getChatInfo();
         // SDK设置接口token, 用于一些互动的功能接口的请求,如点赞
         this.apiToken = await this.getApiToken();
+        // 获取是否开启“商品库开关”
+        this.productEnable = await this.getProductEnable();
+        // 获取”打赏“配置
+        this.donateConfig = await this.getDonateConfig();
 
         this.visible = true;
       } catch (error) {
         console.error('接口请求失败！', error.message);
-        alert('接口请求失败！');
+        this.$dialog.alert({
+          message: '接口请求失败！' + error.message,
+        });
       }
     },
     async getChannelInfo() {
@@ -118,6 +145,54 @@ export default {
       );
 
       return await PolyvApi.getApiToken(apiTokenParams);
+    },
+    async getProductEnable() {
+      const params = {
+        appId: this.config.appId,
+        timestamp: TIME_STAMP,
+        channelId: this.config.channelId,
+      };
+
+      // ！！！不要在前端生成sign，此处仅供参考
+      params.sign = PolyvUtil.getSign(this.config.appSecret, params);
+
+      const enabled = await PolyvApi.getProductEnable(params);
+      return PolyvUtil.ynToBool(enabled);
+    },
+    async getDonateConfig() {
+      const params = {
+        appId: this.config.appId,
+        timestamp: TIME_STAMP,
+        channelId: this.config.channelId,
+      };
+
+      // ！！！不要在前端生成sign，此处仅供参考
+      params.sign = PolyvUtil.getSign(this.config.appSecret, params);
+
+      return await PolyvApi.getDonateConfig(params);
+    },
+    async sendRewardMsg(donateData) {
+      try {
+        const params = {
+          appId: this.config.appId,
+          timestamp: TIME_STAMP,
+          channelId: this.config.channelId,
+          viewerId: this.config.userId,
+          nickname: this.config.nickname,
+          avatar: this.config.avatar,
+          ...donateData,
+        };
+
+        // ！！！不要在前端生成sign，此处仅供参考
+        params.sign = PolyvUtil.getSign(this.config.appSecret, params);
+
+        await PolyvApi.sendRewardMsg(params);
+      } catch (error) {
+        console.error('接口请求失败！', error.message);
+        this.$dialog.alert({
+          message: '接口请求失败！' + error.message,
+        });
+      }
     },
   },
 };

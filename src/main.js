@@ -6,8 +6,9 @@ import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import '@/plugins/vant';
 
-import Modal from '@/components/common/Modal.vue';
+import Modal from '@/components/Base/Modal';
 
 // 全局注册模态框
 Vue.component('modal', Modal);

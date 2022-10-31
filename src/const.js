@@ -36,22 +36,52 @@ export const MainScreenMap = {
   }
 };
 
+/** Tab 类型 */
+export const TabNavType = {
+  /** 聊天 */
+  CHAT: 'chat',
+  /** 提问 */
+  ASK: 'ask',
+  /** 在线列表 */
+  ONLINE: 'user-list',
+  /** 文档 */
+  PPT: 'ppt',
+  /** 直播介绍 */
+  INTRO: 'intro',
+  /** 商品库/边买边看 */
+  PRODUCT: 'porduct',
+  /** 连线/连麦 */
+  RTC: 'rtc'
+};
+
 /**
  * 获取默认聊天配置
  */
 export const getDefaultConfigChat = () => {
+
+  const defaultTabData = [
+    {
+      name: '聊天', // 菜单栏名称
+      type: TabNavType.CHAT // 菜单栏类型, 有3个已有的内置类型(chat, user-list, ask),详情请参考文档
+    },
+    {
+      name: '提问',
+      type: TabNavType.ASK
+    }
+  ];
+
+  const showUserList = true;
+  if (showUserList) {
+    defaultTabData.push({
+      name: '在线列表',
+      type: TabNavType.ONLINE
+    });
+  }
+
   return {
+    showUserList,
     userType: PlvChatUserType.STUDENT,
     /** @see {@link https://help.polyv.net/index.html#/live/js/chat_js_sdk_api?id=自定义菜单栏 自定义菜单栏 } */
-    tabData: [
-      {
-        name: '聊天', // 菜单栏名称
-        type: 'chat' // 菜单栏类型, 有3个已有的内置类型(chat, user-list, ask),详情请参考文档
-      },
-      {
-        name: '提问',
-        type: 'ask'
-      }
-    ]
+    tabData: defaultTabData
   };
 };

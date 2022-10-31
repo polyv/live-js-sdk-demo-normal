@@ -1,6 +1,7 @@
 import { TIME_STAMP } from '@/const';
 import * as PolyvUtil from '@/utils';
 import PubSub from 'jraiser/pubsub/1.2/pubsub';
+import { Notify } from 'vant';
 
 /** 用于创建直播 JS-SDK 的类 */
 const PolyvLiveSdk = window.PolyvLiveSdk;
@@ -132,8 +133,9 @@ export default class PolyvLive {
   bindSdkEventListener() {
     // 监听频道信息并初始化播放器
     this.liveSdk.on(PolyvLiveSdk.EVENTS.CHANNEL_DATA_INIT, (event, data) => {
-      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.CHANNEL_DATA_INIT, data);
+      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.CHANNEL_DATA_INIT, { channelData: data });
       this.createLiveSdkPlayer(data);
+      this.bindPlayerLowLatencyEvent();
     }
     );
 
@@ -173,17 +175,55 @@ export default class PolyvLive {
       pptPlaceholder: true,
       switchPlayer: true,
       controllerPosition: 'ppt',
-      fixedController: true,
+      fixedController: false,
       controllerEl: els.controllerEl,
       type: config.playerType,
       vid: config.vid,
       pptNavBottom: '80px',
       barrage: true, // 是否开启弹幕
       defaultBarrageStatus: true,
-      autoplay: true // 是否自动播放
+      autoplay: true, // 是否自动播放
+      lowLatency: true, // 是否使用无延迟，设置为 true 后，SDK 内部会自行判断支不支持,
+      lowLatencyConfig: {
+        // 是否显示每个人的控制栏, 默认显示，如果没有视频或者关闭摄像头则还会显示
+        controls: true,
+        // 是否隐藏每个人的昵称, 默认显示
+        hideNickname: false,
+        /*
+        * 默认按 http://wiki.igeeker.org/pages/viewpage.action?pageId=106267167 的主讲模式排版
+        * 设置后非主讲按每个人宽 1/3, 宽高 16/9显示，在一行显示，鼠标或者左右滑切换,建议在小尺寸和移动端使用
+        */
+        drag: true
+      },
+      rtc: true // 在非无延迟的频道里面设置后可进行连麦，sdk会加载连麦sdk并返回实例
     });
 
-    plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_INIT, data);
+    plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_INIT, { data });
+  }
+
+  /**
+   * 播放器-绑定无延迟相关事件
+   */
+  bindPlayerLowLatencyEvent() {
+    const player = this.liveSdk.player;
+    const isEnableLowLatency = player.lowLatency;
+    console.info('isEnableLowLatency', isEnableLowLatency);
+    if (!isEnableLowLatency) return;
+
+    player.on('networkQuality', function(stats) {
+      if (stats.downlink === 3) {
+        Notify('当前网络状态较差，建议切换网络观看');
+      }
+    });
+  }
+
+  /** 检查当前系统设备是否支持 rtc 连线 */
+  checkSystemRequirements() {
+    return PolyvLiveSdk.checkSystemRequirements();
+  }
+
+  getRTCInstance() {
+    return this.liveSdk.player.rtcInstance;
   }
 
   /** 销毁钩子 */

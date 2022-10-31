@@ -17,6 +17,7 @@
 |          | 连接超时提醒             | ✔        |
 |          | 在线列表                 | ✔        |
 |          | 提问                     | ✔        |
+|          | 打赏                     | ✔        |
 | 播放器   | 音量设置                 | ✔        |
 |          | 暂停/恢复播放            | ✔        |
 |          | seek                     | ✔        |
@@ -28,6 +29,8 @@
 |          | 隐藏/恢复弹幕            | ✔        |
 |          | 切换清晰度(需支持多码率) | ✔        |
 |          | 支持回放                 | ✔        |
+|          | 无延迟播放               | ✔        |
+|          | 连麦                     | ✔        |
 | 互动功能 | 公告                     | ✔        |
 |          | 签到                     | ✔        |
 |          | 答题卡                   | ✔        |
@@ -35,6 +38,8 @@
 |          | 抽奖                     | ✔        |
 |          | 卡片推送                 | ✔        |
 |          | 条件抽奖                 | ✔        |
+|          | 互动红包                 | ✔        |
+|          | 商品库                   | ✔        |
 | 其他     | 直播介绍                 | ✔        |
 |          | 自定义图文菜单           | ✔        |
 |          | 直播间状态显示           | ✔        |
@@ -58,6 +63,8 @@ npm run dev  #启动项目
 您还可以结合 POLYV 官方文档查阅 Demo 源码：
 
 - [直播 JS-SDK](https://help.polyv.net/index.html#/live/js/live_js_sdk/live_js_sdk)
+  - [无延迟接入](https://help.polyv.net/index.html#/live/js/live_js_sdk/live_low_latency)
+  - [连麦接入](https://help.polyv.net/index.html#/live/js/live_js_sdk/live_video_chat)
 - [聊天室 JS-SDK](https://help.polyv.net/index.html#/live/js/chat_js_sdk)
 - [互动功能接收端 SDK](https://help.polyv.net/index.html#/live/js/new_sdk/interactions_receive_sdk/sdk/overview)
   - [答题卡 UI 组件文档](https://help.polyv.net/index.html#/live/js/new_sdk/interactions_receive_sdk/ui/default/answer_card)
@@ -67,8 +74,13 @@ npm run dev  #启动项目
   - [问卷 UI 组件文档](https://help.polyv.net/index.html#/live/js/new_sdk/interactions_receive_sdk/ui/default/questionnaire)
   - [卡片推送 UI 组件文档](https://help.polyv.net/index.html#/live/js/new_sdk/interactions_receive_sdk/ui/default/push_card)
   - [条件抽奖 UI 文档](https://help.polyv.net/index.html#/live/js/new_sdk/interactions_receive_sdk/ui/default/welfare_lottery)
+  - [商品库 UI 文档](https://help.polyv.net/index.html#/live/js/new_sdk/interactions_receive_sdk/ui/default/product)
 - [直播 API 签名规则](https://help.polyv.net/index.html#/live/api/buildSign)
 - [直播服务端 API](https://help.polyv.net/index.html#/live/api/)
+- 打赏
+  - [打赏特效](https://help.polyv.net/index.html#/live/js/donate_animation)
+  - [查询打赏设置](https://help.polyv.net/index.html#/live/api/v4/channel/donate/get)
+  - [发送打赏设置](https://help.polyv.net/index.html#/live/api/live_interaction/send_reward_msg)
 
 ## Demo 工程说明
 
@@ -106,17 +118,24 @@ npm run dev  #启动项目
 ```
 
 - 主要目录文件说明
-  - `src/sdk`: 对 SDK 进行二次封装，采用事件机制进行通信
+  - `src/sdk`: 对 Polyv SDK 进行二次封装，采用事件机制进行通信
+  - `src/plugins`: 对一些第三方插件的封装和处理，比如 `Axios`, `Vant`
   - `src/utils`: 相关工具函数
   - `src/store`: vuex 存储，组件共享主要配置
-  - `src/components/common`: 桌面端，移动端公共组件
-  - `src/components/pc`: 桌面端组件
-  - `src/components/mobile`: 移动端组件
-  - `src/components/interactions-receive`: 互动 SDK UI 组件
+  - `src/components/Watch`: 观看页主体 UI 组件
+  - `src/components/Base`: 和业务无关的通用全局组件
+  - `src/components/InteractionsReceive`: 互动 SDK UI 组件
 - 使用到的第三方库：参考项目中的 package.json 的 dependencies。
 - 使用低版本 `node` 注意事项【建议使用 `16.9.1` 版本】
   - 安装依赖时，会出现 `integrity checksum failed` 的错误，原因主要是 `sha` 加密算法不同，删掉 `packgae-lock.json` 再安装依赖即可
   - 由于依赖的 `eslint` 版本较高，执行 `npm run dev` 时可能会报错，可以执行 `npm run serve` 绕过校验来启动项目，如果需要运行在 IE 浏览器上，可以执行 `npm run serve:ie`
+
+## Demo 服务器部署
+
+由于项目中使用了 `vue-router`，所以本 demo 中也支持了**两种**构建模式。前置知识可以看下这篇文档 [VueRouter-不同的历史模式](https://router.vuejs.org/zh/guide/essentials/history-mode.html)
+
+- 一种是执行 `npm run build` 命令，可以构建基于 `history` 模式的产物，需要服务器使用 `nginx` 之类的工具进行代理转发
+- 一种是执行 `npm run build-static` 命令，可以构建基于 `hash` 模式的产物，不需要在服务器上进行特殊处理，直接将文件放到服务器上即可
 
 ## 浏览器兼容性
 
@@ -127,7 +146,7 @@ npm run dev  #启动项目
 
 ### 安全性说明（重要）
 
-- 实际使用时，请*不要*将 appSecret 暴露在前端，本 demo 仅为演示。
+- 实际使用时，请 **不要** 将 appSecret 暴露在前端，本 demo 仅为演示。
 
 ### 关于自动播放
 

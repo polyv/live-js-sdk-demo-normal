@@ -8,7 +8,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'app',
+  name: 'App',
   computed: {
     ...mapGetters({
       isNeedLogin: 'config/isNeedLogin',
@@ -41,7 +41,23 @@ body {
   font-size: 14px;
 }
 
+button,
+input[type='button'],
+input[type='reset'],
+input[type='submit'] {
+  -webkit-appearance: none;
+  border: none;
+}
+
 .polyv-chat-room .tab-chat-content {
   padding-bottom: 34px;
+}
+html,
+body,
+#app,
+.g-moblie-page-container,
+.plv-watch-mobile-main {
+  width: 100%;
+  height: 100%;
 }
 </style>
