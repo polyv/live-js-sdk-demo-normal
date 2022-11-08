@@ -50,7 +50,7 @@
 Demo 的源码位于项目的 src 目录下，需要使用 `npm` 来运行 Demo
 
 ```sh
-npm install  #安装依赖
+npm ci  #安装依赖
 npm run dev  #启动项目
 ```
 
@@ -129,6 +129,7 @@ npm run dev  #启动项目
 - 使用低版本 `node` 注意事项【建议使用 `16.9.1` 版本】
   - 安装依赖时，会出现 `integrity checksum failed` 的错误，原因主要是 `sha` 加密算法不同，删掉 `packgae-lock.json` 再安装依赖即可
   - 由于依赖的 `eslint` 版本较高，执行 `npm run dev` 时可能会报错，可以执行 `npm run serve` 绕过校验来启动项目，如果需要运行在 IE 浏览器上，可以执行 `npm run serve:ie`
+  - 请保证 node 版本 `>= 10.13.0`
 
 ## Demo 服务器部署
 
