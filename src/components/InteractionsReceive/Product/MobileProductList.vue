@@ -1,10 +1,11 @@
 <template>
   <div class="plv-product-list">
     <product-list v-if="productSdk"
-                  :product-sdk="productSdk"
-                  :lang="lang"
-                  @browse-product="handleBrowseProduct"
-                  @click-buy="handleClickBuy" />
+      :product-sdk="productSdk"
+      :lang="lang"
+      :custom-click-button-handler="customClickButtonHandler"
+      @browse-product="handleBrowseProduct"
+      @click-buy="handleClickBuy" />
   </div>
 </template>
 
@@ -12,8 +13,10 @@
 import { Product } from '@polyv/interactions-receive-sdk';
 import ProductList from '@polyv/interactions-receive-sdk-ui-default/lib/MobileProduct';
 import { ynToBool } from '@/utils';
+import webviewMixin from '@/plugins//webview';
 
 export default {
+  mixins: [webviewMixin],
   components: {
     ProductList,
   },
@@ -49,6 +52,10 @@ export default {
   },
 
   methods: {
+    customClickButtonHandler(good) { // 此方法属于商品库sdk内置，会阻止默认跳转
+      // 调用开启小窗方法
+      this.sendProductToWebview(good);
+    },
     handleBrowseProduct(data) {
       // TODO 用于统计用户数据
       console.info('handleBrowseProduct', data);
