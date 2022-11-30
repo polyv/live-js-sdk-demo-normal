@@ -360,13 +360,11 @@ export default {
       const plvLive = PolyvLive.getInstance();
       // 恢复播放
       plvLive.liveSdk.player.on('playing', () => {
-        console.log('恢复播放');
         this.updateWebviewPlayState(true);
       });
 
       // 暂停播放
       plvLive.liveSdk.player.on('pause', () => {
-        console.log('暂停播放');
         this.updateWebviewPlayState(false);
       });
     },
