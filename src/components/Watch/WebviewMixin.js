@@ -1,6 +1,6 @@
 import { mapState } from 'vuex';
 import { initWebviewBridge } from '@/utils/webview';// 创建桥接器
-import webviewMixin from '@/plugins//webview';// webview mixin
+import webviewMixin from '@/plugins/webview';// webview mixin
 import PolyvLive from '@/sdk/live';// 用到了播放器事件
 
 const pageSmallWindowClass = 'p-watch--small-window';

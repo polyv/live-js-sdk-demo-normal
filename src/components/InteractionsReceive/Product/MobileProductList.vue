@@ -13,7 +13,7 @@
 import { Product } from '@polyv/interactions-receive-sdk';
 import ProductList from '@polyv/interactions-receive-sdk-ui-default/lib/MobileProduct';
 import { ynToBool } from '@/utils';
-import webviewMixin from '@/plugins//webview';
+import webviewMixin from '@/plugins/webview';
 
 export default {
   mixins: [webviewMixin],

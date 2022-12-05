@@ -12,7 +12,7 @@
   </template>
 
 <script>
-import webviewMixin from '@/plugins//webview';
+import webviewMixin from '@/plugins/webview';
 
 export default {
   mixins: [webviewMixin],
