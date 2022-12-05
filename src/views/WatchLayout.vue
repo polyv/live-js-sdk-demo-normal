@@ -42,6 +42,7 @@ export default {
     ...mapState({
       isMobile: (state) => state.isMobile,
       config: (state) => state.config,
+      isPlvWebview: state => state.webview.isPlvWebview
     }),
     componentTagName() {
       return this.isMobile ? 'MobileWatch' : 'PcWatch';
@@ -54,6 +55,7 @@ export default {
   methods: {
     ...mapMutations({
       resetConfigChat: 'config/resetChat',
+      updateWebviewPlayState: 'webview/updatePlayState'
     }),
     /** 重新渲染观看页 */
     async reloadWatchPage() {
@@ -77,6 +79,10 @@ export default {
     /** 初始化观看页需要的数据 */
     async init() {
       try {
+        if (this.isPlvWebview) {
+          // 将小窗里面用到的播放状态数据初始化
+          this.updateWebviewPlayState(false);
+        }
         // 获取频道信息
         this.channelInfo = await this.getChannelInfo();
         // 获取聊天室信息

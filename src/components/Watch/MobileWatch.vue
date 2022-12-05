@@ -10,10 +10,27 @@
         <div class="plv-watch-mobile-player"
              id="plv-mobile-master-rtc-player"
              style="display: none;"></div>
+
+        <!-- webview 小窗播放器 UI --start-->
+        <!-- 播放按钮 如果在观看页隐藏播放器控件的时候需要用到 -->
+        <!-- <img
+          data-player-click
+          v-show="!isPlay && !isSmallWindow"
+          class="c-player__button"
+          src="./imgs/button-play.png"
+          @click="playerClick" /> -->
+        <WebViewUi
+          v-if="isPlvWebview"
+          v-show="isSmallWindow"
+          class="c-player__webview-ui"
+          :playerButtonVisible="!isPlay"
+          @clickMain="playerClick"
+        />
+        <!-- webview 小窗播放器 UI --end-->
       </div>
-      <mobile-rtc-panel v-if="playerInited" />
+      <mobile-rtc-panel v-if="playerInited" v-show="!isSmallWindow"/>
       <!-- 聊天室区域，包含 PPT 文档播放器和直播介绍页 -->
-      <div class="plv-watch-mobile-chatroom plv-skin--dark">
+      <div class="plv-watch-mobile-chatroom plv-skin--dark" v-show="!isSmallWindow">
         <tab-nav v-if="playerInited"
                  v-model="activeTab"
                  :tabData="tabData"
@@ -45,12 +62,14 @@
         </section>
       </div>
     </div>
+
   </section>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex';
 import WatchMixin from '@/components/Watch/WatchMixin';
+import webviewMixin from '@/components/Watch/WebviewMixin';
 import TabNav from '@/components/TabNav/TabNav.vue';
 import MobileIntro from '@/components/Intro/MobileIntro.vue';
 import LikeService from '@/components/Like';
@@ -84,7 +103,7 @@ const likeService = new LikeService();
 
 export default {
   name: 'Mobile-Watch',
-  mixins: [WatchMixin],
+  mixins: [WatchMixin, webviewMixin],
   components: {
     TabNav,
     MobileIntro,
@@ -97,6 +116,7 @@ export default {
     DonateBubble,
     MobileRedEnvelopePointRecord,
     MobileRtcPanel,
+    WebViewUi: () => import('@/components/WebViewUi')
   },
   data() {
     const chatConfig = getDefaultConfigChat();
@@ -113,6 +133,7 @@ export default {
   computed: {
     ...mapState({
       config: (state) => state.config,
+      isPlay: (state) => state.webview.isPlay,
     }),
     isAloneChannelScene() {
       return this.channelInfo.scene === PlvChannelScene.ALONE;
@@ -146,7 +167,17 @@ export default {
     ...mapMutations({
       updateConfigChat: 'config/updateChat',
       updateConfigNickname: 'config/updateNickname',
+      updateWebviewPlayState: 'webview/updatePlayState',
     }),
+    /** 点击小窗中间播放图标 */
+    playerClick() {
+      // 如果是播放状态，就回到直播页面，否则就认定是暂停状态，就执行自动播放
+      if (this.isSmallWindow && this.isPlay) {
+        this.webviewBridge?.sendData('changeToNormal');
+      } else {
+        this.resumePlay();
+      }
+    },
     /** 根据直播场景更新聊天室配置 */
     updateConfigChatByScene(scene) {
       let userType = PlvChatUserType.STUDENT;
@@ -284,6 +315,7 @@ export default {
       plvLiveMessageHub.on(PlvLiveMessageHubEvents.PLAYER_INIT, ({ data }) => {
         this.playerInited = true;
         this.renderLike(data);
+        this.bindPlayerControlEvents();
       });
 
       // 点赞互动
@@ -318,9 +350,23 @@ export default {
                 this.$emit('reload');
               },
             });
+          } else { // 其他状态也须重置状态，如回放
+            this.$emit('reload');
           }
         }
       );
+    },
+    bindPlayerControlEvents() {
+      const plvLive = PolyvLive.getInstance();
+      // 恢复播放
+      plvLive.liveSdk.player.on('playing', () => {
+        this.updateWebviewPlayState(true);
+      });
+
+      // 暂停播放
+      plvLive.liveSdk.player.on('pause', () => {
+        this.updateWebviewPlayState(false);
+      });
     },
     /** 渲染互动功能入口组件 */
     renderIREntrance() {
@@ -487,5 +533,36 @@ export default {
 .plv-chatroom__more-content__pop-ups {
   /* 需要大于播放器控制条的 z-inedx */
   z-index: 2002;
+}
+
+.p-watch--small-window {
+  .plv-watch-mobile__top {
+    padding-top: 0;
+    height: 100%;
+    z-index: 99998;
+  }
+  .c-player__button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    margin-top: -40px;
+    margin-left: -40px;
+    z-index: 999;
+  }
+  .c-player__webview-ui {
+    z-index: 99999;
+  }
+  .plwrap>div,
+  .pv-player-rtc-controls,
+  video::-webkit-media-controls-enclosure {
+    display: none !important;
+  }
+
+  .plwrap>.plv-live-loading,
+  .plwrap>.plvideo {
+    display: block !important;
+  }
 }
 </style>
