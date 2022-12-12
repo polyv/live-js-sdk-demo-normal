@@ -16,7 +16,8 @@ export default {
     role: 'viewer', // 角色, 用于获取授权和连麦token
 
     chat: getDefaultConfigChat(), // 用于聊天室 SDK 的配置
-
+    param4: '', // 统计参数param4
+    param5: '', // 统计参数param5
     playerType: 'auto', // 播放器播放类型， 默认auto
     vid: '' // 回放id, 用于回放模式时设置对应的回放
   },

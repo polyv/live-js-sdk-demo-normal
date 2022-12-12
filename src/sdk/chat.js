@@ -97,6 +97,8 @@ export default class PolyvChat {
       enableWelcome: true, // 是否开启欢迎语，默认为true
       enableFlower: false, // 是否开启送花功能，默认为true
       enableOnlyTeacher: true, // 是否开启只看讲师功能，默认为true
+      param4: config.param4, // 统计参数param4
+      param5: config.param5, // 统计参数param5
       tabData: config.chat.tabData,
       showUserList: config.chat.showUserList,
       enableLike: false,
