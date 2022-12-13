@@ -121,8 +121,8 @@ export default class PolyvLive {
         userName: config.nickname,
         pic: config.avatar
       },
-      param4: '播放器自定义统计参数4',
-      param5: '播放器自定义统计参数5'
+      param4: config.param4, // 统计参数param4
+      param5: config.param5, // 统计参数param5
     });
   }
 
