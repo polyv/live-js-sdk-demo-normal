@@ -16,7 +16,7 @@
   "dependencies": {
     "@polyv/interactions-receive-sdk": "0.11.2",
     "@polyv/interactions-receive-sdk-ui-default": "0.11.2",
-    "@polyv/web-view-bridge": "^0.1.0-webview-app.8",
+    "@polyv/web-view-bridge": "0.1.0-rc.1",
     "axios": "^0.27.2",
     "core-js": "^3.6.5",
     "jraiser": "^3.1.5",
