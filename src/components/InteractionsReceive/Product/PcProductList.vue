@@ -56,7 +56,7 @@ export default {
     },
     handleClickBuy(data) {
       // TODO 用户统计点击商品
-      console.info('handleBrowseProduct', data);
+      console.info('handleClickBuy', data);
     },
   },
 };
