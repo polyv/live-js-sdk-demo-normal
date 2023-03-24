@@ -1,7 +1,7 @@
 /**
  * webview 模块
  */
-import { isWebView } from '@polyv/web-view-bridge/dist/is-webview';
+import { isWebView } from '@polyv/web-view-bridge/is-webview';
 
 export default {
   namespaced: true,
