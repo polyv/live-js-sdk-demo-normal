@@ -17,7 +17,7 @@
 <script>
 import { mapState } from 'vuex';
 import { TabNavType } from '@/const';
-
+import PolyvChat from '@/sdk/chat';
 /** @type {null|HTMLElement} */
 let $originTabWrapper = null;
 
@@ -98,10 +98,15 @@ export default {
       this.$emit('change', tab.type);
     },
     handleOriginTabClick(tabType) {
-      const $tabEl =
-        $originTabWrapper &&
-        $originTabWrapper.querySelector(`li[data-type='${tabType}']`);
-      $tabEl && $tabEl.click();
+      // const $tabEl =
+      //   $originTabWrapper &&
+      //   $originTabWrapper.querySelector(`li[data-type='${tabType}']`);
+      // $tabEl && $tabEl.click();
+      const index = this.tabData.findIndex((tab) => tab.type === tabType);
+      if (index !== -1) {
+        const plvChat = PolyvChat._instance;
+        plvChat.chatroom.changeTab(index);
+      }
     },
   },
 };
