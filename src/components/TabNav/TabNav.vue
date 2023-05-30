@@ -102,11 +102,8 @@ export default {
       //   $originTabWrapper &&
       //   $originTabWrapper.querySelector(`li[data-type='${tabType}']`);
       // $tabEl && $tabEl.click();
-      const index = this.tabData.findIndex((tab) => tab.type === tabType);
-      if (index !== -1) {
-        const plvChat = PolyvChat._instance;
-        plvChat.chatroom.changeTab(index);
-      }
+      const plvChat = PolyvChat._instance;
+      plvChat.chatroom.changeTab(tabType);
     },
   },
 };
