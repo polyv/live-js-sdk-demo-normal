@@ -28,21 +28,24 @@ export default {
     }),
     redirectPage() {
       // 支持通过 url 参数获取数据，如果参数足够，就能直接跳转进到观看页
-      const params = parse(window.location.search && window.location.search.slice(1)) || {};
+      const queryParams = parse(window.location.search && window.location.search.slice(1)) || {};
       if (
-        params.appId &&
-        params.appSecret &&
-        params.channelId &&
-        ((params.playbackMode && params.vid) || !params.playbackMode)
+        queryParams.appId &&
+        queryParams.appSecret &&
+        queryParams.channelId &&
+        ((queryParams.playbackMode && queryParams.vid) || !queryParams.playbackMode)
       ) {
         this.setConfigBasicInfo({
-          channelId: params.channelId,
-          appId: params.appId,
-          appSecret: params.appSecret,
-          playbackMode: Boolean(params.playbackMode),
-          vid: params.vid || '',
+          channelId: queryParams.channelId,
+          appId: queryParams.appId,
+          appSecret: queryParams.appSecret,
+          playbackMode: Boolean(queryParams.playbackMode),
+          vid: queryParams.vid || '',
         });
-        this.$router.push({ path: '/watch' });
+        this.$router.push({
+          path: '/watch',
+          query: queryParams
+        });
       } else {
         this.$router.push({ path: '/login' });
       }
