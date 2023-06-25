@@ -1,21 +1,25 @@
 <template>
-    <!-- webview 小窗后 UI -->
-    <div class="c-player-ui__webview">
-      <div class="c-player-ui__webview__header">
-        <button class="c-player-ui__webview__back-btn" @click="onClickWebviewBack"></button>
-        <button class="c-player-ui__webview__close-btn" @click="onClickWebviewClose"></button>
-      </div>
-      <div class="c-player-ui__webview__main" @click="onClickMain">
-        <div v-show="playerButtonVisible" class="c-player-ui__webview__btn__play"></div>
-      </div>
+  <!-- webview 小窗后 UI -->
+  <div class="c-player-ui__webview">
+    <div class="c-player-ui__webview__header">
+      <button class="c-player-ui__webview__back-btn"
+              @click="onClickWebviewBack"></button>
+      <button class="c-player-ui__webview__close-btn"
+              @click="onClickWebviewClose"></button>
     </div>
-  </template>
+    <div class="c-player-ui__webview__main"
+         @click="onClickMain">
+      <div v-show="playerButtonVisible"
+           class="c-player-ui__webview__btn__play"></div>
+    </div>
+  </div>
+</template>
 
 <script>
-import webviewMixin from '@/plugins/webview';
+import WebviewPluginMixin from '@/plugins/webview';
 
 export default {
-  mixins: [webviewMixin],
+  mixins: [WebviewPluginMixin],
 
   props: {
     playerButtonVisible: {
@@ -33,7 +37,7 @@ export default {
     },
 
     onClickMain() {
-      this.$emit('clickMain');
+      this.$emit('click-main');
     },
   },
 };

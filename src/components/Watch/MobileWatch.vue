@@ -23,7 +23,7 @@
                    v-show="isSmallWindow"
                    class="c-player__webview-ui"
                    :playerButtonVisible="!isPlay"
-                   @clickMain="playerClick" />
+                   @click-main="playerClick" />
         <!-- webview 小窗播放器 UI --end-->
       </div>
       <mobile-rtc-panel v-if="playerInited"
@@ -72,7 +72,7 @@
 <script>
 import { mapState, mapMutations } from 'vuex';
 import WatchMixin from '@/components/Watch/WatchMixin';
-import webviewMixin from '@/components/Watch/WebviewMixin';
+import WebviewMixin from '@/components/Watch/WebviewMixin';
 import TabNav from '@/components/TabNav/TabNav.vue';
 import MobileIntro from '@/components/Intro/MobileIntro.vue';
 import LikeService from '@/components/Like';
@@ -108,7 +108,7 @@ const likeService = new LikeService();
 
 export default {
   name: 'Mobile-Watch',
-  mixins: [WatchMixin, webviewMixin],
+  mixins: [WatchMixin, WebviewMixin],
   components: {
     TabNav,
     MobileIntro,

@@ -1,11 +1,11 @@
 <template>
   <div class="plv-product-list">
     <product-list v-if="productSdk"
-      :product-sdk="productSdk"
-      :lang="lang"
-      :custom-click-button-handler="customClickButtonHandler"
-      @browse-product="handleBrowseProduct"
-      @click-buy="handleClickBuy" />
+                  :product-sdk="productSdk"
+                  :lang="lang"
+                  :custom-click-button-handler="customClickButtonHandler"
+                  @browse-product="handleBrowseProduct"
+                  @click-buy="handleClickBuy" />
   </div>
 </template>
 
@@ -13,10 +13,10 @@
 import { Product } from '@polyv/interactions-receive-sdk';
 import ProductList from '@polyv/interactions-receive-sdk-ui-default/lib/MobileProduct';
 import { ynToBool } from '@/utils';
-import webviewMixin from '@/plugins/webview';
+import WebviewPluginMixin from '@/plugins/webview';
 
 export default {
-  mixins: [webviewMixin],
+  mixins: [WebviewPluginMixin],
   components: {
     ProductList,
   },
