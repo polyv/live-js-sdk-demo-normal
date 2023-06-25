@@ -83,10 +83,17 @@
         </div>
       </div>
       <!-- 频道信息 -->
-      <pc-intro />
+      <pc-intro>
+        <template v-slot:right>
+          <!-- 举报反馈/投诉 入口 -->
+          <pc-feed-back-entrance v-if="isEnableFeedBack" />
+        </template>
+      </pc-intro>
     </div>
     <!-- 菜单栏 -->
     <pc-menu />
+    <!-- 举报反馈/投诉 弹窗 -->
+    <pc-feed-back v-if="isEnableFeedBack" />
   </section>
 </template>
 
@@ -99,6 +106,8 @@ import PcIntro from '@/components/Intro/PcIntro.vue';
 import PcMenu from '@/components/Menu/PcMenu.vue';
 import PcMiniTool from '@/components/MiniTool/PcMiniTool.vue';
 import IREntranceService from '@/components/InteractionsReceive';
+import PcFeedBack from '@/components/InteractionsReceive/FeedBack/PcFeedBack.vue';
+import PcFeedBackEntrance from '@/components/InteractionsReceive/FeedBack/PcFeedBackEntrance.vue';
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
 import DonateBubble from '@/components/Donate/DonateBubble.vue';
 import PcRtcPanel from '@/components/RTC/PcRtcPanel.vue';
@@ -140,6 +149,8 @@ export default {
     PcDonatePanel: () => import('@/components/Donate/PcDonatePanel.vue'),
     DonateBubble,
     PcRtcPanel,
+    PcFeedBackEntrance,
+    PcFeedBack,
   },
   data() {
     return {
@@ -172,6 +183,10 @@ export default {
     isShowPcRtcPanel() {
       return this.activeTab === TabNavType.RTC;
     },
+    /** 是否启用举报反馈/投诉 */
+    isEnableFeedBack() {
+      return this.enableRenderIRComponent && this.watchFeedbackEnabled;
+    }
   },
   mounted() {
     /** 直播场景 */
