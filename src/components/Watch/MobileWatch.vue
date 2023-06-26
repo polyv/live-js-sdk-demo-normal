@@ -353,6 +353,8 @@ export default {
       plvLiveMessageHub.on(
         PlvLiveMessageHubEvents.STREAM_UPDATE,
         ({ status }) => {
+          if (status === 'stop') return;
+
           if (status === 'live') {
             this.$toast({
               type: 'loading',

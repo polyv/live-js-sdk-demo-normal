@@ -80,6 +80,12 @@ export default {
   content: '回放中';
 }
 
+.plv-watch__status--stop::after {
+  color: #f06e6e;
+  border-color: #f06e6e;
+  content: '暂停直播';
+}
+
 .plv-watch__status--live::after {
   color: #f06e6e;
   border-color: #f06e6e;
