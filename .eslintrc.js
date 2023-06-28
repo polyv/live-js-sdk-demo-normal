@@ -5,6 +5,7 @@ module.exports = {
     './node_modules/@polyv/eslint-config/lib/for-vue'
   ],
   rules: {
+    'no-console': 0,
     'vue/html-indent': 0,
     'vue/multi-word-component-names': 0,
     'no-unused-vars': 0,

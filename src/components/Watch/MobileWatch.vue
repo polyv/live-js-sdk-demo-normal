@@ -19,18 +19,18 @@
           class="c-player__button"
           src="./imgs/button-play.png"
           @click="playerClick" /> -->
-        <WebViewUi
-          v-if="isPlvWebview"
-          v-show="isSmallWindow"
-          class="c-player__webview-ui"
-          :playerButtonVisible="!isPlay"
-          @clickMain="playerClick"
-        />
+        <WebViewUi v-if="isPlvWebview"
+                   v-show="isSmallWindow"
+                   class="c-player__webview-ui"
+                   :playerButtonVisible="!isPlay"
+                   @click-main="playerClick" />
         <!-- webview 小窗播放器 UI --end-->
       </div>
-      <mobile-rtc-panel v-if="playerInited" v-show="!isSmallWindow"/>
+      <mobile-rtc-panel v-if="playerInited"
+                        v-show="!isSmallWindow" />
       <!-- 聊天室区域，包含 PPT 文档播放器和直播介绍页 -->
-      <div class="plv-watch-mobile-chatroom plv-skin--dark" v-show="!isSmallWindow">
+      <div class="plv-watch-mobile-chatroom plv-skin--dark"
+           v-show="!isSmallWindow">
         <tab-nav v-if="playerInited"
                  v-model="activeTab"
                  :tabData="tabData"
@@ -53,6 +53,8 @@
           <mobile-donate-panel v-if="playerInited && isEnableDonate"
                                :donateConfig="donateConfig" />
           <mobile-red-envelope-point-record v-if="enableRenderIRComponent" />
+          <!-- 举报反馈/投诉 入口 -->
+          <mobile-feed-back-entrance v-if="isEnableFeedBack" />
         </section>
         <!-- 用于展示一些气泡消息/动画特效 -->
         <section class="bubble-wrapper">
@@ -62,18 +64,21 @@
         </section>
       </div>
     </div>
-
+    <!-- 举报反馈/投诉 弹窗 -->
+    <mobile-feed-back v-if="isEnableFeedBack" />
   </section>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex';
 import WatchMixin from '@/components/Watch/WatchMixin';
-import webviewMixin from '@/components/Watch/WebviewMixin';
+import WebviewMixin from '@/components/Watch/WebviewMixin';
 import TabNav from '@/components/TabNav/TabNav.vue';
 import MobileIntro from '@/components/Intro/MobileIntro.vue';
 import LikeService from '@/components/Like';
 import IREntranceService from '@/components/InteractionsReceive';
+import MobileFeedBackEntrance from '@/components/InteractionsReceive/FeedBack/MobileFeedBackEntrance.vue';
+import MobileFeedBack from '@/components/InteractionsReceive/FeedBack/MobileFeedBack.vue';
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
 import DonateBubble from '@/components/Donate/DonateBubble.vue';
 import MobileRedEnvelopePointRecord from '@/components/InteractionsReceive/RedEnvelope/MobileRedEnvelopePointRecord.vue';
@@ -103,7 +108,7 @@ const likeService = new LikeService();
 
 export default {
   name: 'Mobile-Watch',
-  mixins: [WatchMixin, webviewMixin],
+  mixins: [WatchMixin, WebviewMixin],
   components: {
     TabNav,
     MobileIntro,
@@ -115,6 +120,8 @@ export default {
       import('@/components/Donate/MobileDonatePanel.vue'),
     DonateBubble,
     MobileRedEnvelopePointRecord,
+    MobileFeedBackEntrance,
+    MobileFeedBack,
     MobileRtcPanel,
     WebViewUi: () => import('@/components/WebViewUi')
   },
@@ -141,6 +148,10 @@ export default {
     isShowMobileIntro() {
       return this.activeTab === TabNavType.INTRO;
     },
+    /** 是否启用举报反馈/投诉 */
+    isEnableFeedBack() {
+      return this.enableRenderIRComponent && this.watchFeedbackEnabled;
+    }
   },
   mounted() {
     const scene = this.channelInfo.scene || '';
@@ -342,6 +353,8 @@ export default {
       plvLiveMessageHub.on(
         PlvLiveMessageHubEvents.STREAM_UPDATE,
         ({ status }) => {
+          if (status === 'stop') return;
+
           if (status === 'live') {
             this.$toast({
               type: 'loading',

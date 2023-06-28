@@ -8,7 +8,8 @@ export default {
     chatInfo: Object,
     apiToken: String,
     productEnable: Boolean,
-    donateConfig: Object
+    donateConfig: Object,
+    watchFeedbackEnabled: Boolean,
   },
   data() {
     const chatConfig = getDefaultConfigChat();

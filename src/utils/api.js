@@ -24,6 +24,17 @@ export default class PolyvApi {
     };
   }
 
+  /** 获取频道详情 */
+  static async getChannelDetail(params) {
+    const res = await request.get('/v3/applet/sdk/get-channel-token-detail', {
+      params
+    });
+
+    return {
+      ...res.data,
+    };
+  }
+
   /**
    * 查询频道场次信息
    * @see {@link https://help.polyv.net/index.html#/live/api/channel/session/session_list 文档-查询频道场次信息}

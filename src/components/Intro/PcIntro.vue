@@ -17,8 +17,10 @@
         {{ channelData.pageView + ' 次观看' }}
       </span>
     </div>
+    <div class="plv-watch-pc__intro__right">
+      <slot name="right"></slot>
+    </div>
   </div>
-
 </template>
 
 <script>
@@ -27,6 +29,7 @@ import PolyvLive, {
   PlvLiveMessageHubEvents,
 } from '@/sdk/live';
 import WatchStatus from './WatchStatus.vue';
+
 export default {
   name: 'PC-Intro',
   components: { WatchStatus },
@@ -65,6 +68,7 @@ export default {
 <style lang="scss">
 /* 频道信息 */
 .plv-watch-pc__intro {
+  position: relative;
   padding: 30px 0;
   color: #fff;
   font-size: 0;
@@ -113,5 +117,12 @@ export default {
   background-size: cover;
   background-position: center;
   margin-left: 13px;
+}
+
+.plv-watch-pc__intro__right {
+  position: absolute;
+  right: 0;
+  bottom: 30px;
+  font-size: 14px;
 }
 </style>
