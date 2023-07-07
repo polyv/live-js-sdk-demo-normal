@@ -302,8 +302,10 @@ export default {
       plvChatMessageHub.on(
         PlvChatMessageHubEvents.LOGIN_CALLBACK,
         ({ data }) => {
-          const nick = data.user.nick;
-          this.updateConfigNickname(nick);
+          if (data.user.userId === this.config.userId) {
+            const nick = data.user.nick;
+            this.updateConfigNickname(nick);
+          }
         }
       );
     },
