@@ -10,6 +10,10 @@ import '@/plugins/vant';
 
 import Modal from '@/components/Base/Modal';
 
+// 确保 vue-demi 正常安装
+import { install } from 'vue-demi';
+install();
+
 // 全局注册模态框
 Vue.component('modal', Modal);
 Vue.config.productionTip = false;

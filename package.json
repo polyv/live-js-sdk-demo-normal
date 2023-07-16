@@ -17,6 +17,7 @@
     "@polyv/interactions-receive-sdk": "0.11.2",
     "@polyv/interactions-receive-sdk-ui-default": "0.11.2",
     "@polyv/web-view-bridge": "0.1.0-rc.1",
+    "@vue/composition-api": "^1.7.1",
     "axios": "^0.27.2",
     "core-js": "^3.6.5",
     "jraiser": "^3.1.5",
@@ -24,6 +25,7 @@
     "svgaplayerweb": "^2.3.2",
     "vant": "^2.12.50",
     "vue": "2.6.11",
+    "vue-demi": "^0.14.5",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
   },
@@ -44,8 +46,8 @@
     "stylelint-config-recommended": "^3.0.0",
     "stylelint-config-recommended-scss": "^4.2.0",
     "stylelint-scss": "^3.18.0",
-    "vue-awesome-swiper": "4.1.1",
     "swiper": "^5.2.0",
+    "vue-awesome-swiper": "4.1.1",
     "vue-template-compiler": "2.6.11",
     "yorkie": "2.0.0"
   },

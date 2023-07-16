@@ -2,7 +2,6 @@
  * @type {import('@vue/cli-service').ProjectOptions}
  */
 module.exports = {
-
   publicPath: process.env.VUE_APP_BUILD_MODE === 'STATIC' ? './' : '/live',
 
   productionSourceMap: false,
@@ -15,6 +14,11 @@ module.exports = {
       title: 'Live SDK Demo',
     }
   },
+
+  transpileDependencies: [
+    'vue-demi',
+    '@vue/composition-api'
+  ],
 
   configureWebpack: {
     /** 运行在 IE 上需要更改 devtool 的默认值，不然异步组件无法正常使用 */
