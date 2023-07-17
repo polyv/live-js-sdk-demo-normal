@@ -68,8 +68,7 @@ export const sliderBarProps = () => ({
 });
 
 export const useSliderBar = options => {
-  const { props, ctx } = options;
-  const { emit } = ctx;
+  const { props, emit } = options;
 
   /** 当前的进度值 */
   const currentValue = ref(0);

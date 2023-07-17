@@ -96,3 +96,16 @@ export function loadImg(options = {}) {
     });
   }
 }
+
+/**
+ * 格式化时间为 00:00:00
+ */
+export function formatTime(t) {
+  t = Math.floor(t) || 0;
+  const hs = 60 * 60;
+  const h = Math.floor(t / hs);
+  const m = Math.floor((t % hs) / 60);
+  const s = t - (h * hs) - (m * 60);
+  const addZero = a => (String(a).length === 1 ? `0${a}` : a);
+  return `${addZero(h)}:${addZero(m)}:${addZero(s)}`;
+}

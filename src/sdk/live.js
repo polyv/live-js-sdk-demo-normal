@@ -2,6 +2,7 @@ import { TIME_STAMP } from '@/const';
 import * as PolyvUtil from '@/utils';
 import PubSub from 'jraiser/pubsub/1.2/pubsub';
 import { Notify } from 'vant';
+import $store from '@/store';
 
 /** 用于创建直播 JS-SDK 的类 */
 const PolyvLiveSdk = window.PolyvLiveSdk;
@@ -14,6 +15,8 @@ export const PlvLiveMessageHubEvents = {
   CHANNEL_DATA_INIT: 'channelDataInit',
   /** 播放器初始化 */
   PLAYER_INIT: 'playerInit',
+  /** 播放器时间更新 */
+  PLAYER_TIME_UPDATE: 'playerTimeUpdate',
   /** 点赞互动 */
   INTERACTIVE_LIKE: 'interactiveLike',
   /** 修改昵称 */
@@ -198,7 +201,29 @@ export default class PolyvLive {
       rtc: true // 在非无延迟的频道里面设置后可进行连麦，sdk会加载连麦sdk并返回实例
     });
 
+    this.bindPlayerEvents();
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_INIT, { data });
+  }
+
+  /**
+   * 播放器-绑定播放器相关事件
+   */
+  bindPlayerEvents() {
+    this.liveSdk.player.on('loadedmetadata', () => {
+      const { duration } = this.liveSdk.player;
+      $store.commit('player/updatePlayerInfo', {
+        durationTime: duration
+      });
+    });
+
+    this.liveSdk.player.on('timeupdate', (time) => {
+      $store.commit('player/updatePlayerInfo', {
+        currentTime: time
+      });
+
+      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_TIME_UPDATE, { time });
+    });
+
   }
 
   /**

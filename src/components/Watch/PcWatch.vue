@@ -17,13 +17,21 @@
           'plv-watch-pc__screen-sub':isPlayerMainPosition
         }">
           <div class="plv-watch-pc__screen__height">
-            <div class="plv-watch-pc__screen__inner"
+            <div :class="{
+              'plv-watch-pc__screen__inner':true,
+              'plv-watch-pc__hide_plv_control': customPlayerControlVisible
+              }"
                  ref="plv-pc-main"
                  id="plv-pc-main"></div>
             <div v-if="isAloneChannelScene"
                  class="plv-watch-pc__screen__inner"
                  id="plv-pc-master-rtc-player"
                  style="display: none;"></div>
+            <!-- 自定义的播放器控制条 -->
+            <div v-if="playerInited && customPlayerControlVisible"
+                 class="plv-watch-pc__screen__inner plv-watch-pc__player-control-wrapper">
+              <pc-player-control fullscreen-selector="#plv-pc-top" />
+            </div>
           </div>
         </div>
 
@@ -111,6 +119,7 @@ import PcFeedBackEntrance from '@/components/InteractionsReceive/FeedBack/PcFeed
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
 import DonateBubble from '@/components/Donate/DonateBubble.vue';
 import PcRtcPanel from '@/components/RTC/PcRtcPanel.vue';
+import PcPlayerControl from '@/components/PlayerControl/PcPlayerControl.vue';
 
 import {
   MainScreenMap,
@@ -151,9 +160,11 @@ export default {
     PcRtcPanel,
     PcFeedBackEntrance,
     PcFeedBack,
+    PcPlayerControl
   },
   data() {
     return {
+      customPlayerControlVisible: true,
       playerInited: false,
       enableRenderIRComponent: false,
       playerCtrl: {
@@ -466,6 +477,11 @@ export default {
   width: 100%;
   height: 100%;
 }
+.plv-watch-pc__screen__inner.plv-watch-pc__player-control-wrapper {
+  top: unset;
+  bottom: 0;
+  height: 60px;
+}
 /* 需要比播放器高一层 */
 #plv-pc-master-rtc-player {
   z-index: 2002;
@@ -708,5 +724,11 @@ export default {
 .plv-watch-pc .ply-liveppt-container > object {
   width: 100%;
   height: 100%;
+}
+
+#plv-pc-main.plv-watch-pc__hide_plv_control {
+  .plv-live-player-bar {
+    display: none;
+  }
 }
 </style>

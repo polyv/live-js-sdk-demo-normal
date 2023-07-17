@@ -61,42 +61,10 @@ import { sliderBarProps, useSliderBar } from './use-slider-bar';
 export default defineComponent({
   props: sliderBarProps(),
   setup(props, ctx) {
-    const {
-      isDragging,
-      containerStyle,
-      wrapTrackStyle,
-      innerTrackStyle,
-      sliderDotStyle,
-      containerRef,
-      sliderBarHover,
-      setSliderBarHover,
-      onMouseDown,
-      onMouseUp,
-      onTrackMouseMove,
-      trackHoverX,
-      trackHoverValue,
-      removeListenWindowEvent,
-    } = useSliderBar({
+    return useSliderBar({
       props,
-      ctx
+      emit: ctx.emit
     });
-
-    return {
-      isDragging,
-      containerStyle,
-      wrapTrackStyle,
-      innerTrackStyle,
-      sliderDotStyle,
-      containerRef,
-      sliderBarHover,
-      setSliderBarHover,
-      onMouseDown,
-      onMouseUp,
-      onTrackMouseMove,
-      trackHoverX,
-      trackHoverValue,
-      removeListenWindowEvent
-    };
   },
   beforeDestoryed() {
     this.removeListenWindowEvent();
