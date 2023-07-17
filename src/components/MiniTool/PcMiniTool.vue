@@ -239,5 +239,6 @@ export default {
 .tool-btn {
   box-sizing: border-box;
   margin: 5px;
+  cursor: pointer;
 }
 </style>
