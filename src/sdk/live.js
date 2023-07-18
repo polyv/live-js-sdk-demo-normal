@@ -247,6 +247,10 @@ export default class PolyvLive {
 
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_TIME_UPDATE, { currentTime, durationTime });
     });
+
+    this.liveSdk.player.on('keyPointUpdate', ({ list }) => {
+      $store.commit('player/setTimeAxisMarkList', list);
+    });
   }
 
   /**

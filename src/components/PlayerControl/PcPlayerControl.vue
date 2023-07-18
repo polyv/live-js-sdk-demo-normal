@@ -5,8 +5,7 @@
     <div class="c-pc-player-control__main">
       <div class="c-pc-player-control__content">
         <!-- 进度条 -->
-        <pc-player-progress-bar v-if="progressBarVisible"
-                                class="c-pc-player-control__progress" />
+        <pc-player-progress-bar class="c-pc-player-control__progress" />
 
         <!-- 左侧按钮 -->
         <div class="c-pc-player-control__content__left">
@@ -41,7 +40,7 @@
           </div>
 
           <!-- 精彩看点 -->
-          <pc-player-time-axis-mark-container v-if="supportTimeAxisMark && progressBarVisible"
+          <pc-player-time-axis-mark-container v-if="supportTimeAxisMark"
                                               class="c-pc-player-control__time-axis-mark-container" />
         </div>
 
@@ -121,9 +120,6 @@ export default defineComponent({
       'currentTimeText',
       'durationTimeText',
     ]),
-    progressBarVisible() {
-      return this.durationTime !== 0;
-    },
     timeShiftReturnLiveButtonVisible() {
       if (this.liveStatus !== 'live') return false;
 

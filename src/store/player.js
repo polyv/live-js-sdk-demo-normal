@@ -6,6 +6,7 @@ export default {
     currentTime: 0,
     durationTime: 0,
     volume: 0.5,
+    timeAxisMarkList: [],
   },
   getters: {
     currentTimeText(state) {
@@ -20,6 +21,9 @@ export default {
       for (const key in data) {
         state[key] = data[key];
       }
+    },
+    setTimeAxisMarkList(state, data) {
+      state.timeAxisMarkList = JSON.parse(JSON.stringify(data));
     }
   }
 };

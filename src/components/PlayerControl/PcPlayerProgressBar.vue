@@ -34,7 +34,7 @@ import { usePlayerAction } from '@/hooks/usePlayerAction';
 
 export default defineComponent({
   setup() {
-    const { toSeekByTimeAxisMark } = useTimeAxisMarkHook({ autoListenPlayerSyncEvent: false });
+    const { toSeekByTimeAxisMark } = useTimeAxisMarkHook();
 
     const slideBarTooltipVisible = ref(false);
 

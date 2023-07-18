@@ -1,6 +1,5 @@
-import { onMounted, ref } from 'vue-demi';
+import { computed } from 'vue-demi';
 import $store from '@/store';
-import PolyvLive from '@/sdk/live';
 import { usePlayerAction } from '@/hooks/usePlayerAction';
 
 /** 简单深拷贝 */
@@ -12,15 +11,18 @@ function cloneDeep(obj) {
 }
 
 export const useTimeAxisMarkHook = (hookOptions) => {
-  const {
-    getContainerWidth = () => 0,
-    /** 是否自动监听播放器同步事件 */
-    autoListenPlayerSyncEvent = true
-  } = hookOptions || {};
+  const { getContainerWidth = () => 0 } = hookOptions || {};
 
-  const timeAxisMarkList = ref([]);
+  const timeAxisMarkList = computed(() => {
+    return $store.state.player.timeAxisMarkList;
+  });
 
-  const mergeTimeAxisMarkList = ref([]);
+  const mergeTimeAxisMarkList = computed(() => {
+    return getMergeTimeAxisMarkList(
+      $store.state.player.timeAxisMarkList,
+      __getComputedContainerWidth()
+    );
+  });
 
   let __containerWidth = 0;
 
@@ -43,37 +45,11 @@ export const useTimeAxisMarkHook = (hookOptions) => {
     return markPoint.details[0];
   }
 
-  function syncTimeAxisMarkInfo(params) {
-    const _timeAxisMarkList = convertToTimeAxisMarkList(
-      cloneDeep(params.timeAxisMarkList),
-      $store.state.player.durationTime,
-      false
-    );
-    timeAxisMarkList.value = _timeAxisMarkList;
-    mergeTimeAxisMarkList.value = getMergeTimeAxisMarkList(
-      _timeAxisMarkList,
-      __getComputedContainerWidth()
-    );
-  }
-
   const { toSeekVideo, getDurationTime } = usePlayerAction();
 
   function toSeekByTimeAxisMark(timeAxisMark) {
     const durationTime = getDurationTime();
     toSeekVideo(durationTime * timeAxisMark.percents);
-  }
-
-  if (autoListenPlayerSyncEvent) {
-    onMounted(() => {
-      const liveSdk = PolyvLive.getInstance().liveSdk;
-      liveSdk.player.on('keyPointUpdate', ({ list }) => {
-        console.warn('list', list);
-        syncTimeAxisMarkInfo({
-          timeAxisMarkList: list
-        });
-      });
-    });
-
   }
 
   return {
@@ -120,35 +96,6 @@ function getMergeTimeAxisMarkList(timeAxisMarkList, width, interval = 16) {
       prevLeft = currentLeft;
     }
   });
-
-  return result;
-}
-
-/**
- * 转换数据成时间轴标记信息
- * @desc 纯工具函数
- */
-export function convertToTimeAxisMarkInfo(item, duration) {
-  const percents = Number(item.markTime) / duration;
-  return {
-    ...item,
-    percents,
-    markTime: Number(item.markTime)
-  };
-}
-
-/**
- * 转换数据成时间轴标记列表
- * @desc 纯工具函数
- */
-export function convertToTimeAxisMarkList(data, duration, autoSort = true) {
-  const result = cloneDeep(data).map(item =>
-    convertToTimeAxisMarkInfo(item, duration)
-  );
-
-  if (autoSort) {
-    result.sort((a, b) => a.markTime - b.markTime);
-  }
 
   return result;
 }
