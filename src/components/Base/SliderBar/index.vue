@@ -157,15 +157,31 @@ export default defineComponent({
 }
 
 .c-slide-bar--zoom {
-  .c-slide-bar__container--dragging,
-  .c-slide-bar__container:hover {
-    .c-slide-bar__wrap-track {
-      transform-origin: 50%;
-      transform: translate(-50%, -50%) scaleY(2.5);
+  &.c-slide-bar--vertical {
+    .c-slide-bar__container--dragging,
+    .c-slide-bar__container:hover {
+      .c-slide-bar__wrap-track {
+        transform-origin: 50%;
+        transform: translate(-50%, -50%) scaleX(2.5);
+      }
+      .c-slide-bar__dot {
+        transform-origin: 50%;
+        transform: translate(-50%, -50%) scale(1.4);
+      }
     }
-    .c-slide-bar__dot {
-      transform-origin: 50%;
-      transform: translate(-50%, -50%) scale(1.4);
+  }
+
+  &.c-slide-bar--horizontal {
+    .c-slide-bar__container--dragging,
+    .c-slide-bar__container:hover {
+      .c-slide-bar__wrap-track {
+        transform-origin: 50%;
+        transform: translate(-50%, -50%) scaleY(2.5);
+      }
+      .c-slide-bar__dot {
+        transform-origin: 50%;
+        transform: translate(-50%, -50%) scale(1.4);
+      }
     }
   }
 }
