@@ -150,6 +150,7 @@ export default class PolyvLive {
     // 监听流状态变化
     this.liveSdk.on(PolyvLiveSdk.EVENTS.STREAM_UPDATE, (event, status) => {
       $store.commit('base/setLiveStatus', status);
+
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.STREAM_UPDATE, { status });
     });
 
@@ -226,9 +227,10 @@ export default class PolyvLive {
       const { getDurationTime } = usePlayerAction();
 
       const { volume } = this.liveSdk.player;
+
       $store.commit('player/updatePlayerInfo', {
         durationTime: getDurationTime(),
-        volume: volume,
+        volume,
       });
     });
 
@@ -240,7 +242,7 @@ export default class PolyvLive {
 
       $store.commit('player/updatePlayerInfo', {
         currentTime,
-        durationTime
+        durationTime,
       });
 
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_TIME_UPDATE, { currentTime, durationTime });
@@ -287,3 +289,5 @@ export default class PolyvLive {
     PolyvLive._instance = null;
   }
 }
+
+// window.PolyvLive = PolyvLive;

@@ -104,8 +104,6 @@ export default defineComponent({
     return {
       PlayStatus,
       playStatus: PlayStatus.Pause,
-      supportLiveTimeShift: true,
-      supportTimeAxisMark: true,
       isFullscreen: false,
     };
   },
@@ -115,6 +113,10 @@ export default defineComponent({
       currentTime: state => state.player.currentTime,
       durationTime: state => state.player.durationTime,
     }),
+    ...mapGetters('base', [
+      'supportLiveTimeShift',
+      'supportTimeAxisMark',
+    ]),
     ...mapGetters('player', [
       'currentTimeText',
       'durationTimeText',

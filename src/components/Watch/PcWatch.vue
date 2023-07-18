@@ -19,7 +19,7 @@
           <div class="plv-watch-pc__screen__height">
             <div :class="{
               'plv-watch-pc__screen__inner':true,
-              'plv-watch-pc__hide_plv_control': customPlayerControlVisible
+              'plv-watch-pc__hide_plv_control': supportTimeAxisMark
               }"
                  ref="plv-pc-main"
                  id="plv-pc-main"></div>
@@ -28,7 +28,7 @@
                  id="plv-pc-master-rtc-player"
                  style="display: none;"></div>
             <!-- 自定义的播放器控制条 -->
-            <div v-if="playerInited && customPlayerControlVisible"
+            <div v-if="playerInited && supportTimeAxisMark"
                  class="plv-watch-pc__screen__inner plv-watch-pc__player-control-wrapper">
               <pc-player-control fullscreen-selector="#plv-pc-top" />
             </div>
@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations, mapGetters } from 'vuex';
 import WatchMixin from '@/components/Watch/WatchMixin';
 import TabNav from '@/components/TabNav/TabNav.vue';
 import LikeService from '@/components/Like';
@@ -164,7 +164,6 @@ export default {
   },
   data() {
     return {
-      customPlayerControlVisible: true,
       playerInited: false,
       enableRenderIRComponent: false,
       playerCtrl: {
@@ -179,6 +178,7 @@ export default {
     ...mapState({
       config: (state) => state.config,
     }),
+    ...mapGetters('base', ['supportTimeAxisMark']),
     /** 是否为"活动拍摄"场景 */
     isAloneChannelScene() {
       return this.channelInfo.scene === PlvChannelScene.ALONE;
@@ -197,7 +197,7 @@ export default {
     /** 是否启用举报反馈/投诉 */
     isEnableFeedBack() {
       return this.enableRenderIRComponent && this.watchFeedbackEnabled;
-    }
+    },
   },
   mounted() {
     /** 直播场景 */
