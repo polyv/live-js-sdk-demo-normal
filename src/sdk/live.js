@@ -1,8 +1,11 @@
-import { TIME_STAMP } from '@/const';
-import * as PolyvUtil from '@/utils';
 import PubSub from 'jraiser/pubsub/1.2/pubsub';
 import { Notify } from 'vant';
+
+import { TIME_STAMP } from '@/const';
+import * as PolyvUtil from '@/utils';
+
 import $store from '@/store';
+import { usePlayerAction } from '@/hooks/usePlayerAction';
 
 /** 用于创建直播 JS-SDK 的类 */
 const PolyvLiveSdk = window.PolyvLiveSdk;
@@ -199,7 +202,13 @@ export default class PolyvLive {
         */
         drag: true
       },
-      rtc: true // 在非无延迟的频道里面设置后可进行连麦，sdk会加载连麦sdk并返回实例
+      rtc: true, // 在非无延迟的频道里面设置后可进行连麦，sdk会加载连麦sdk并返回实例
+      /** 直播时移 */
+      timeShift: true,
+      /** 直播打点，需要优先设置 timeShift */
+      liveTimeAxisMark: true,
+      /** 回放打点 */
+      playbackTimeAxisMark: true,
     });
 
     this.bindPlayerEvents();
@@ -212,19 +221,27 @@ export default class PolyvLive {
    */
   bindPlayerEvents() {
     this.liveSdk.player.on('loadedmetadata', () => {
-      const { duration, volume } = this.liveSdk.player;
+      const { getDurationTime } = usePlayerAction();
+
+      const { volume } = this.liveSdk.player;
       $store.commit('player/updatePlayerInfo', {
-        durationTime: duration,
+        durationTime: getDurationTime(),
         volume: volume,
       });
     });
 
-    this.liveSdk.player.on('timeupdate', (time) => {
+    this.liveSdk.player.on('timeupdate', () => {
+      const { getCurrentTime, getDurationTime } = usePlayerAction();
+
+      const currentTime = getCurrentTime();
+      const durationTime = getDurationTime();
+
       $store.commit('player/updatePlayerInfo', {
-        currentTime: time
+        currentTime,
+        durationTime
       });
 
-      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_TIME_UPDATE, { time });
+      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_TIME_UPDATE, { currentTime, durationTime });
     });
   }
 

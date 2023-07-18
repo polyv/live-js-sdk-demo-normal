@@ -6,7 +6,7 @@
                 hover-to-zoom
                 :max="durationTime"
                 :value="currentTime"
-                tooltips
+                :tooltips="slideBarTooltipVisible"
                 @drag-change="toSeekVideo">
       <template #tooltips="{ content }">
         {{ formatTime(content) }}
@@ -26,15 +26,15 @@
 import { ref, defineComponent } from 'vue-demi';
 import { mapState } from 'vuex';
 import { formatTime } from '@/utils';
-import PolyvLive from '@/sdk/live';
 
 import SliderBar from '@/components/Base/SliderBar';
 import PcPlayerTimeAxisMarkPoint from './PlayerTimeAxisMark/PcPlayerTimeAxisMarkPointList.vue';
 import { useTimeAxisMarkHook } from './PlayerTimeAxisMark/use-time-axis-mark';
+import { usePlayerAction } from '@/hooks/usePlayerAction';
 
 export default defineComponent({
   setup() {
-    const { toSeekByTimeAxisMark } = useTimeAxisMarkHook();
+    const { toSeekByTimeAxisMark } = useTimeAxisMarkHook({ autoListenPlayerSyncEvent: false });
 
     const slideBarTooltipVisible = ref(false);
 
@@ -42,11 +42,15 @@ export default defineComponent({
       slideBarTooltipVisible.value = !isMarkPointHover;
     }
 
+    const { toSeekVideo } = usePlayerAction();
+
     return {
       toSeekByTimeAxisMark,
 
       slideBarTooltipVisible,
-      updateSlideBarTooltipVisible
+      updateSlideBarTooltipVisible,
+
+      toSeekVideo
     };
   },
   components: {
@@ -61,10 +65,6 @@ export default defineComponent({
   },
   methods: {
     formatTime,
-    toSeekVideo(time) {
-      const liveSdk = PolyvLive.getInstance().liveSdk;
-      liveSdk.player.seek(time);
-    }
   },
 });
 </script>

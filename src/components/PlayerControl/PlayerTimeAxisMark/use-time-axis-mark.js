@@ -1,6 +1,7 @@
 import { onMounted, ref } from 'vue-demi';
 import $store from '@/store';
 import PolyvLive from '@/sdk/live';
+import { usePlayerAction } from '@/hooks/usePlayerAction';
 
 /** 简单深拷贝 */
 function cloneDeep(obj) {
@@ -11,7 +12,11 @@ function cloneDeep(obj) {
 }
 
 export const useTimeAxisMarkHook = (hookOptions) => {
-  const { getContainerWidth = () => 0 } = hookOptions || {};
+  const {
+    getContainerWidth = () => 0,
+    /** 是否自动监听播放器同步事件 */
+    autoListenPlayerSyncEvent = true
+  } = hookOptions || {};
 
   const timeAxisMarkList = ref([]);
 
@@ -51,24 +56,25 @@ export const useTimeAxisMarkHook = (hookOptions) => {
     );
   }
 
+  const { toSeekVideo, getDurationTime } = usePlayerAction();
+
   function toSeekByTimeAxisMark(timeAxisMark) {
-    const liveSdk = PolyvLive.getInstance().liveSdk;
-    // TODO
-    const durationTime = $store.state.player.durationTime;
-
-    liveSdk.player.seek(durationTime * timeAxisMark.percents);
+    const durationTime = getDurationTime();
+    toSeekVideo(durationTime * timeAxisMark.percents);
   }
 
-  function manualSync() {
-    // TODO 暂时手动造数据
-    syncTimeAxisMarkInfo({
-      timeAxisMarkList: require('./timeAxisMark.json')
+  if (autoListenPlayerSyncEvent) {
+    onMounted(() => {
+      const liveSdk = PolyvLive.getInstance().liveSdk;
+      liveSdk.player.on('keyPointUpdate', ({ list }) => {
+        console.warn('list', list);
+        syncTimeAxisMarkInfo({
+          timeAxisMarkList: list
+        });
+      });
     });
-  }
 
-  onMounted(() => {
-    manualSync();
-  });
+  }
 
   return {
     timeAxisMarkList,
@@ -76,7 +82,6 @@ export const useTimeAxisMarkHook = (hookOptions) => {
 
     getFirstMarkPointDetail,
     toSeekByTimeAxisMark,
-    manualSync
   };
 };
 

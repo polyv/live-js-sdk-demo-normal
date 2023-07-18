@@ -33,7 +33,8 @@
           <!-- 直播时移 -->
           <div v-if="timeShiftReturnLiveButtonVisible"
                class="c-pc-player-control__time-shift-container">
-            <button class="c-pc-player-control__time-shift-container__button">
+            <button class="c-pc-player-control__time-shift-container__button"
+                    @click="returnLive">
               <i class="c-pc-player-control__time-shift-container__button__return-live-icon"></i>
               返回直播
             </button>
@@ -63,23 +64,36 @@
 
 <script>
 import PolyvLive from '@/sdk/live';
+import { defineComponent } from 'vue-demi';
 import { mapGetters, mapState } from 'vuex';
 
 import PcPlayerProgressBar from './PcPlayerProgressBar.vue';
 import PcPlayerTimeAxisMarkContainer from './PlayerTimeAxisMark/PcPlayerTimeAxisMarkContainer.vue';
 import PcPlayerVolumeSetting from './PlayerVolumeSetting/PcPlayerVolumeSetting.vue';
+import { usePlayerAction } from '@/hooks/usePlayerAction';
 
 const PlayStatus = {
   Playing: 'playing',
   Pause: 'pause'
 };
 
-export default {
+export default defineComponent({
   props: {
     /** 全屏选择器 */
     fullscreenSelector: {
       type: String
     }
+  },
+  setup() {
+    const { toSeekVideo } = usePlayerAction();
+
+    function returnLive() {
+      toSeekVideo(-1);
+    }
+
+    return {
+      returnLive
+    };
   },
   components: {
     PcPlayerProgressBar,
@@ -90,7 +104,7 @@ export default {
     return {
       PlayStatus,
       playStatus: PlayStatus.Pause,
-      supportLiveTimeShift: false,
+      supportLiveTimeShift: true,
       supportTimeAxisMark: true,
       isFullscreen: false,
     };
@@ -161,7 +175,7 @@ export default {
 
     }
   },
-};
+});
 </script>
 
 <style lang="scss">

@@ -68,7 +68,7 @@ export default defineComponent({
   },
   data() {
     return {
-      panelVisible: false
+      hoverInPanel: false
     };
   },
   methods: {
@@ -78,17 +78,17 @@ export default defineComponent({
     },
     handleButtonMouseLeave() {
       setTimeout(() => {
-        if (!this.panelVisible) {
+        if (!this.hoverInPanel) {
           this.setTimeAxisMarkPopperVisible(false);
         }
-      }, 1000);
+      }, 300);
     },
-    handlePanelMouseOver(e) {
-      this.panelVisible = true;
+    handlePanelMouseOver() {
+      this.hoverInPanel = true;
       this.setTimeAxisMarkPopperVisible(true);
     },
-    handlePanelMouseLeave(e) {
-      this.panelVisible = false;
+    handlePanelMouseLeave() {
+      this.hoverInPanel = false;
       this.setTimeAxisMarkPopperVisible(false);
     }
   },
@@ -96,6 +96,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+$--player-control-button-size: 48px !default;
+
 .fade-enter-active {
   animation: fade-in .3s;
 }
@@ -143,7 +145,7 @@ export default defineComponent({
 
 .c-pc-player-time-axis-mark-container__panel {
   position: absolute;
-  top: -278px;
+  bottom: $--player-control-button-size;
 
   width: 280px;
   max-height: 336px;
