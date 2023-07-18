@@ -1,5 +1,6 @@
 import { getDefaultConfigChat, TabNavType } from '@/const';
 import { ynToBool } from '@/utils';
+import { mapGetters } from 'vuex';
 
 export default {
   /** 由父组件来保证数据存在 */
@@ -9,7 +10,6 @@ export default {
     apiToken: String,
     productEnable: Boolean,
     donateConfig: Object,
-    watchFeedbackEnabled: Boolean,
   },
   data() {
     const chatConfig = getDefaultConfigChat();
@@ -21,6 +21,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('base', [
+      'watchFeedbackEnabled'
+    ]),
     /** 当前 Tab 是否为 "聊天" Tab */
     isActiveChatTab() {
       return this.activeTab === TabNavType.CHAT;

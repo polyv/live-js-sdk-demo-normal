@@ -139,6 +139,8 @@ export default class PolyvLive {
   bindSdkEventListener() {
     // 监听频道信息并初始化播放器
     this.liveSdk.on(PolyvLiveSdk.EVENTS.CHANNEL_DATA_INIT, (event, data) => {
+      $store.commit('base/setChannelDetail', data);
+
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.CHANNEL_DATA_INIT, { channelData: data });
       this.createLiveSdkPlayer(data);
       this.bindPlayerLowLatencyEvent();
