@@ -144,6 +144,7 @@ export default class PolyvLive {
 
     // 监听流状态变化
     this.liveSdk.on(PolyvLiveSdk.EVENTS.STREAM_UPDATE, (event, status) => {
+      $store.commit('base/setLiveStatus', status);
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.STREAM_UPDATE, { status });
     });
 
@@ -202,6 +203,7 @@ export default class PolyvLive {
     });
 
     this.bindPlayerEvents();
+    $store.commit('base/setLiveStatus', data.status === 'Y' ? 'live' : 'unknown');
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_INIT, { data });
   }
 

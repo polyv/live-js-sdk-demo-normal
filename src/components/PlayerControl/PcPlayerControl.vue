@@ -1,9 +1,11 @@
+<!-- PC 端播放器自定义控制栏 -->
+
 <template>
   <div class="c-pc-player-control">
     <div class="c-pc-player-control__main">
       <div class="c-pc-player-control__content">
         <!-- 进度条 -->
-        <pc-player-progress-bar v-if="durationTime"
+        <pc-player-progress-bar v-if="progressBarVisible"
                                 class="c-pc-player-control__progress" />
 
         <!-- 左侧按钮 -->
@@ -38,7 +40,7 @@
           </div>
 
           <!-- 精彩看点 -->
-          <pc-player-time-axis-mark-container v-if="supportTimeAxisMark"
+          <pc-player-time-axis-mark-container v-if="supportTimeAxisMark && progressBarVisible"
                                               class="c-pc-player-control__time-axis-mark-container" />
         </div>
 
@@ -86,19 +88,30 @@ export default {
       playStatus: PlayStatus.Pause,
       supportLiveTimeShift: false,
       supportTimeAxisMark: true,
-      playbackTimeVisible: true,
-      timeShiftReturnLiveButtonVisible: true,
       isFullscreen: false,
     };
   },
   computed: {
     ...mapState({
+      liveStatus: state => state.base.liveStatus,
+      currentTime: state => state.player.currentTime,
       durationTime: state => state.player.durationTime,
     }),
     ...mapGetters('player', [
       'currentTimeText',
       'durationTimeText',
-    ])
+    ]),
+    progressBarVisible() {
+      return this.durationTime !== 0;
+    },
+    timeShiftReturnLiveButtonVisible() {
+      if (this.liveStatus !== 'live') return false;
+
+      return this.currentTime !== this.durationTime && this.durationTime !== 0;
+    },
+    playbackTimeVisible() {
+      return this.liveStatus !== 'live' && this.durationTime !== 0;
+    }
   },
   mounted() {
     this.bindPlayStatusEvent();
