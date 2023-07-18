@@ -66,6 +66,8 @@
     </div>
     <!-- 举报反馈/投诉 弹窗 -->
     <mobile-feed-back v-if="isEnableFeedBack" />
+    <!-- 精彩看点 弹窗 -->
+    <mobile-player-time-axis-mark-popup />
   </section>
 </template>
 
@@ -83,6 +85,7 @@ import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubbl
 import DonateBubble from '@/components/Donate/DonateBubble.vue';
 import MobileRedEnvelopePointRecord from '@/components/InteractionsReceive/RedEnvelope/MobileRedEnvelopePointRecord.vue';
 import MobileRtcPanel from '@/components/RTC/MobileRtcPanel.vue';
+import MobilePlayerTimeAxisMarkPopup from '@/components/PlayerControl/PlayerTimeAxisMark/MobilePlayerTimeAxisMarkPopup.vue';
 
 import {
   getDefaultConfigChat,
@@ -123,7 +126,8 @@ export default {
     MobileFeedBackEntrance,
     MobileFeedBack,
     MobileRtcPanel,
-    WebViewUi: () => import('@/components/WebViewUi')
+    WebViewUi: () => import('@/components/WebViewUi'),
+    MobilePlayerTimeAxisMarkPopup
   },
   data() {
     const chatConfig = getDefaultConfigChat();
