@@ -5,7 +5,7 @@ export default {
   state: {
     currentTime: 0,
     durationTime: 0,
-    volume: 0,
+    volume: 0.5,
   },
   getters: {
     currentTimeText(state) {

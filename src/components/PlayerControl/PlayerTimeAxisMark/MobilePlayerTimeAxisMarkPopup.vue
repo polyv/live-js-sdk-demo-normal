@@ -42,7 +42,7 @@ import { useTimeAxisMarkHook } from './use-time-axis-mark';
 
 export default defineComponent({
   setup() {
-    const timeAxisMarkPopupVisible = ref(true);
+    const timeAxisMarkPopupVisible = ref(false);
 
     function setTimeAxisMarkPopupVisible(bool) {
       timeAxisMarkPopupVisible.value = bool;
