@@ -160,10 +160,12 @@ export default defineComponent({
   .c-slide-bar__container--dragging,
   .c-slide-bar__container:hover {
     .c-slide-bar__wrap-track {
-      zoom: 2.5;
+      transform-origin: 50%;
+      transform: translate(-50%, -50%) scaleY(2.5);
     }
     .c-slide-bar__dot {
-      zoom: 1.4;
+      transform-origin: 50%;
+      transform: translate(-50%, -50%) scale(1.4);
     }
   }
 }
