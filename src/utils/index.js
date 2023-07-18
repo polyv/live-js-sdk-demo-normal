@@ -109,3 +109,10 @@ export function formatTime(t) {
   const addZero = a => (String(a).length === 1 ? `0${a}` : a);
   return `${addZero(h)}:${addZero(m)}:${addZero(s)}`;
 }
+
+/**
+ * 数字转成浮点数
+ */
+export function numberToFixed(number, accuracy = 2) {
+  return Number(number.toFixed(accuracy));
+}

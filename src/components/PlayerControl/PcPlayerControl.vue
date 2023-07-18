@@ -46,6 +46,8 @@
 
         <!-- 右侧按钮 -->
         <div class="c-pc-player-control__content__right">
+          <pc-player-volume-setting />
+
           <!-- 全屏按钮 -->
           <div class="c-pc-player-control__button"
                :class="{
@@ -65,6 +67,7 @@ import { mapGetters, mapState } from 'vuex';
 
 import PcPlayerProgressBar from './PcPlayerProgressBar.vue';
 import PcPlayerTimeAxisMarkContainer from './PlayerTimeAxisMark/PcPlayerTimeAxisMarkContainer.vue';
+import PcPlayerVolumeSetting from './PlayerVolumeSetting/PcPlayerVolumeSetting.vue';
 
 const PlayStatus = {
   Playing: 'playing',
@@ -81,6 +84,7 @@ export default {
   components: {
     PcPlayerProgressBar,
     PcPlayerTimeAxisMarkContainer,
+    PcPlayerVolumeSetting,
   },
   data() {
     return {

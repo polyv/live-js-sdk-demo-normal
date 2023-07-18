@@ -212,9 +212,10 @@ export default class PolyvLive {
    */
   bindPlayerEvents() {
     this.liveSdk.player.on('loadedmetadata', () => {
-      const { duration } = this.liveSdk.player;
+      const { duration, volume } = this.liveSdk.player;
       $store.commit('player/updatePlayerInfo', {
-        durationTime: duration
+        durationTime: duration,
+        volume: volume,
       });
     });
 
@@ -225,7 +226,6 @@ export default class PolyvLive {
 
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_TIME_UPDATE, { time });
     });
-
   }
 
   /**
