@@ -18,6 +18,8 @@ export const PlvLiveMessageHubEvents = {
   CHANNEL_DATA_INIT: 'channelDataInit',
   /** 播放器初始化 */
   PLAYER_INIT: 'playerInit',
+  /** 移动端播放器精彩看点按钮点击事件 */
+  MOBILE_PLAYER_HIGHLIGHTS_BTN_CLICKED: 'mobilePlayerHighlightsBtnClicked',
   /** 播放器时间更新 */
   PLAYER_TIME_UPDATE: 'playerTimeUpdate',
   /** 点赞互动 */
@@ -250,6 +252,10 @@ export default class PolyvLive {
 
     this.liveSdk.player.on('keyPointUpdate', ({ list }) => {
       $store.commit('player/setTimeAxisMarkList', list);
+    });
+
+    this.liveSdk.player.on('highlightsBtnClicked', () => {
+      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.MOBILE_PLAYER_HIGHLIGHTS_BTN_CLICKED);
     });
   }
 

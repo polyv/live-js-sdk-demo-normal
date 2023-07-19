@@ -38,6 +38,7 @@ import { ref, defineComponent } from 'vue-demi';
 import { formatTime } from '@/utils';
 import Popup from '@/components/Base/Popup';
 
+import { plvLiveMessageHub, PlvLiveMessageHubEvents } from '@/sdk/live';
 import { useTimeAxisMarkHook } from './use-time-axis-mark';
 
 export default defineComponent({
@@ -62,6 +63,11 @@ export default defineComponent({
   },
   components: {
     Popup
+  },
+  mounted() {
+    plvLiveMessageHub.on(PlvLiveMessageHubEvents.MOBILE_PLAYER_HIGHLIGHTS_BTN_CLICKED, () => {
+      this.setTimeAxisMarkPopupVisible(true);
+    });
   },
   methods: {
     formatTime
