@@ -103,6 +103,7 @@ body,
 
 /* 多行内容，只兼容webkit（默认 2 行） */
 .g-multiline {
+  word-break: break-word;
   display: -webkit-box;
   overflow: hidden;
   text-overflow: ellipsis;
