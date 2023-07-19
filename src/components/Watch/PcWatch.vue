@@ -10,7 +10,10 @@
            id="plv-pc-top"
            :class="{
              'plv-watch-pc__top--fullscreen':playerCtrl.isFullScreen
-           }">
+           }"
+           @mousemove="showPlayerControl"
+           @mouseenter="showPlayerControl"
+           @mouseleave="hidePlayerControl">
         <div :class="{
           'plv-watch-pc__screen':true,
           'plv-watch-pc__screen-main':isPPTMainPosition,
@@ -29,8 +32,12 @@
                  style="display: none;"></div>
             <!-- 自定义的播放器控制条 -->
             <div v-if="playerInited && supportTimeAxisMark"
+                 ref="PlayerControlWrapperRef"
                  class="plv-watch-pc__screen__inner plv-watch-pc__player-control-wrapper">
-              <pc-player-control fullscreen-selector="#plv-pc-top" />
+              <transition name="fade">
+                <pc-player-control v-show="playerControlVisible"
+                                   fullscreen-selector="#plv-pc-top" />
+              </transition>
             </div>
           </div>
         </div>
@@ -106,6 +113,7 @@
 </template>
 
 <script>
+import { defineComponent, ref } from 'vue-demi';
 import { mapState, mapMutations, mapGetters } from 'vuex';
 import WatchMixin from '@/components/Watch/WatchMixin';
 import TabNav from '@/components/TabNav/TabNav.vue';
@@ -120,6 +128,8 @@ import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubbl
 import DonateBubble from '@/components/Donate/DonateBubble.vue';
 import PcRtcPanel from '@/components/RTC/PcRtcPanel.vue';
 import PcPlayerControl from '@/components/PlayerControl/PcPlayerControl.vue';
+
+import { useHoverVisible } from '@/hooks/useHoverVisible';
 
 import {
   MainScreenMap,
@@ -143,9 +153,42 @@ import PolyvInteractionsReceive, {
 const irEntranceService = new IREntranceService();
 const likeService = new LikeService();
 
-export default {
+export default defineComponent({
   name: 'PC-Watch',
   mixins: [WatchMixin],
+  setup() {
+    const PlayerControlWrapperRef = ref();
+
+    const {
+      hoverItemVisible: playerControlVisible,
+      showHoverItem: showPlayerControlItem,
+      forceShowHoverItem: forceShowPlayerControlItem,
+      hideHoverItem: hidePlayerControl
+    } = useHoverVisible();
+
+    function showPlayerControl(e) {
+      // 聚焦在播放器控制栏上时，不需要自动隐藏
+      if (
+        PlayerControlWrapperRef.value &&
+        e.target &&
+        PlayerControlWrapperRef.value.contains(e.target)
+      ) {
+        forceShowPlayerControlItem();
+        return;
+      }
+
+      showPlayerControlItem();
+    }
+
+    return {
+      PlayerControlWrapperRef,
+
+      playerControlVisible,
+      showPlayerControl,
+      hidePlayerControl
+    };
+
+  },
   components: {
     PcMenu,
     PcIntro,
@@ -437,7 +480,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">
