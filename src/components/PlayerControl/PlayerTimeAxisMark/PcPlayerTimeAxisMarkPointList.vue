@@ -281,7 +281,7 @@ export default defineComponent({
   line-height: 18px;
   color: #fff;
   border-radius: 0 0 2px 2px;
-  word-break: break-all;
+  word-break: break-word;
 
   > span {
     position: absolute;
