@@ -142,6 +142,7 @@ export default class PolyvLive {
     // 监听频道信息并初始化播放器
     this.liveSdk.on(PolyvLiveSdk.EVENTS.CHANNEL_DATA_INIT, (event, data) => {
       $store.commit('base/setChannelDetail', data);
+      $store.commit('base/setLiveStatus', data.status === 'Y' ? 'live' : 'unknown');
 
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.CHANNEL_DATA_INIT, { channelData: data });
       this.createLiveSdkPlayer(data);
@@ -152,6 +153,15 @@ export default class PolyvLive {
     // 监听流状态变化
     this.liveSdk.on(PolyvLiveSdk.EVENTS.STREAM_UPDATE, (event, status) => {
       $store.commit('base/setLiveStatus', status);
+
+      // 非直播状态，需要移除时移打点支持，并重载播放器
+      if (status !== 'live') {
+        $store.commit('base/setChannelDetail', {
+          ...$store.state.base.channelDetail,
+          timeShiftModel: {}
+        });
+        this.liveSdk.reloadPlayer();
+      }
 
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.STREAM_UPDATE, { status });
     });
@@ -217,7 +227,6 @@ export default class PolyvLive {
     });
 
     this.bindPlayerEvents();
-    $store.commit('base/setLiveStatus', data.status === 'Y' ? 'live' : 'unknown');
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_INIT, { data });
   }
 
