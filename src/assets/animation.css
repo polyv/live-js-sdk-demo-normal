@@ -1,0 +1,38 @@
+.fade-enter-active {
+  animation: fade-in .3s;
+}
+.fade-leave-active {
+  animation: fade-in .35s reverse;
+}
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.slide-enter-active {
+  animation: slide-in .2s ease-in-out;
+}
+.slide-leave-active {
+  animation: slide-in .15s reverse ease-in-out;
+}
+@keyframes slide-in {
+  0% {
+    transform: translate(0, 100%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -54,6 +54,7 @@ export default {
 };
 </script>
 
+<style src="@/assets/animation.css"></style>
 <style>
 /** 单页面全局样式 */
 

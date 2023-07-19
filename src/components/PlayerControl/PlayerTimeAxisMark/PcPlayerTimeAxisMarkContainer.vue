@@ -98,21 +98,6 @@ export default defineComponent({
 <style lang="scss">
 $--player-control-button-size: 48px !default;
 
-.fade-enter-active {
-  animation: fade-in .3s;
-}
-.fade-leave-active {
-  animation: fade-in .35s reverse;
-}
-@keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
 .c-pc-player-time-axis-mark-container {
   display: inline-flex;
   align-items: center;
