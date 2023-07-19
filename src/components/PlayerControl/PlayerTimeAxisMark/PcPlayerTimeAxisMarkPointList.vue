@@ -281,6 +281,7 @@ export default defineComponent({
   line-height: 18px;
   color: #fff;
   border-radius: 0 0 2px 2px;
+  word-break: break-all;
 
   > span {
     position: absolute;
@@ -297,7 +298,8 @@ export default defineComponent({
 .c-pc-player-time-axis-mark-point__panel__nav {
   left: 50%;
   display: inline-block;
-  max-width: 100px;
+  box-sizing: border-box;
+  max-width: 112px;
   padding: 6px 6px;
   margin-top: 4px;
   font-size: 0;
