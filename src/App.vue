@@ -88,7 +88,7 @@ input[type='submit'] {
 html,
 body,
 #app,
-.g-moblie-page-container,
+.g-page-container,
 .plv-watch-mobile-main {
   width: 100%;
   height: 100%;

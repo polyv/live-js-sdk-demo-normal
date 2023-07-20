@@ -1,6 +1,6 @@
 <template>
   <section v-if="visible"
-           class="g-moblie-page-container">
+           class="g-page-container">
     <component :is="componentTagName"
                :channelInfo="channelInfo"
                :chatInfo="chatInfo"

@@ -521,8 +521,8 @@ export default defineComponent({
   height: 100%;
 }
 .plv-watch-pc__screen__inner.plv-watch-pc__player-control-wrapper {
-  top: unset;
-  bottom: 0;
+  top: 100%;
+  margin-top: -60px;
   height: 60px;
 }
 /* 需要比播放器高一层 */

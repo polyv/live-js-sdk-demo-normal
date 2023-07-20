@@ -194,6 +194,7 @@ export default defineComponent({
   position: absolute;
   bottom: 100%;
   width: 16px;
+  left: 0;
   height: 19px;
   margin-bottom: 2px;
   margin-left: -8px;
