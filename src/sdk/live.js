@@ -218,7 +218,10 @@ export default class PolyvLive {
         drag: true
       },
       rtc: true, // 在非无延迟的频道里面设置后可进行连麦，sdk会加载连麦sdk并返回实例
-      /** 直播时移 */
+      /**
+       * 直播时移
+       * @warn 如果需要在移动端全屏状态下使用时移和打点功能，需要额外传入 webPageFullScreen 和 fullScreenOrientation 选项
+       * */
       timeShift: true,
       /** 直播打点，需要优先设置 timeShift */
       liveTimeAxisMark: true,
@@ -308,5 +311,3 @@ export default class PolyvLive {
     PolyvLive._instance = null;
   }
 }
-
-// window.PolyvLive = PolyvLive;
