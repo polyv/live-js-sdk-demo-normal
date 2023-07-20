@@ -17,7 +17,8 @@
          :style="{
         left: `${getFirstMarkPointDetail(markPoint).percents * 100}%`,
       }"
-         @mouseover="setActiveMarkPoint(markPoint)">
+         @mouseover="setActiveMarkPoint(markPoint)"
+         @click.stop="markPointClickHandler(markPoint)">
       <!-- 当前标记点只有一条详情数据时，展示占位点 -->
       <span v-if="markPoint.details.length === 1"
             class="c-pc-player-time-axis-mark-point__inner_dot"></span>
@@ -121,6 +122,11 @@ const useHook = (options) => {
     emit('mark-point-update', markPointDetail);
   }
 
+  function markPointClickHandler(markPoint) {
+    const markPointDetail = getFirstMarkPointDetail(markPoint);
+    emitMarkPoint(markPointDetail);
+  }
+
   /** 标记点面板样式 */
   const markPointPanelStyle = computed(() => {
     if (!activeMarkPoint.value || !props.containerEl) return {};
@@ -147,6 +153,7 @@ const useHook = (options) => {
     setActiveMarkPoint,
     updateActiveMarkPointDetail,
     emitMarkPoint,
+    markPointClickHandler,
 
     markPointPanelStyle,
   };
