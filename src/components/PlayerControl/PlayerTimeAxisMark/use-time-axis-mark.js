@@ -45,11 +45,10 @@ export const useTimeAxisMarkHook = (hookOptions) => {
     return markPoint.details[0];
   }
 
-  const { toSeekVideo, getDurationTime } = usePlayerAction();
+  const { toSeekVideo } = usePlayerAction();
 
   function toSeekByTimeAxisMark(timeAxisMark) {
-    const durationTime = getDurationTime();
-    toSeekVideo(durationTime * timeAxisMark.percents);
+    toSeekVideo(timeAxisMark.markTime);
   }
 
   return {
