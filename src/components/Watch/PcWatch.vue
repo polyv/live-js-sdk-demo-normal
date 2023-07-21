@@ -10,20 +10,35 @@
            id="plv-pc-top"
            :class="{
              'plv-watch-pc__top--fullscreen':playerCtrl.isFullScreen
-           }">
+           }"
+           @mousemove="showPlayerControl"
+           @mouseenter="showPlayerControl"
+           @mouseleave="hidePlayerControl">
         <div :class="{
           'plv-watch-pc__screen':true,
           'plv-watch-pc__screen-main':isPPTMainPosition,
           'plv-watch-pc__screen-sub':isPlayerMainPosition
         }">
           <div class="plv-watch-pc__screen__height">
-            <div class="plv-watch-pc__screen__inner"
+            <div :class="{
+              'plv-watch-pc__screen__inner':true,
+              'plv-watch-pc__hide_plv_control': supportTimeAxisMark
+              }"
                  ref="plv-pc-main"
                  id="plv-pc-main"></div>
             <div v-if="isAloneChannelScene"
                  class="plv-watch-pc__screen__inner"
                  id="plv-pc-master-rtc-player"
                  style="display: none;"></div>
+            <!-- 自定义的播放器控制条 -->
+            <div v-if="playerInited && supportTimeAxisMark"
+                 ref="PlayerControlWrapperRef"
+                 class="plv-watch-pc__screen__inner plv-watch-pc__player-control-wrapper">
+              <transition name="fade">
+                <pc-player-control v-show="playerControlVisible"
+                                   fullscreen-selector="#plv-pc-top" />
+              </transition>
+            </div>
           </div>
         </div>
 
@@ -98,7 +113,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { defineComponent, ref } from 'vue-demi';
+import { mapState, mapMutations, mapGetters } from 'vuex';
 import WatchMixin from '@/components/Watch/WatchMixin';
 import TabNav from '@/components/TabNav/TabNav.vue';
 import LikeService from '@/components/Like';
@@ -111,6 +127,9 @@ import PcFeedBackEntrance from '@/components/InteractionsReceive/FeedBack/PcFeed
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
 import DonateBubble from '@/components/Donate/DonateBubble.vue';
 import PcRtcPanel from '@/components/RTC/PcRtcPanel.vue';
+import PcPlayerControl from '@/components/PlayerControl/PcPlayerControl.vue';
+
+import { useHoverVisible } from '@/hooks/useHoverVisible';
 
 import {
   MainScreenMap,
@@ -134,9 +153,42 @@ import PolyvInteractionsReceive, {
 const irEntranceService = new IREntranceService();
 const likeService = new LikeService();
 
-export default {
+export default defineComponent({
   name: 'PC-Watch',
   mixins: [WatchMixin],
+  setup() {
+    const PlayerControlWrapperRef = ref();
+
+    const {
+      hoverItemVisible: playerControlVisible,
+      showHoverItem: showPlayerControlItem,
+      forceShowHoverItem: forceShowPlayerControlItem,
+      hideHoverItem: hidePlayerControl
+    } = useHoverVisible();
+
+    function showPlayerControl(e) {
+      // 聚焦在播放器控制栏上时，不需要自动隐藏
+      if (
+        PlayerControlWrapperRef.value &&
+        e.target &&
+        PlayerControlWrapperRef.value.contains(e.target)
+      ) {
+        forceShowPlayerControlItem();
+        return;
+      }
+
+      showPlayerControlItem();
+    }
+
+    return {
+      PlayerControlWrapperRef,
+
+      playerControlVisible,
+      showPlayerControl,
+      hidePlayerControl
+    };
+
+  },
   components: {
     PcMenu,
     PcIntro,
@@ -151,6 +203,7 @@ export default {
     PcRtcPanel,
     PcFeedBackEntrance,
     PcFeedBack,
+    PcPlayerControl
   },
   data() {
     return {
@@ -168,6 +221,7 @@ export default {
     ...mapState({
       config: (state) => state.config,
     }),
+    ...mapGetters('base', ['supportTimeAxisMark']),
     /** 是否为"活动拍摄"场景 */
     isAloneChannelScene() {
       return this.channelInfo.scene === PlvChannelScene.ALONE;
@@ -186,7 +240,7 @@ export default {
     /** 是否启用举报反馈/投诉 */
     isEnableFeedBack() {
       return this.enableRenderIRComponent && this.watchFeedbackEnabled;
-    }
+    },
   },
   mounted() {
     /** 直播场景 */
@@ -426,7 +480,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">
@@ -465,6 +519,11 @@ export default {
   top: 0;
   width: 100%;
   height: 100%;
+}
+.plv-watch-pc__screen__inner.plv-watch-pc__player-control-wrapper {
+  top: 100%;
+  margin-top: -60px;
+  height: 60px;
 }
 /* 需要比播放器高一层 */
 #plv-pc-master-rtc-player {
@@ -708,5 +767,11 @@ export default {
 .plv-watch-pc .ply-liveppt-container > object {
   width: 100%;
   height: 100%;
+}
+
+#plv-pc-main.plv-watch-pc__hide_plv_control {
+  .plv-live-player-bar {
+    display: none;
+  }
 }
 </style>

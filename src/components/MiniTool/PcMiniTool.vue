@@ -223,7 +223,7 @@ export default {
 
 .tool-main {
   position: absolute;
-  z-index: 90;
+  z-index: 9999;
   top: 0;
   width: 100%;
   height: 100%;
@@ -239,5 +239,6 @@ export default {
 .tool-btn {
   box-sizing: border-box;
   margin: 5px;
+  cursor: pointer;
 }
 </style>

@@ -1,7 +1,11 @@
-import { TIME_STAMP } from '@/const';
-import * as PolyvUtil from '@/utils';
 import PubSub from 'jraiser/pubsub/1.2/pubsub';
 import { Notify } from 'vant';
+
+import { TIME_STAMP } from '@/const';
+import * as PolyvUtil from '@/utils';
+
+import $store from '@/store';
+import { usePlayerAction } from '@/hooks/usePlayerAction';
 
 /** 用于创建直播 JS-SDK 的类 */
 const PolyvLiveSdk = window.PolyvLiveSdk;
@@ -14,6 +18,10 @@ export const PlvLiveMessageHubEvents = {
   CHANNEL_DATA_INIT: 'channelDataInit',
   /** 播放器初始化 */
   PLAYER_INIT: 'playerInit',
+  /** 移动端播放器精彩看点按钮点击事件 */
+  MOBILE_PLAYER_HIGHLIGHTS_BTN_CLICKED: 'mobilePlayerHighlightsBtnClicked',
+  /** 播放器时间更新 */
+  PLAYER_TIME_UPDATE: 'playerTimeUpdate',
   /** 点赞互动 */
   INTERACTIVE_LIKE: 'interactiveLike',
   /** 修改昵称 */
@@ -133,6 +141,9 @@ export default class PolyvLive {
   bindSdkEventListener() {
     // 监听频道信息并初始化播放器
     this.liveSdk.on(PolyvLiveSdk.EVENTS.CHANNEL_DATA_INIT, (event, data) => {
+      $store.commit('base/setChannelDetail', data);
+      $store.commit('base/setLiveStatus', data.status === 'Y' ? 'live' : 'unknown');
+
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.CHANNEL_DATA_INIT, { channelData: data });
       this.createLiveSdkPlayer(data);
       this.bindPlayerLowLatencyEvent();
@@ -141,6 +152,17 @@ export default class PolyvLive {
 
     // 监听流状态变化
     this.liveSdk.on(PolyvLiveSdk.EVENTS.STREAM_UPDATE, (event, status) => {
+      $store.commit('base/setLiveStatus', status);
+
+      // 非直播状态，需要移除时移打点支持，并重载播放器
+      if (status !== 'live') {
+        $store.commit('base/setChannelDetail', {
+          ...$store.state.base.channelDetail,
+          timeShiftModel: {}
+        });
+        this.liveSdk.reloadPlayer();
+      }
+
       plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.STREAM_UPDATE, { status });
     });
 
@@ -195,10 +217,58 @@ export default class PolyvLive {
         */
         drag: true
       },
-      rtc: true // 在非无延迟的频道里面设置后可进行连麦，sdk会加载连麦sdk并返回实例
+      rtc: true, // 在非无延迟的频道里面设置后可进行连麦，sdk会加载连麦sdk并返回实例
+      /**
+       * 直播时移
+       * @warn 如果需要在移动端全屏状态下使用时移和打点功能，需要额外传入 webPageFullScreen 和 fullScreenOrientation 选项
+       * */
+      timeShift: true,
+      /** 直播打点，需要优先设置 timeShift */
+      liveTimeAxisMark: true,
+      /** 回放打点 */
+      playbackTimeAxisMark: true,
     });
 
+    this.bindPlayerEvents();
     plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_INIT, { data });
+  }
+
+  /**
+   * 播放器-绑定播放器相关事件
+   */
+  bindPlayerEvents() {
+    this.liveSdk.player.on('loadedmetadata', () => {
+      const { getDurationTime } = usePlayerAction();
+
+      const { volume } = this.liveSdk.player;
+
+      $store.commit('player/updatePlayerInfo', {
+        durationTime: getDurationTime(),
+        volume,
+      });
+    });
+
+    this.liveSdk.player.on('timeupdate', () => {
+      const { getCurrentTime, getDurationTime } = usePlayerAction();
+
+      const currentTime = getCurrentTime();
+      const durationTime = getDurationTime();
+
+      $store.commit('player/updatePlayerInfo', {
+        currentTime,
+        durationTime,
+      });
+
+      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.PLAYER_TIME_UPDATE, { currentTime, durationTime });
+    });
+
+    this.liveSdk.player.on('keyPointUpdate', ({ list }) => {
+      $store.commit('player/setTimeAxisMarkList', list);
+    });
+
+    this.liveSdk.player.on('highlightsBtnClicked', () => {
+      plvLiveMessageHub.trigger(PlvLiveMessageHubEvents.MOBILE_PLAYER_HIGHLIGHTS_BTN_CLICKED);
+    });
   }
 
   /**

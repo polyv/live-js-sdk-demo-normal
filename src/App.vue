@@ -54,7 +54,10 @@ export default {
 };
 </script>
 
+<style src="@/assets/animation.css"></style>
 <style>
+/** 单页面全局样式 */
+
 * {
   box-sizing: border-box;
 }
@@ -85,9 +88,26 @@ input[type='submit'] {
 html,
 body,
 #app,
-.g-moblie-page-container,
+.g-page-container,
 .plv-watch-mobile-main {
   width: 100%;
   height: 100%;
+}
+
+/* 单行内容，如有超出则以省略号结尾 */
+.g-singleline {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 多行内容，只兼容webkit（默认 2 行） */
+.g-multiline {
+  word-break: break-word;
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 </style>

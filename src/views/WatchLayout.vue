@@ -1,13 +1,12 @@
 <template>
   <section v-if="visible"
-           class="g-moblie-page-container">
+           class="g-page-container">
     <component :is="componentTagName"
                :channelInfo="channelInfo"
                :chatInfo="chatInfo"
                :apiToken="apiToken"
                :productEnable="productEnable"
                :donateConfig="donateConfig"
-               :watchFeedbackEnabled="watchFeedbackEnabled"
                @change-switch="handleChangeSwitch"
                @reload="reloadWatchPage" />
   </section>
@@ -34,7 +33,6 @@ export default {
     return {
       visible: false,
       channelInfo: {},
-      channelDetail: {},
       chatInfo: {},
       apiToken: '',
       productEnable: false,
@@ -50,9 +48,6 @@ export default {
     componentTagName() {
       return this.isMobile ? 'MobileWatch' : 'PcWatch';
     },
-    watchFeedbackEnabled() {
-      return PolyvUtil.ynToBool(this.channelDetail.watchFeedbackEnabled || 'N');
-    }
   },
   created() {
     this.init();
@@ -91,8 +86,6 @@ export default {
         }
         // 获取频道信息
         this.channelInfo = await this.getChannelInfo();
-        // 获取频道详情
-        this.channelDetail = await this.getChannelDetail();
         // 获取聊天室信息
         this.chatInfo = await this.getChatInfo();
         // SDK设置接口token, 用于一些互动的功能接口的请求,如点赞
@@ -124,21 +117,6 @@ export default {
       );
 
       return await PolyvApi.getChannelInfo(channelInfoParams);
-    },
-    async getChannelDetail() {
-      const channelDetailParams = {
-        appId: this.config.appId,
-        timestamp: TIME_STAMP,
-        channelId: this.config.channelId,
-      };
-
-      // ！！！不要在前端生成sign，此处仅供参考
-      channelDetailParams.sign = PolyvUtil.getSign(
-        this.config.appSecret,
-        channelDetailParams
-      );
-
-      return await PolyvApi.getChannelDetail(channelDetailParams);
     },
     async getChatInfo() {
       // 聊天室JS-SDK加载需要先请求校验码
