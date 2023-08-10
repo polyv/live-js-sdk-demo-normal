@@ -257,6 +257,11 @@ export default {
           (rtcItem) => rtcItem.streamId !== evt.streamId
         );
       });
+
+      // 收到主讲邀请连麦信息
+      rtc.on('INVITE_TO_MICROPHONE', () => {
+        rtc.openInviting();
+      });
     },
     // 重置组件状态
     resetComponentState() {

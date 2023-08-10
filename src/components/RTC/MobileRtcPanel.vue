@@ -254,6 +254,11 @@ export default {
       rtc.on('LOCAL_UNMUTE_VIDEO', (evt) => {
         this.toolkit.toggleCamera(false);
       });
+
+      // 收到主讲邀请连麦信息
+      rtc.on('INVITE_TO_MICROPHONE', () => {
+        rtc.openInviting();
+      });
     },
 
     resetComponentState() {
