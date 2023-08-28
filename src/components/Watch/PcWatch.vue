@@ -156,12 +156,6 @@ export default {
     return {
       playerInited: false,
       enableRenderIRComponent: false,
-      playerCtrl: {
-        /** 是否全屏 */
-        isFullScreen: false,
-        /** 主视图位置，用于记录当前主屏幕是文档还是播放器 */
-        mainPosition: MainScreenMap.ppt.value,
-      },
     };
   },
   computed: {
@@ -171,14 +165,6 @@ export default {
     /** 是否为"活动拍摄"场景 */
     isAloneChannelScene() {
       return this.channelInfo.scene === PlvChannelScene.ALONE;
-    },
-    /** 是否使用播放器作为主屏 */
-    isPlayerMainPosition() {
-      return this.playerCtrl.mainPosition === MainScreenMap.player.value;
-    },
-    /** 是否使用 PPT 文档播放器作为主屏 */
-    isPPTMainPosition() {
-      return this.playerCtrl.mainPosition === MainScreenMap.ppt.value;
     },
     isShowPcRtcPanel() {
       return this.activeTab === TabNavType.RTC;
@@ -386,25 +372,10 @@ export default {
         this.playerCtrl.isFullScreen = isFullScreen;
       });
 
-      /** 切换主副屏播放器 */
-      const _handleSwitchPlayer = (nextMainPosition) => {
-        this.playerCtrl.mainPosition = nextMainPosition;
-        this.$nextTick(() => {
-          // ppt容器宽高修改，调用resize刷新ppt尺寸
-          plvLive.liveSdk.player.resize();
-          // 刷新弹幕显示区域尺寸
-          plvLive.liveSdk.player.resizeBarrage();
-        });
-      };
-
       // 点击控制栏切换按钮触发
-      plvLive.liveSdk.player.on('switchPlayer', () => {
-        const nextMainPosition =
-          MainScreenMap[this.playerCtrl.mainPosition].next;
-        _handleSwitchPlayer(nextMainPosition);
-      });
+      plvLive.liveSdk.player.on('switchPlayer', this.handleSetMainPosition);
       plvLive.liveSdk.player.on('switchMainScreen', (nextMainPosition) => {
-        _handleSwitchPlayer(nextMainPosition);
+        this.handleSwitchPlayer(nextMainPosition);
       });
     },
     /**

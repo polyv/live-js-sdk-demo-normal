@@ -1,10 +1,17 @@
 <template>
   <section class="plv-watch-mobile-main">
-    <div class="plv-watch-mobile">
-      <div class="plv-watch-mobile__top">
+    <div class="plv-watch-mobile" :class="[isRtc ? 'plv-watch-mobile--rtc' : null, `plv-watch-mobile-activeTab--${activeTab}`, playerCtrl.isFullScreen ? 'plv-watch-pc__top--fullscreen': null]">
+      <div
+        class="plv-watch-mobile__top"
+        ref="mobileTop"
+        :class="{
+         'plv-watch-mobile__screen-main': isPlayerMainPosition,
+         'plv-watch-mobile__screen-sub': isPPTMainPosition
+      }">
         <!-- 播放器区域 -->
         <div class="plv-watch-mobile-player"
              ref="plv-mobile-player"
+             :style="{top: panelBodyRectTop}"
              id="plv-mobile-player"></div>
         <!-- 用于展示 RTC 主讲的 DOM -->
         <div class="plv-watch-mobile-player"
@@ -30,26 +37,27 @@
                         v-show="!isSmallWindow" />
       <!-- 聊天室区域，包含 PPT 文档播放器和直播介绍页 -->
       <div class="plv-watch-mobile-chatroom plv-skin--dark"
-           v-show="!isSmallWindow">
+           :class="[isPPTMainPosition ? 'plv-watch-mobile__screen-main' : null,
+            isPlayerMainPosition ? 'plv-watch-mobile__screen-sub': null]">
         <tab-nav v-if="playerInited"
                  v-model="activeTab"
                  :tabData="tabData"
                  :originTabTypes="originTabTypes"
-                 class="tab-nav" />
+                 class="tab-nav"/>
         <section v-show="isCustomAcitveTab()"
                  class="custom-tab-content-wrapper">
           <!-- 这一区域用来展示定制的 Tab 面板 -->
-          <mobile-intro v-show="isShowMobileIntro" />
+          <mobile-intro v-show="isShowMobileIntro"/>
           <mobile-product-list v-if="enableRenderIRComponent"
                                v-show="isShowProductList"
-                               @change-switch="changeProductSwitch" />
+                               @change-switch="changeProductSwitch"/>
         </section>
         <section v-show="!isCustomAcitveTab()"
                  class="plv-mobile-origin-tab-content"
                  ref="plv-mobile-origin-tab-content">
           <!-- 这一块会渲染  polyv-chat-room -->
           <donate-entrance v-if="playerInited && isEnableDonate"
-                           isMobile />
+                           isMobile/>
           <mobile-donate-panel v-if="playerInited && isEnableDonate"
                                :donateConfig="donateConfig" />
           <mobile-red-envelope-point-record v-if="enableRenderIRComponent" />
@@ -58,10 +66,13 @@
         </section>
         <!-- 用于展示一些气泡消息/动画特效 -->
         <section class="bubble-wrapper">
-          <product-bubble v-if="playerInited" />
+          <product-bubble v-if="playerInited"/>
           <donate-bubble :enable="isActiveChatTab"
-                         isMobile />
+                         isMobile/>
         </section>
+
+        <div v-show="activeTab === TabNavType.PPT" class="switch-player" @click="beforeHandleSetMainPosition">
+        </div>
       </div>
     </div>
     <!-- 举报反馈/投诉 弹窗 -->
@@ -70,7 +81,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import WatchMixin from '@/components/Watch/WatchMixin';
 import WebviewMixin from '@/components/Watch/WebviewMixin';
 import TabNav from '@/components/TabNav/TabNav.vue';
@@ -81,27 +92,14 @@ import MobileFeedBackEntrance from '@/components/InteractionsReceive/FeedBack/Mo
 import MobileFeedBack from '@/components/InteractionsReceive/FeedBack/MobileFeedBack.vue';
 import ProductBubble from '@/components/InteractionsReceive/Product/ProductBubble.vue';
 import DonateBubble from '@/components/Donate/DonateBubble.vue';
-import MobileRedEnvelopePointRecord from '@/components/InteractionsReceive/RedEnvelope/MobileRedEnvelopePointRecord.vue';
+import MobileRedEnvelopePointRecord
+  from '@/components/InteractionsReceive/RedEnvelope/MobileRedEnvelopePointRecord.vue';
 import MobileRtcPanel from '@/components/RTC/MobileRtcPanel.vue';
 
-import {
-  getDefaultConfigChat,
-  PlvChannelScene,
-  PlvChatUserType,
-  TabNavType,
-} from '@/const';
-import PolyvChat, {
-  plvChatMessageHub,
-  PlvChatMessageHubEvents,
-} from '@/sdk/chat';
-import PolyvLive, {
-  plvLiveMessageHub,
-  PlvLiveMessageHubEvents,
-} from '@/sdk/live';
-import PolyvInteractionsReceive, {
-  plvIRMessageHub,
-  PlvIRMessageHubEvents,
-} from '@/sdk/interactions-receive';
+import { getDefaultConfigChat, PlvChannelScene, PlvChatUserType, TabNavType } from '@/const';
+import PolyvChat, { plvChatMessageHub, PlvChatMessageHubEvents } from '@/sdk/chat';
+import PolyvLive, { plvLiveMessageHub, PlvLiveMessageHubEvents } from '@/sdk/live';
+import PolyvInteractionsReceive, { plvIRMessageHub, PlvIRMessageHubEvents } from '@/sdk/interactions-receive';
 
 const irEntranceService = new IREntranceService();
 const likeService = new LikeService();
@@ -135,6 +133,7 @@ export default {
         .concat([TabNavType.PPT]),
       playerInited: false,
       enableRenderIRComponent: false,
+      TabNavType,
     };
   },
   computed: {
@@ -151,6 +150,13 @@ export default {
     /** 是否启用举报反馈/投诉 */
     isEnableFeedBack() {
       return this.enableRenderIRComponent && this.watchFeedbackEnabled;
+    },
+    panelBodyRectTop() {
+      const clientHeight = this.$refs.mobileTop?.offsetHeight;
+      return this.isPlayerMainPosition ? (clientHeight + clientHeight / 2) + 'px' : null;
+    },
+    isRtc() {
+      return this.channelInfo.pureRtcEnabled === 'Y';
     }
   },
   mounted() {
@@ -242,11 +248,11 @@ export default {
         const $tabPPT = document.querySelector('li[data-type=ppt]');
 
         $tabPPT &&
-          $tabPPT.addEventListener('click', () => {
-            setTimeout(() => {
-              plvLive.liveSdk.player.resize();
-            }, 0);
-          });
+        $tabPPT.addEventListener('click', () => {
+          setTimeout(() => {
+            plvLive.liveSdk.player.resize();
+          }, 0);
+        });
       }
     },
     /**
@@ -382,6 +388,11 @@ export default {
       plvLive.liveSdk.player.on('pause', () => {
         this.updateWebviewPlayState(false);
       });
+      // 全屏切换
+      plvLive.liveSdk.player.on('s2j_onNormalScreen', (isFullScreen) => {
+        console.log('s2j_onNormalScreen');
+        this.playerCtrl.isFullScreen = isFullScreen;
+      });
     },
     /** 渲染互动功能入口组件 */
     renderIREntrance() {
@@ -396,6 +407,11 @@ export default {
       const $tabChat = document.getElementById('tab-chat');
       $tabChat.appendChild($el);
     },
+    beforeHandleSetMainPosition() {
+      const tabItem = this.tabData.find(item => item.type === TabNavType.PPT);
+      this.handleSetMainPosition();
+      tabItem.name = this.isPlayerMainPosition ? '视频' : 'PPT';
+    }
   },
 };
 </script>
@@ -435,11 +451,36 @@ export default {
 .plv-watch-mobile-chatroom {
   position: relative;
 }
+.plv-watch-pc__top--fullscreen {
+  .switch-player {
+    display: none;
+  }
+}
+.plv-watch-mobile--rtc {
+  // RTC频道下，隐藏切换主副屏按钮
+  .switch-player {
+    display: none !important;
+  }
+}
+.switch-player {
+  position: absolute;
+  right: 18px;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAFyklEQVR4Xu2dTWhcVRTHf6EaFU3NiIo2SIy6UBREWilahUCy8bMgBESioFHcRM0iLoyEmTEQN1lEmo1oKmgQISBo/dgkENBaii0iKLpQa5DWouKkxlIbI5H/63vTl/l632/mhXthmMXcc+95v3c/zzn3ThvNTZcC1wJXAVfa35cBFwHt9rc0PAus2d9/A78Df9jfvwKnm/UYbSlXfCFwo/25AbgGiKrDBnAS+An40f78m9ZzRVXer549wB3AbcDFfoVC5vsH+Ab4CjgWsgzfYkkCvADYCdwLXOFbo3gz/gl8BhwF1uMt+lxpSQBUN90N3ANsT0LpEGX+BXwOHAZi7d5xA7wFeKCJLc6LrVrkx8B3Xhn9/h4XwE7gIUAAs5AE8ACwElXZOADeCjwCXBJVmZTlzwDvA99GqTcKwG3AfcBdCY2lUZ7Lr6yWQIeAT4H//Aq584UFqNb2BNAdptIWlFkG3gbUKgOlMAAvB54Erg5UU+tn/g14CzgVRNWgALXlEjxNGlsxaVLZb28TfT1fEIBqec9uYXgOMEF83W9L9AtQY57gbbVuW6+VqTsLoueY6AegZtunt9CE4atrAppY3vSanf0AfBC422+tWyzfF8BHjZ7JC6AWyY9leJ0X9X1qnfhuo8V2I4CaaZ/L4A4jKrRKeY2D++pt+xoBfDxDe9u4oVWWp73zO7UqqQdQRgEBNOk8AQGssuLUAih73giQM/Q2EZAp7LVKe2ItgDKE3m/g1STwiW2YLf9YCVBm+NEWsiS32nuUZXvK7R6oBChT/N5W07rF9PnAdg1YalUCVOtL1QG0sbHxqBtQW1vbe42ADQ8P75iYmLhTeaanp78uFos/pwxYY6FaYRVAuR6fSVkZggIslUp7Ozs7y9bvxcXFYwMDA0dKpVIog2jI533DcZm6W6DM8rtCFhhaLCjAyvyq+Pjx46cGBwcPLi0taYxKIx2x3QHlLqyly0spOL2rHi4OgCp0bW1tfXJy8mixWEzcmQ7Ief+qljROC7zZNtGn8fY21REXQKfQFLu0XADfOwDly92TOj0IPAbW6sKVeqfUpQ/Kx+wAlNFAUVKpp6gtsFAoHB4bG9vZ3t6uNWw5ra6unu3u7v4wwclFUWH7BFAhZmPNMllFBahlT29v7/a5ubk9XV1dcjtYSWATHg9l6poUwJuAp1JvenaFcQBUUblcbtv8/Pyuvr6+Ho2D/f39ioNJOu0XQDnGFZbRlBQXQEf50dHR62ZnZ08k2HXdnA4IoOAJYlNS3ABTfohDAqjuq27clJRxgD8I4PN2qK0BGJzASQF8sZnG04y3wJIAvmwvZYLzj0Ei4wBPC+ArwKZFaAxcfBeRcYDrBqDvV10zowXQdOHwEK0ubCaR8ACtScQsY8IDtJYxZiEdHqC1kDZbufAAra1cKsYEWUuGhoZ2TE1N/eLWN+PLGMuYkIo5a2FhYbdjanJ70TIO0DJnJW5QzefzPYVCQU57K7lN7hkGWDao6pkSM+mr6y4vLz/c0dGhQ9Tl5HjR3GD1o5djPSjw8MObp2TZpK+ciTqVapnc66mXIYCbnEqJuzXdJvdG7zZDADe5NVNzrGs8rOVFc6BmBGCVY136pxba0ahLZwRgVWiHAKYaXFSrS6+srJzJ5XIKH6ubWmQSqRlcJKVTD2/L5/PXj4yM3K7Kx8fHv5yZmTnR4gDrhrdJbxNg6bl6oWGApQnxbQzQM8RX4ibIvD5EzyBziWpJ80Laob7ePafpOXwfc5Cm5qBN9fvyfdDGETVHvc5DDHzUS6LmsOE5gKEPG0rYHHeNcNzVacDmwHWD+cvrwLVEzZH/iAAlbi6dqAPRTwt0RM21JzUgBgEocd1zKj+yuXjHhhkUoMTM1U+ulhgGoDMmmsvHIp4NMdffRQToNGRzAWMMdg5zBWgMEB0rjnYurXrjR8teQuvmb65Bjqk1mou4YwKpYsxV8DHBNH9GEBNIp5jM/x3G/86zVF1UFHBRAAAAAElFTkSuQmCC) no-repeat;
+  background-size: 40px;
+  width: 40px;
+  height: 40px;
+  animation-name: g-k-fade-in;
+  animation-duration: 0.35s;
+  top: 80px;
+  z-index: 20;
+}
+
 .plv-watch-mobile-chatroom .tab-nav {
   position: absolute;
   width: 100%;
   z-index: 1;
 }
+
 .plv-watch-mobile-chatroom .custom-tab-content-wrapper {
   position: relative;
   padding-top: 38px;
@@ -447,12 +488,14 @@ export default {
   width: 100%;
   height: 100%;
 }
+
 .plv-watch-mobile-chatroom .plv-mobile-origin-tab-content {
   position: relative;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
 }
+
 .plv-watch-mobile-chatroom .bubble-wrapper {
   position: absolute;
   top: 38px;
@@ -464,82 +507,105 @@ export default {
 .plv-watch-mobile .polyv-chat-room .polyv-cr-head {
   display: none;
 }
+
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room {
   background: #202127;
 }
+
 .plv-watch-mobile .plv-skin--dark .polyv-cr-head {
   background: #3e3e4e;
 }
+
 .plv-watch-mobile .plv-skin--dark .polyv-cr-navbar {
   color: #fff;
 }
-.plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-cr-navbar>li.polyv-crn-active {
+
+.plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-cr-navbar > li.polyv-crn-active {
   color: #fff;
   border: 0;
 }
-.plv-watch-mobile .plv-skin--dark li.polyv-crn-active>span {
+
+.plv-watch-mobile .plv-skin--dark li.polyv-crn-active > span {
   display: inline-block;
   line-height: 35px;
   border-bottom: 2px solid #fff;
 }
-.plv-watch-mobile .plv-skin--dark .polyv-chat-room>.polyv-cr-body {
+
+.plv-watch-mobile .plv-skin--dark .polyv-chat-room > .polyv-cr-body {
   background: #202127;
 }
+
 .plv-watch-mobile .plv-skin--dark .polyv-chat-input {
   background: #202127;
 }
+
 .plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-chat-input input {
   color: #e4e4e4;
   background: #2b2c35;
   border: 0;
 }
+
 .plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-mobile-send {
   color: #fff;
 }
+
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-emotion-wrap {
   background: #202127;
 }
+
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-emotion-wrap:after {
   border-color: #202127 transparent transparent;
 }
-.plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-chat-list>.polyv-msg {
+
+.plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-chat-list > .polyv-msg {
   color: #adadc0;
 }
+
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-msg-content {
   background: #2b2c35;
 }
+
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-chat-input .polyv-icon-emotion {
   background: url('~@/assets/chat-imgs/emotion.png');
   background-size: 20px 20px;
 }
+
 .plv-watch-mobile .plv-skin--dark .polyv-chat-room .polyv-chat-input .polyv-icon-flower {
   background: url('~@/assets/chat-imgs/flower.png');
   background-size: 20px 20px;
 }
+
 .plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-chat-input .polyv-icon-more {
   background: url('~@/assets/chat-imgs/more.png');
   background-size: 20px 20px;
 }
+
 .plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-show-more .polyv-icon-more {
   background: url('~@/assets/chat-imgs/show-more.png');
   background-size: 20px 20px;
 }
-.plv-watch-mobile .plv-skin--dark .polyv-chat-room>.polyv-cr-body .polyv-set-nickname.show {
+
+.plv-watch-mobile .plv-skin--dark .polyv-chat-room > .polyv-cr-body .polyv-set-nickname.show {
   background: #3e3e4e;
 }
-.plv-watch-mobile .plv-skin--dark .polyv-chat-room>.polyv-cr-body .polyv-set-nickname input {
+
+.plv-watch-mobile .plv-skin--dark .polyv-chat-room > .polyv-cr-body .polyv-set-nickname input {
   background: #212121;
   border: 0;
 }
-.plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-set-nickname>div>button {
+
+.plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-set-nickname > div > button {
   color: #fff;
 }
+
 .plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-chat-input-more {
   background: #3e3e4e;
 }
-.plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-more-control-list>li>span {
+
+.plv-watch-mobile .plv-skin--dark .mobile-wrap .polyv-more-control-list > li > span {
   color: #fff;
 }
+
 .plv-watch-mobile .polyv-chat-room .polyv-other-msg.polyv-redpack-result-msg {
   display: inline-block;
   width: 100%;
@@ -556,6 +622,7 @@ export default {
     height: 100%;
     z-index: 99998;
   }
+
   .c-player__button {
     position: absolute;
     top: 50%;
@@ -566,18 +633,43 @@ export default {
     margin-left: -40px;
     z-index: 999;
   }
+
   .c-player__webview-ui {
     z-index: 99999;
   }
-  .plwrap>div,
+
+  .plwrap > div,
   .pv-player-rtc-controls,
   video::-webkit-media-controls-enclosure {
     display: none !important;
   }
 
-  .plwrap>.plv-live-loading,
-  .plwrap>.plvideo {
+  .plwrap > .plv-live-loading,
+  .plwrap > .plvideo {
     display: block !important;
+  }
+}
+.plv-watch-mobile__screen-main {
+  .plv-watch-mobile-player {
+    top: 100%;
+    margin-top: 38px;
+    z-index: 15;
+    display: none;
+  }
+}
+.plv-watch-mobile__screen-sub {
+  .tab-ppt {
+    .pv-ppt-layout {
+      position: fixed !important;
+      top: 0;
+      z-index: 10;
+      height: 56.25vw !important;
+    }
+  }
+}
+.plv-watch-mobile-activeTab--ppt {
+  .plv-watch-mobile-player {
+    display: block;
   }
 }
 </style>
