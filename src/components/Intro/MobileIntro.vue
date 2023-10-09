@@ -8,7 +8,7 @@
           {{ channelData.name }}
         </p>
         <p class="tab-intro-info__time">
-          {{ (channelData.startTime || '— —') +'|' + channelData.pageView + '次观看' }}
+          {{ (channelData.startTime || '— —') +'|' + channelData.pageView + '次访问' }}
         </p>
         <watch-status isMobile />
         <span v-show="isShowLowLatencyIcon"
