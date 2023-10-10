@@ -14,7 +14,7 @@
         {{ channelData.publisher }}
       </span>
       <span class="plv-watch-pc__intro__desc__view">
-        {{ channelData.pageView + ' 次观看' }}
+        {{ channelData.pageView + ' 次访问' }}
       </span>
     </div>
     <div class="plv-watch-pc__intro__right">
