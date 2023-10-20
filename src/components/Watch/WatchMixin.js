@@ -1,5 +1,6 @@
-import { getDefaultConfigChat, TabNavType } from '@/const';
+import { getDefaultConfigChat, MainScreenMap, TabNavType } from '@/const';
 import { ynToBool } from '@/utils';
+import PolyvLive from '@/sdk/live';
 
 export default {
   /** 由父组件来保证数据存在 */
@@ -18,6 +19,12 @@ export default {
       /** 聊天室 SDK 中的 Tab 类型 */
       originTabTypes: chatConfig.tabData.map((i) => i.type),
       tabData: [...chatConfig.tabData],
+      playerCtrl: {
+        /** 是否全屏 */
+        isFullScreen: false,
+        /** 主视图位置，用于记录当前主屏幕是文档还是播放器 */
+        mainPosition: MainScreenMap.ppt.value,
+      },
     };
   },
   computed: {
@@ -32,7 +39,15 @@ export default {
     /** 是否启用打赏功能 */
     isEnableDonate() {
       return ynToBool(this.donateConfig.donateCashEnabled) || ynToBool(this.donateConfig.donateGiftEnabled);
-    }
+    },
+    /** 是否使用播放器作为主屏 */
+    isPlayerMainPosition() {
+      return this.playerCtrl.mainPosition === MainScreenMap.player.value;
+    },
+    /** 是否使用 PPT 文档播放器作为主屏 */
+    isPPTMainPosition() {
+      return this.playerCtrl.mainPosition === MainScreenMap.ppt.value;
+    },
   },
   watch: {
     productEnable: {
@@ -58,5 +73,20 @@ export default {
     changeProductSwitch(enabled) {
       this.$emit('change-switch', { productEnable: enabled });
     },
+    handleSetMainPosition() {
+      const nextMainPosition =
+        MainScreenMap[this.playerCtrl.mainPosition].next;
+      this.handleSwitchPlayer(nextMainPosition);
+    },
+    handleSwitchPlayer(nextMainPosition) {
+      const plvLive = PolyvLive.getInstance();
+      this.playerCtrl.mainPosition = nextMainPosition;
+      setTimeout(() => {
+        // ppt容器宽高修改，调用resize刷新ppt尺寸
+        plvLive.liveSdk.player.resize();
+        // 刷新弹幕显示区域尺寸
+        plvLive.liveSdk.player.resizeBarrage();
+      });
+    }
   },
 };
