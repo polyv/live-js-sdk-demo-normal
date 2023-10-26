@@ -1,6 +1,6 @@
 <template>
   <section class="plv-watch-mobile-main">
-    <div class="plv-watch-mobile" :class="[isRtc ? 'plv-watch-mobile--rtc' : null, `plv-watch-mobile-activeTab--${activeTab}`, playerCtrl.isFullScreen ? 'plv-watch-pc__top--fullscreen': null]">
+    <div class="plv-watch-mobile" :class="[`plv-watch-mobile-activeTab--${activeTab}`, playerCtrl.isFullScreen ? 'plv-watch-pc__top--fullscreen': null]">
       <div
         class="plv-watch-mobile__top"
         ref="mobileTop"
@@ -155,9 +155,6 @@ export default {
       const clientHeight = this.$refs.mobileTop?.offsetHeight;
       return this.isPlayerMainPosition ? (clientHeight + clientHeight / 2) + 'px' : null;
     },
-    isRtc() {
-      return this.channelInfo.pureRtcEnabled === 'Y';
-    }
   },
   mounted() {
     const scene = this.channelInfo.scene || '';
@@ -389,9 +386,12 @@ export default {
         this.updateWebviewPlayState(false);
       });
       // 全屏切换
-      plvLive.liveSdk.player.on('s2j_onNormalScreen', (isFullScreen) => {
-        console.log('s2j_onNormalScreen');
-        this.playerCtrl.isFullScreen = isFullScreen;
+      plvLive.liveSdk.player.on('s2j_onFullScreen', () => {
+        this.playerCtrl.isFullScreen = true;
+      });
+
+      plvLive.liveSdk.player.on('s2j_onNormalScreen', () => {
+        this.playerCtrl.isFullScreen = false;
       });
     },
     /** 渲染互动功能入口组件 */
