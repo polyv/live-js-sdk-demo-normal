@@ -25,6 +25,29 @@ export const PlvLiveMessageHubEvents = {
 };
 
 /**
+ * 重写直播SDK中的类，用于获取正确的直播状态
+ */
+const getChannelInfo = PolyvLiveSdk.getChannelInfo;
+PolyvLiveSdk.getChannelInfo = function(...argv) {
+  return getChannelInfo(...argv).then(resp => {
+    if (resp.status === 'N') {
+      return PolyvLiveSdk.getChannelStreamStatus({
+        stream: resp.stream,
+        channelId: resp.channelId,
+      }).then((resp2) => {
+        if (resp2.status === 'live') {
+          resp.status = 'Y';
+        }
+        return resp;
+      }).catch(() => {
+        return resp;
+      });
+    }
+    return resp;
+  });
+};
+
+/**
  * 对 PolyvLiveSdk 进行二次封装
  * @see {@link https://help.polyv.net/index.html#/live/js/live_js_sdk/live_js_api 直播 JS-SDK API文档}
  */
